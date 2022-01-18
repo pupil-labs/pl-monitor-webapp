@@ -21,6 +21,10 @@
     "jsx": "react-jsx"
   },
   "include": [
-    "src"
+    "src",
+    // "./node_modules/media-stream-player/lib",
+    // "./node_modules/media-stream-library/lib",
+    // "../upstream/media-stream-library",
+    // "../upstream/media-stream-player",
   ]
 }

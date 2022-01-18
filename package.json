@@ -3,25 +3,51 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@reduxjs/toolkit": "^1.5.1",
+    "@emotion/react": "^11.7.1",
+    "@emotion/styled": "^11.6.0",
+    "@mui/icons-material": "^5.3.0",
+    "@mui/material": "^5.3.0",
+    "@reduxjs/toolkit": "^1.7.1",
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
+    "@types/d3": "^7.1.0",
+    "@types/debug": "^4.1.7",
     "@types/jest": "^24.0.0",
     "@types/node": "^12.0.0",
     "@types/react": "^16.9.0",
     "@types/react-dom": "^16.9.0",
     "@types/react-redux": "^7.1.7",
+    "@types/resize-observer-browser": "^0.1.6",
+    "@types/styled-components": "^5.1.20",
+    "@types/websocket": "^1.0.4",
+    "babel": "^6.23.0",
+    "d3": "^7.3.0",
+    "debug": "^4.3.3",
+    "luxon": "^2.3.0",
+    "media-stream-library": "^10.4.0",
+    "media-stream-player": "^7.0.0",
     "react": "^17.0.2",
+    "react-app-rewired": "^2.1.11",
     "react-dom": "^17.0.2",
-    "react-redux": "^7.2.0",
+    "react-redux": "^7.2.6",
     "react-scripts": "5.0.0",
-    "typescript": "~4.1.5"
+    "react-styled-flex": "^2.2.0",
+    "reconnecting-websocket": "^4.4.0",
+    "redux-orm": "^0.16.2",
+    "resize-observer-polyfill": "^1.5.1",
+    "stream-browserify": "^3.0.0",
+    "styled-components": "^5.3.3",
+    "typescript": "~4.1.5",
+    "websocket": "^1.0.34"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
+    "start": "react-app-rewired start",
+    "build": "react-app-rewired build",
+    "test": "react-app-rewired test",
+    "_start": "react-scripts start",
+    "_build": "react-scripts build",
+    "_test": "react-scripts test",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
@@ -38,5 +64,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@types/luxon": "^2.0.9"
   }
 }
