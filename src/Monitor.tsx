@@ -18,6 +18,7 @@ export const NetworkDevice = (props: NetworkDeviceProps) => {
   const device = props.device;
   const dispatch = useDispatch();
   const startPIWebsocketHandler = () => {
+    dispatch(monitorSlice.actions.recordingMessageReceived("Test message"));
     dispatch(
       monitorSlice.actions.phoneConnectionStateChanged({
         ip: device.ip,
@@ -132,19 +133,12 @@ export const Monitor = (props: MonitorProps) => {
   }, []);
 
   return (
-    <div>
+    <div style={{ height: "100%" }}>
       <DeviceList piHosts={devices} />
-      <div
-        style={
-          {
-            // display: "flex",
-            // flexWrap: "wrap",
-          }
-        }
-      >
+      <div style={{ height: "100%" }}>
         {Object.entries(devices).map(([deviceId, device]) => {
           return (
-            <div key={device.ip}>
+            <>
               {device.showPlayer ? (
                 <Player
                   initialFormat={Format.RTP_H264}
@@ -154,7 +148,7 @@ export const Monitor = (props: MonitorProps) => {
                 />
               ) : null}
               <NetworkDevice key={device.ip} device={device}></NetworkDevice>
-            </div>
+            </>
           );
         })}
       </div>
