@@ -313,7 +313,10 @@ export const Player = forwardRef<PlayerNativeElement, PlayerProps>(
             <>
               <DeviceName>{piHost.phone.device_name}</DeviceName>
               <PhoneStatusRight>
-                <BatteryIndicator percent={piHost.phone.battery_level} />
+                <BatteryIndicator
+                  percent={piHost.phone.battery_level}
+                  size="20px"
+                />
               </PhoneStatusRight>
             </>
           ) : (
@@ -413,7 +416,7 @@ export const Player = forwardRef<PlayerNativeElement, PlayerProps>(
               </Container>
             </Limiter>
           </MediaStreamPlayerContainer>
-          <div>
+          <div style={{ minWidth: "340px" }}>
             <Divider></Divider>
             <ContainerWidth>
               <ControlsContainer>
