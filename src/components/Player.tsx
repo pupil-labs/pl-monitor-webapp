@@ -10,7 +10,6 @@ import {
 import { Sdp } from "media-stream-library";
 import { GazeOverlay } from "./GazeOverlay";
 import styled from "styled-components";
-import { experimentalStyled as muiStyled } from "@mui/material/styles";
 
 import { Container, Layer } from "./Container";
 import {
@@ -31,9 +30,12 @@ import { Format } from "./formats";
 import { BatteryIndicator } from "./Battery";
 import * as monitorSlice from "../slices/monitorSlice";
 import * as constants from "./constants";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import { RootState } from "../store";
-import { Grid, Paper } from "@mui/material";
+import SwapHorizIcon from "@mui/icons-material/SwapHoriz";
+import SettingsIcon from "@mui/icons-material/Settings";
+import { RecordReady, RecordStop } from "./img";
+import { Button } from "./Button";
 
 const DEFAULT_FORMAT = Format.RTP_H264;
 
@@ -64,7 +66,6 @@ interface PlayerProps {
    * seconds.
    */
   readonly duration?: number;
-
   /**
    * Activate automatic retries on RTSP errors.
    */
@@ -89,7 +90,7 @@ export const Player = forwardRef<PlayerNativeElement, PlayerProps>(
     },
     ref
   ) => {
-    const dispatch = useDispatch();
+    // const dispatch = useDispatch();
     const [play, setPlay] = useState(autoPlay);
     const [offset, setOffset] = useState(0);
     const [refresh, setRefresh] = useState(0);
@@ -303,132 +304,148 @@ export const Player = forwardRef<PlayerNativeElement, PlayerProps>(
     const eventMenu = useSelector((state: RootState) => {
       return state.monitor.presetEvents;
     });
-    const addCustomEvent = useCallback((device) => {}, []);
+    // const addCustomEvent = useCallback((device) => {}, []);
 
     return (
       <PlayerArea>
         <PhoneStatus>
           {piHost.phone ? (
             <>
-              <PhoneStatusLeft>{piHost.phone.device_name}</PhoneStatusLeft>
+              <DeviceName>{piHost.phone.device_name}</DeviceName>
               <PhoneStatusRight>
-                <BatteryIndicator percent={piHost.phone.battery_level} />
+                <BatteryIndicator
+                  percent={piHost.phone.battery_level}
+                  size="20px"
+                />
               </PhoneStatusRight>
             </>
           ) : (
             <span>connecting...</span>
           )}
         </PhoneStatus>
-
-        <MediaStreamPlayerContainer
-          style={{
-            background: "black",
-            // width: constants.PI_WORLD_VIDEO_WIDTH / 2,
-            width: "100%",
-            height: "500px",
-            // height: constants.PI_WORLD_VIDEO_HEIGHT / 2,
-          }}
-          className={className}
-        >
-          <Limiter ref={limiterRef}>
-            <Container aspectRatio={naturalAspectRatio}>
-              <Layer>
-                <div
-                  style={{
-                    zIndex: "-100",
-                    width: "100%",
-                    height: "100%",
-                    background: "grey",
-                  }}
-                ></div>
-              </Layer>
-              {showWorldSensor ? (
+        <GridContainer>
+          <MediaStreamPlayerContainer
+            style={{
+              background: "black",
+              margin: "0 auto",
+            }}
+            className={className}
+          >
+            <Limiter ref={limiterRef}>
+              <Container aspectRatio={naturalAspectRatio}>
                 <Layer>
-                  <PlaybackArea
-                    forwardedRef={ref}
-                    refresh={refresh}
-                    play={play}
-                    offset={offset}
-                    host={worldHost}
-                    format={format}
-                    parameters={{ camera: "world" }}
-                    onPlaying={onPlaying}
-                    onEnded={onEnded}
-                    onSdp={onSdp}
-                    metadataHandler={metadataHandler}
-                    secure={secure}
-                    autoRetry={autoRetry}
-                  />
-                </Layer>
-              ) : null}
-              {showGazeSensor ? (
-                <Layer style={{ pointerEvents: "none" }}>
-                  <GazeOverlay sensor={gazeSensor} />
-                </Layer>
-              ) : null}
-              <Layer>
-                <Feedback waiting={waiting} />
-              </Layer>
-              {showControls && videoProperties !== undefined ? (
-                <Layer>
-                  <Controls
-                    play={play}
-                    videoProperties={videoProperties}
-                    src={"host"}
-                    parameters={parameters}
-                    onPlay={onPlayPause}
-                    onStop={onStop}
-                    onRefresh={onRefresh}
-                    onScreenshot={onScreenshot}
-                    onFormat={setFormat}
-                    onPiApix={onPiApix}
-                    onSeek={setOffset}
-                    labels={{
-                      play: "Play",
-                      pause: "Pause",
-                      stop: "Stop",
-                      refresh: "Refresh",
-                      settings: "Settings",
-                      screenshot: "Take a snapshot",
-                      volume: "Volume",
+                  <div
+                    style={{
+                      zIndex: "-100",
+                      width: "100%",
+                      height: "100%",
+                      background: "grey",
                     }}
-                    showStatsOverlay={showStatsOverlay}
-                    toggleStats={toggleStatsOverlay}
-                    format={format}
-                    volume={volume}
-                    setVolume={setVolume}
-                    startTime={startTime}
-                    duration={duration}
-                  />
+                  ></div>
                 </Layer>
-              ) : null}
-              {showControls &&
-              showStatsOverlay &&
-              videoProperties !== undefined ? (
-                <Stats
-                  format={format}
-                  videoProperties={videoProperties}
-                  refresh={refresh}
-                  volume={volume}
-                />
-              ) : null}
-            </Container>
-          </Limiter>
-        </MediaStreamPlayerContainer>
-        <Grid
-          container
-          spacing={{ xs: 2, md: 3 }}
-          columns={{ xs: 4, sm: 8, md: 12 }}
-        >
-          {eventMenu.map((eventName, index) => (
-            <Grid item xs={2} sm={4} md={4} key={index}>
-              <EventButton name={eventName} hotkey={index.toString()} />
-            </Grid>
-          ))}
-          <Grid item xs={2} sm={4} md={4}>
-            <EventButton name="Custom Event" hotkey="+" />
-          </Grid>
-        </Grid>
+                {showWorldSensor ? (
+                  <Layer>
+                    <PlaybackArea
+                      forwardedRef={ref}
+                      refresh={refresh}
+                      play={play}
+                      offset={offset}
+                      host={worldHost}
+                      format={format}
+                      parameters={{ camera: "world" }}
+                      onPlaying={onPlaying}
+                      onEnded={onEnded}
+                      onSdp={onSdp}
+                      metadataHandler={metadataHandler}
+                      secure={secure}
+                      autoRetry={autoRetry}
+                    />
+                  </Layer>
+                ) : null}
+                {showGazeSensor ? (
+                  <Layer style={{ pointerEvents: "none" }}>
+                    <GazeOverlay sensor={gazeSensor} />
+                  </Layer>
+                ) : null}
+                <Layer>
+                  <Feedback waiting={waiting} />
+                </Layer>
+                {showControls && videoProperties !== undefined ? (
+                  <Layer>
+                    <Controls
+                      play={play}
+                      videoProperties={videoProperties}
+                      src={"host"}
+                      parameters={parameters}
+                      onPlay={onPlayPause}
+                      onStop={onStop}
+                      onRefresh={onRefresh}
+                      onScreenshot={onScreenshot}
+                      onFormat={setFormat}
+                      onPiApix={onPiApix}
+                      onSeek={setOffset}
+                      labels={{
+                        play: "Play",
+                        pause: "Pause",
+                        stop: "Stop",
+                        refresh: "Refresh",
+                        settings: "Settings",
+                        screenshot: "Take a snapshot",
+                        volume: "Volume",
+                      }}
+                      showStatsOverlay={showStatsOverlay}
+                      toggleStats={toggleStatsOverlay}
+                      format={format}
+                      volume={volume}
+                      setVolume={setVolume}
+                      startTime={startTime}
+                      duration={duration}
+                    />
+                  </Layer>
+                ) : null}
+                {showControls &&
+                showStatsOverlay &&
+                videoProperties !== undefined ? (
+                  <Stats
+                    format={format}
+                    videoProperties={videoProperties}
+                    refresh={refresh}
+                    volume={volume}
+                  />
+                ) : null}
+              </Container>
+            </Limiter>
+          </MediaStreamPlayerContainer>
+          <div style={{ minWidth: "340px" }}>
+            <Divider></Divider>
+            <ContainerWidth>
+              <ControlsContainer>
+                <ControlButtons>
+                  <SwapHorizIcon></SwapHorizIcon>
+                </ControlButtons>
+                <ControlButtons onClick={onPlayPause}>
+                  {play === true ? <RecordStop /> : <RecordReady />}
+                </ControlButtons>
+                <ControlButtons>
+                  <SettingsIcon></SettingsIcon>
+                </ControlButtons>
+              </ControlsContainer>
+            </ContainerWidth>
+            <Divider></Divider>
+            <ContainerWidth>
+              <EventsContainer>
+                {eventMenu.map((eventName, index) => (
+                  <EventButton
+                    name={eventName}
+                    hotkey={(index + 1).toString()}
+                    key={index}
+                  />
+                ))}
+                <EventButton name="Custom Event" hotkey="+" />
+              </EventsContainer>
+            </ContainerWidth>
+          </div>
+        </GridContainer>
       </PlayerArea>
     );
   }
@@ -459,33 +476,107 @@ export const EventButton = (props: { hotkey: string; name: string }) => {
   );
 };
 
-const EventButtonContainer = styled.div`
-  background: black;
+const EventButtonContainer = styled.button`
+  background: #10181c;
   color: white;
   text-align: center;
+  display: grid;
+  grid-template-rows: 1fr auto;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  border: none;
+  box-sizing: border-box;
+  :focus {
+    outline: none;
+    filter: unset;
+  }
 `;
 
 const EventButtonHotkey = styled.div`
-  padding: 20px;
+  padding: 12px;
+  border-radius: 50%;
+  height: 32px;
+  width: 32px;
+  background-color: #455a64;
+  margin: 0 auto;
+  font-size: 16px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
 const EventButtonName = styled.div`
-  padding: 20px;
+  text-align; center;
+  padding: 0px;
+  font-size: 14px;
 `;
 
 const PlayerArea = styled.div`
-  background: black;
+  display: grid;
+  grid-template-rows: 44px 1fr;
+  height: 100%;
+  background: #10181c;
   color: white;
 `;
 const PhoneStatus = styled.div`
-  display: flex;
-  padding: 10px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  padding: 12px 24px;
 `;
-const PhoneStatusLeft = styled.div`
-  flex: 1 auto;
+const DeviceName = styled.div`
+  font-size: 12px;
 `;
 const PhoneStatusRight = styled.div`
-  flex: 1 auto;
   text-align: right;
+`;
+
+const ControlsContainer = styled.div`
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  padding: 32px 0;
+  gap: 24px;
+`;
+
+const EventsContainer = styled.div`
+  display: grid;
+  grid-auto-flow: row;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  gap: 20px;
+  padding: 24px 0;
+`;
+
+const Divider = styled.div`
+  width: 100%;
+  height: 1px;
+  background-color: #263238;
+`;
+
+const ControlButtons = styled.button`
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  margin: 0 auto !important;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+`;
+
+const ContainerWidth = styled.div`
+  width: min(45rem, 90%);
+  margin: 0 auto;
+`;
+
+const GridContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  @media screen and (orientation: landscape) {
+    flex-direction: row;
+  }
 `;
 
 Player.displayName = "Player";

@@ -1,4 +1,5 @@
 import React from "react";
+import styled from "styled-components";
 import {
   Battery20,
   Battery30,
@@ -12,13 +13,14 @@ import { red, orange, common } from "@mui/material/colors";
 
 export type BatteryProps = {
   percent: number;
+  size?: string;
 };
 
 export class BatteryIconA extends React.Component<BatteryProps> {
   render() {
     const percent = this.props.percent;
     const sx = {
-      fontSize: 40,
+      fontSize: 24,
       verticalAlign: "middle",
     };
 
@@ -40,34 +42,43 @@ export class BatteryIconA extends React.Component<BatteryProps> {
   }
 }
 
-export const BatteryIcon: React.FC<BatteryProps> = ({ percent }) => {
+export const BatteryIcon: React.FC<BatteryProps> = ({ percent, size }) => {
   if (percent > 95) {
-    return <BatteryFull />;
+    return <BatteryFull style={{ width: size, height: size }} />;
   } else if (percent >= 90) {
-    return <Battery90 />;
+    return <Battery90 style={{ width: size, height: size }} />;
   } else if (percent >= 80) {
-    return <Battery80 />;
+    return <Battery80 style={{ width: size, height: size }} />;
   } else if (percent >= 60) {
-    return <Battery60 />;
+    return <Battery60 style={{ width: size, height: size }} />;
   } else if (percent >= 50) {
-    return <Battery50 />;
+    return <Battery50 style={{ width: size, height: size }} />;
   } else if (percent >= 30) {
-    return <Battery30 />;
+    return <Battery30 style={{ width: size, height: size }} />;
   } else {
-    return <Battery20 />;
+    return <Battery20 style={{ width: size, height: size }} />;
   }
 };
 
 export class BatteryIndicator extends React.Component<BatteryProps> {
   render() {
     const percent = this.props.percent;
+    const size = this.props.size;
     return (
-      <div>
-        <BatteryIcon percent={percent} />
-        <span style={{ color: "white", verticalAlign: "middle" }}>
+      <BatteryIconContainer>
+        <BatteryIcon percent={percent} size={size} />
+        <span
+          style={{ color: "white", verticalAlign: "middle", fontSize: "12px" }}
+        >
           {percent} %
         </span>
-      </div>
+      </BatteryIconContainer>
     );
   }
 }
+
+const BatteryIconContainer = styled.div`
+  display: flex;
+  justify-content: end;
+  align-items: center;
+`;

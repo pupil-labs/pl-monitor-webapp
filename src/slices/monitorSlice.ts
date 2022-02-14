@@ -87,11 +87,13 @@ interface MonitorState {
   };
   activeDevice?: PiHost;
   presetEvents: string[];
+  messages: string[];
 }
 
 // Define the initial state using that type
 const initialState: MonitorState = {
   presetEvents: ["Event 1", "Event 2", "Event 3", "Event 4", "Event 5"],
+  messages: ["Snackbar"],
   devices: {
     "192.168.1.1": {
       showPlayer: true,
@@ -147,6 +149,10 @@ export const monitorSlice = createSlice({
     phoneStateReceived: (state, action: PayloadAction<Phone>) => {
       const phone = action.payload;
       state.devices[phone.ip].phone = phone;
+    },
+    recordingMessageReceived: (state, action: PayloadAction<string>) => {
+      const message = action.payload;
+      state.messages.push(message)
     },
     phoneConnectionStateChanged: (
       state,
