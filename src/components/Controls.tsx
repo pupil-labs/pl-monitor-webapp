@@ -6,7 +6,7 @@ import { useUserActive } from "./hooks/useUserActive";
 
 import { Button } from "./Button";
 import { Play, Pause, Stop, Refresh, CogWheel, Screenshot } from "./img";
-import { Settings } from "./Settings";
+import { SettingsMenu } from "./SettingsMenu";
 import { PiApiParameters, VideoProperties } from "./PlaybackArea";
 import { Format } from "./formats";
 
@@ -405,7 +405,7 @@ export const Controls: React.FC<ControlsProps> = ({
         </Button>
       </ControlBar>
       {settings && (
-        <Settings
+        <SettingsMenu
           parameters={parameters}
           format={format}
           onFormat={onFormat}

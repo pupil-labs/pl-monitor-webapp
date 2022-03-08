@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { Format } from "./components/formats";
 import { Player } from "./components/Player";
 import ReconnectingWebSocket from "reconnecting-websocket";
@@ -17,6 +17,7 @@ export type NetworkDeviceProps = {
 export const NetworkDevice = (props: NetworkDeviceProps) => {
   const device = props.device;
   const dispatch = useDispatch();
+
   const startPIWebsocketHandler = () => {
     dispatch(monitorSlice.actions.recordingMessageReceived("Test message"));
     dispatch(
@@ -110,7 +111,7 @@ export const NetworkDevice = (props: NetworkDeviceProps) => {
   };
 
   useEffect(() => {
-    return startPIWebsocketHandler();
+    startPIWebsocketHandler();
   }, []);
 
   return (
@@ -130,7 +131,7 @@ export const Monitor = (props: MonitorProps) => {
 
   useEffect(() => {
     dispatch(monitorSlice.actions.deviceDetected(props.host));
-  }, []);
+  }, [dispatch, props.host]);
 
   return (
     <div style={{ height: "100%" }}>
@@ -138,7 +139,7 @@ export const Monitor = (props: MonitorProps) => {
       <div style={{ height: "100%" }}>
         {Object.entries(devices).map(([deviceId, device]) => {
           return (
-            <>
+            <div style={{ height: "100%" }} key={device.ip}>
               {device.showPlayer ? (
                 <Player
                   initialFormat={Format.RTP_H264}
@@ -148,7 +149,7 @@ export const Monitor = (props: MonitorProps) => {
                 />
               ) : null}
               <NetworkDevice key={device.ip} device={device}></NetworkDevice>
-            </>
+            </div>
           );
         })}
       </div>
