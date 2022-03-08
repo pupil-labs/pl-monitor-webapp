@@ -499,7 +499,7 @@ const EventButtonContainer = styled.button`
   color: white;
   text-align: center;
   display: grid;
-  grid-template-rows: 1fr auto;
+  grid-template-rows: 1fr 20px);
   justify-content: center;
   align-items: center;
   gap: 8px;
@@ -525,9 +525,12 @@ const EventButtonHotkey = styled.div`
   align-items: center;
 `;
 const EventButtonName = styled.div`
-  text-align; center;
+  text-align: center;
   padding: 0px;
   font-size: 14px;
+  @media (orientation: landscape) {
+    min-height: 32px;
+  }
 `;
 
 const PlayerArea = styled.div`
