@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from "react";
+import { useEffect } from "react";
 import { Format } from "./components/formats";
 import { Player } from "./components/Player";
 import ReconnectingWebSocket from "reconnecting-websocket";
@@ -110,8 +110,13 @@ export const NetworkDevice = (props: NetworkDeviceProps) => {
     return stopClient;
   };
 
+  // TODO(dan): we just want this to run once to kick off the websocket handler
+  // but we also should hook up deps for if when props.device changes
+  // ignoring elint warning for that reason
+  // https://stackoverflow.com/questions/53120972/how-to-call-loading-function-with-react-useeffect-only-once/56767883#56767883
   useEffect(() => {
     startPIWebsocketHandler();
+    // eslint-disable-next-line
   }, []);
 
   return (
