@@ -15,7 +15,7 @@ export const RecordReady = () => {
         cy="16"
         r="15.3458"
         stroke="#F44336"
-        stroke-width="1.30835"
+        strokeWidth="1.30835"
       />
     </svg>
   );

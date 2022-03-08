@@ -75,10 +75,10 @@ export type PiHost = {
   gazeSensor?: piapi.Sensor;
 };
 
-type EventMenuEntry = {
-  name: string;
-  hotkey: string;
-};
+// type EventMenuEntry = {
+//   name: string;
+//   hotkey: string;
+// };
 
 // Define a type for the slice state
 interface MonitorState {
@@ -143,7 +143,7 @@ export const monitorSlice = createSlice({
   reducers: {
     showDevicePlayer: (state, action: PayloadAction<IPAddress>) => {
       for (const ip in state.devices) {
-        state.devices[ip].showPlayer = ip == action.payload;
+        state.devices[ip].showPlayer = ip === action.payload;
       }
     },
     phoneStateReceived: (state, action: PayloadAction<Phone>) => {
@@ -152,7 +152,7 @@ export const monitorSlice = createSlice({
     },
     recordingMessageReceived: (state, action: PayloadAction<string>) => {
       const message = action.payload;
-      state.messages.push(message)
+      state.messages.push(message);
     },
     phoneConnectionStateChanged: (
       state,
@@ -198,11 +198,11 @@ export const monitorSlice = createSlice({
       const sensorKey = `${sensor.sensor}-${sensor.conn_type}`;
       const device = state.devices[sensor.ip];
       device.sensors[sensorKey] = sensor;
-      if (sensor.conn_type == piapi.ConnectionType.WEBSOCKET) {
-        if (sensor.sensor == piapi.SensorName.GAZE) {
+      if (sensor.conn_type === piapi.ConnectionType.WEBSOCKET) {
+        if (sensor.sensor === piapi.SensorName.GAZE) {
           device.gazeSensor = sensor;
         }
-        if (sensor.sensor == piapi.SensorName.WORLD) {
+        if (sensor.sensor === piapi.SensorName.WORLD) {
           device.worldSensor = sensor;
         }
       }

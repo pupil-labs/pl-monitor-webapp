@@ -2,7 +2,6 @@ import { useCallback } from "react";
 
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
-import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import ListSubheader from "@mui/material/ListSubheader";
 import IconButton from "@mui/material/IconButton";
@@ -13,7 +12,6 @@ import { BatteryIcon } from "./Battery";
 import { monitorSlice, PiHost } from "../slices/monitorSlice";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import CameraAltIcon from "@mui/icons-material/CameraAlt";
-import styled from "styled-components";
 import { deepPurple, teal } from "@mui/material/colors";
 import { useDispatch } from "react-redux";
 
@@ -25,9 +23,12 @@ export type DeviceListProps = {
 
 export const DeviceList = (props: DeviceListProps) => {
   const dispatch = useDispatch();
-  const toggleDevice = useCallback((device) => {
-    dispatch(monitorSlice.actions.showDevicePlayer(device.ip));
-  }, []);
+  const toggleDevice = useCallback(
+    (device) => {
+      dispatch(monitorSlice.actions.showDevicePlayer(device.ip));
+    },
+    [dispatch]
+  );
   return (
     <List
       sx={{ width: "100%", maxWidth: 360, bgcolor: "background.paper" }}
