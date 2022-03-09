@@ -2,6 +2,8 @@ import React, { useCallback } from "react";
 import styled from "styled-components";
 import CloseIcon from "@mui/icons-material/Close";
 import * as monitorSlice from "../slices/monitorSlice";
+import { useSelector } from "react-redux";
+import { RootState } from "../store";
 
 interface SettingsProps {
   readonly isOpen: boolean;
@@ -29,6 +31,10 @@ export const Settings: React.FC<SettingsProps> = ({
       toggleSettings();
     }
   }, [isOpen, toggleSettings]);
+
+  const eventMenu = useSelector((state: RootState) => {
+    return state.monitor.presetEvents;
+  });
 
   return (
     <>
@@ -72,10 +78,16 @@ export const Settings: React.FC<SettingsProps> = ({
             </div>
           </div>
           <HotkeyContainer>
-            <HotkeyRow>
-              <HotkeyIndex>1</HotkeyIndex>
-              <HotkeyInput type="text" name="hotkeystring" placeholder="Event 1" />
-            </HotkeyRow>
+            {eventMenu.map((eventName, index) => (
+              <HotkeyRow key={index}>
+                <HotkeyIndex>{(index + 1).toString()}</HotkeyIndex>
+                <HotkeyInput
+                  type="text"
+                  name="hotkeystring"
+                  placeholder={eventName}
+                />
+              </HotkeyRow>
+            ))}
           </HotkeyContainer>
         </ControlsContainer>
       </SettingsContainer>
