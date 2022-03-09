@@ -2,7 +2,7 @@ import React, { useCallback } from "react";
 import styled from "styled-components";
 import CloseIcon from "@mui/icons-material/Close";
 import * as monitorSlice from "../slices/monitorSlice";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../store";
 
 interface SettingsProps {
@@ -26,6 +26,8 @@ export const Settings: React.FC<SettingsProps> = ({
   toggleSettings,
 }) => {
 
+  const dispatch = useDispatch();
+
   const onShowSettings = useCallback(() => {
     if (isOpen) {
       toggleSettings();
@@ -35,6 +37,14 @@ export const Settings: React.FC<SettingsProps> = ({
   const eventMenu = useSelector((state: RootState) => {
     return state.monitor.presetEvents;
   });
+
+  const onEventnameChange = useCallback((e, index) => {
+    const newVal = {
+      name: e.target.value,
+      index: index
+    } 
+    dispatch(monitorSlice.actions.editPresetEvent(newVal));
+  }, []);
 
   return (
     <>
@@ -85,6 +95,8 @@ export const Settings: React.FC<SettingsProps> = ({
                   type="text"
                   name="hotkeystring"
                   placeholder={eventName}
+                  defaultValue={eventName}
+                  onChange={(e) => onEventnameChange(e, index)}
                 />
               </HotkeyRow>
             ))}

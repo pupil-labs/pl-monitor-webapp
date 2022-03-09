@@ -137,6 +137,11 @@ type RecordingStatusPayload = {
   recording: piapi.Recording;
 };
 
+type EventPayload = {
+  name: string;
+  index: number;
+}
+
 export const monitorSlice = createSlice({
   name: "phone",
   initialState,
@@ -225,6 +230,10 @@ export const monitorSlice = createSlice({
       } else {
         state.presetEvents[index] = "";
       }
+    },
+    editPresetEvent: (state, action: PayloadAction<EventPayload>) => {
+      const event = action.payload;
+      state.presetEvents[event.index] = event.name;
     },
   },
 });
