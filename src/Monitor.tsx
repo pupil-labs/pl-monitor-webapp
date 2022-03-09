@@ -17,6 +17,7 @@ export type NetworkDeviceProps = {
 export const NetworkDevice = (props: NetworkDeviceProps) => {
   const device = props.device;
   const dispatch = useDispatch();
+
   const startPIWebsocketHandler = () => {
     dispatch(monitorSlice.actions.recordingMessageReceived("Test message"));
     dispatch(
@@ -109,8 +110,13 @@ export const NetworkDevice = (props: NetworkDeviceProps) => {
     return stopClient;
   };
 
+  // TODO(dan): we just want this to run once to kick off the websocket handler
+  // but we also should hook up deps for if when props.device changes
+  // ignoring elint warning for that reason
+  // https://stackoverflow.com/questions/53120972/how-to-call-loading-function-with-react-useeffect-only-once/56767883#56767883
   useEffect(() => {
-    return startPIWebsocketHandler();
+    startPIWebsocketHandler();
+    // eslint-disable-next-line
   }, []);
 
   return (
@@ -130,7 +136,7 @@ export const Monitor = (props: MonitorProps) => {
 
   useEffect(() => {
     dispatch(monitorSlice.actions.deviceDetected(props.host));
-  }, []);
+  }, [dispatch, props.host]);
 
   return (
     <div style={{ height: "100%" }}>
@@ -138,7 +144,7 @@ export const Monitor = (props: MonitorProps) => {
       <div style={{ height: "100%" }}>
         {Object.entries(devices).map(([deviceId, device]) => {
           return (
-            <>
+            <div style={{ height: "100%" }} key={device.ip}>
               {device.showPlayer ? (
                 <Player
                   initialFormat={Format.RTP_H264}
@@ -148,7 +154,7 @@ export const Monitor = (props: MonitorProps) => {
                 />
               ) : null}
               <NetworkDevice key={device.ip} device={device}></NetworkDevice>
-            </>
+            </div>
           );
         })}
       </div>

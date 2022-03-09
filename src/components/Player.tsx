@@ -35,7 +35,7 @@ import { RootState } from "../store";
 import SwapHorizIcon from "@mui/icons-material/SwapHoriz";
 import SettingsIcon from "@mui/icons-material/Settings";
 import { RecordReady, RecordStop } from "./img";
-import { Button } from "./Button";
+import { Settings } from "./Settings";
 
 const DEFAULT_FORMAT = Format.RTP_H264;
 
@@ -70,6 +70,7 @@ interface PlayerProps {
    * Activate automatic retries on RTSP errors.
    */
   readonly autoRetry?: boolean;
+  readonly settingsIsOpen?: boolean;
 }
 
 export const Player = forwardRef<PlayerNativeElement, PlayerProps>(
@@ -87,6 +88,7 @@ export const Player = forwardRef<PlayerNativeElement, PlayerProps>(
       startTime,
       duration,
       autoRetry = false,
+      settingsIsOpen = false,
     },
     ref
   ) => {
@@ -97,6 +99,7 @@ export const Player = forwardRef<PlayerNativeElement, PlayerProps>(
     const [waiting, setWaiting] = useState(autoPlay);
     const [volume, setVolume] = useState<number>();
     const [format, setFormat] = useState<Format>(initialFormat);
+    const [settings, setShowSettings] = useState(settingsIsOpen);
 
     /**
      * piApix parameters
@@ -196,6 +199,14 @@ export const Player = forwardRef<PlayerNativeElement, PlayerProps>(
       });
       setRefresh((refreshCount) => refreshCount + 1);
     }, []);
+
+    const onShowSettings = useCallback(() => {
+      if (settings) {
+        setShowSettings(false);
+      } else {
+        setShowSettings(true);
+      }
+    }, [settings]);
 
     /**
      * Refresh when changing visibility (e.g. when you leave a tab the
@@ -417,7 +428,7 @@ export const Player = forwardRef<PlayerNativeElement, PlayerProps>(
             </Limiter>
           </MediaStreamPlayerContainer>
           <div style={{ minWidth: "340px" }}>
-            <Divider></Divider>
+            <Divider />
             <ContainerWidth>
               <ControlsContainer>
                 <ControlButtons>
@@ -426,12 +437,12 @@ export const Player = forwardRef<PlayerNativeElement, PlayerProps>(
                 <ControlButtons onClick={onPlayPause}>
                   {play === true ? <RecordStop /> : <RecordReady />}
                 </ControlButtons>
-                <ControlButtons>
+                <ControlButtons onClick={onShowSettings}>
                   <SettingsIcon></SettingsIcon>
                 </ControlButtons>
               </ControlsContainer>
             </ContainerWidth>
-            <Divider></Divider>
+            <Divider />
             <ContainerWidth>
               <EventsContainer>
                 {eventMenu.map((eventName, index) => (
@@ -446,6 +457,13 @@ export const Player = forwardRef<PlayerNativeElement, PlayerProps>(
             </ContainerWidth>
           </div>
         </GridContainer>
+        {settings && piHost && (
+          <Settings
+            isOpen={settings}
+            toggleSettings={onShowSettings}
+            device={piHost}
+          />
+        )}
       </PlayerArea>
     );
   }
@@ -481,7 +499,7 @@ const EventButtonContainer = styled.button`
   color: white;
   text-align: center;
   display: grid;
-  grid-template-rows: 1fr auto;
+  grid-template-rows: 1fr 20px);
   justify-content: center;
   align-items: center;
   gap: 8px;
@@ -507,12 +525,16 @@ const EventButtonHotkey = styled.div`
   align-items: center;
 `;
 const EventButtonName = styled.div`
-  text-align; center;
+  text-align: center;
   padding: 0px;
   font-size: 14px;
+  @media (orientation: landscape) {
+    min-height: 32px;
+  }
 `;
 
 const PlayerArea = styled.div`
+  position: relative;
   display: grid;
   grid-template-rows: 44px 1fr;
   height: 100%;

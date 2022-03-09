@@ -1,149 +1,188 @@
-import React, {
-  ChangeEventHandler,
-  useCallback,
-  useRef,
-  useState,
-} from "react";
+import React, { useCallback } from "react";
 import styled from "styled-components";
-
-import { PiApiParameters } from "./PlaybackArea";
-import { Switch } from "./Switch";
-import { Format } from "./formats";
-
-const SettingsMenu = styled.div`
-  font-family: sans-serif;
-  display: flex;
-  flex-direction: column;
-  position: absolute;
-  bottom: 32px;
-  right: 0;
-  background: rgb(0, 0, 0, 0.66);
-  padding: 8px 16px;
-  margin-bottom: 16px;
-  margin-right: 8px;
-
-  &:after {
-    content: "";
-    width: 10px;
-    height: 10px;
-    transform: rotate(45deg);
-    position: absolute;
-    bottom: -5px;
-    right: 12px;
-    background: rgb(0, 0, 0, 0.66);
-  }
-`;
-
-const SettingsItem = styled.div`
-  display: flex;
-  flex-direction: row;
-  color: white;
-  height: 24px;
-  width: 320px;
-  align-items: center;
-  justify-content: space-between;
-  margin: 4px 0;
-`;
+import CloseIcon from "@mui/icons-material/Close";
+import * as monitorSlice from "../slices/monitorSlice";
+import { useSelector, useDispatch } from "react-redux";
+import { RootState } from "../store";
 
 interface SettingsProps {
-  readonly parameters: PiApiParameters;
-  readonly format: Format;
-  readonly onFormat: (format: Format) => void;
-  readonly onPiApix: (key: string, value: string) => void;
-  readonly showStatsOverlay: boolean;
-  readonly toggleStats: (newValue?: boolean) => void;
+  readonly isOpen: boolean;
+  readonly device: monitorSlice.PiHost;
+  readonly toggleSettings: () => void;
 }
 
+const formatBytes = (bytes: number | undefined, decimals: number) => {
+  if (bytes === 0 || bytes === undefined) return '0 Bytes';
+  const k = 1024;
+  const dm = decimals < 0 ? 0 : decimals;
+  const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+};
+
 export const Settings: React.FC<SettingsProps> = ({
-  parameters,
-  format,
-  onFormat,
-  onPiApix,
-  showStatsOverlay,
-  toggleStats,
+  isOpen,
+  device,
+  toggleSettings,
 }) => {
-  const [textString, setTextString] = useState(parameters["textstring"]);
-  const textStringTimeout = useRef<number>();
 
-  const changeParam: ChangeEventHandler<HTMLInputElement> = useCallback(
-    (e) => {
-      const { name, value } = e.target;
+  const dispatch = useDispatch();
 
-      switch (name) {
-        case "textstring":
-          setTextString(value);
+  const onShowSettings = useCallback(() => {
+    if (isOpen) {
+      toggleSettings();
+    }
+  }, [isOpen, toggleSettings]);
 
-          clearTimeout(textStringTimeout.current);
-          textStringTimeout.current = window.setTimeout(() => {
-            onPiApix(name, value);
-          }, 300);
+  const eventMenu = useSelector((state: RootState) => {
+    return state.monitor.presetEvents;
+  });
 
-          break;
-
-        case "text":
-          onPiApix(name, value ? "1" : "0");
-          break;
-        default:
-          console.warn("internal error");
-      }
-    },
-    [onPiApix]
-  );
-
-  const changeStatsOverlay: ChangeEventHandler<HTMLInputElement> = useCallback(
-    (e) => toggleStats(e.target.checked),
-    [toggleStats]
-  );
-
-  const changeFormat: ChangeEventHandler<HTMLSelectElement> = useCallback(
-    (e) => onFormat(e.target.value as Format),
-    [onFormat]
-  );
-
-  const changeResolution: ChangeEventHandler<HTMLSelectElement> = useCallback(
-    (e) => onPiApix("resolution", e.target.value),
-    [onPiApix]
-  );
-
-  // FIXME(dan): this is to stop compiler errors about unused vars, we will
-  // want to use them, just not now
-  if (0) {
-    console.log(textString, changeParam, changeResolution);
-  }
+  const onEventnameChange = useCallback((e, index) => {
+    const newVal = {
+      name: e.target.value,
+      index: index
+    } 
+    dispatch(monitorSlice.actions.editPresetEvent(newVal));
+  }, []);
 
   return (
-    <SettingsMenu>
-      <SettingsItem>
-        <div>Format</div>
-        <select onChange={changeFormat} defaultValue={format}>
-          <option value="RTP_H264">H.264 (RTP over WS)</option>
-          <option value="MP4_H264">H.264 (MP4 over HTTP)</option>
-          <option value="RTP_JPEG">Motion JPEG</option>
-          <option value="JPEG">Still image</option>
-        </select>
-      </SettingsItem>
-      {/* <SettingsItem>
-        <div>Resolution</div>
-        <select value={parameters["resolution"]} onChange={changeResolution}>
-          <option value="">default</option>
-          <option value="1920x1080">1920 x 1080 (FHD)</option>
-          <option value="1280x720">1280 x 720 (HD)</option>
-          <option value="800x600">800 x 600 (VGA)</option>
-        </select>
-      </SettingsItem>
-      <SettingsItem>
-        <div>Text overlay</div>
-        <input name="textstring" value={textString} onChange={changeParam} />
-        <Switch
-          name="text"
-          checked={parameters["text"] === "1"}
-          onChange={changeParam}
-        />
-      </SettingsItem> */}
-      <SettingsItem>
-        <div>Stats overlay</div>
-        <Switch checked={showStatsOverlay} onChange={changeStatsOverlay} />
-      </SettingsItem>
-    </SettingsMenu>
+    <>
+      <SettingsContainer>
+        <SettingsHeader>
+          <CloseButton onClick={onShowSettings}>
+            <CloseIcon />
+          </CloseButton>
+          <div>Settings</div>
+        </SettingsHeader>
+        <ControlsContainer>
+          <div>
+            <div style={{ padding: "16px 0"}}>Device Information</div>
+            <PhoneContainer>
+              <div>
+                <span>Phone Name: </span>
+                <span>{device.phone?.device_name}</span>
+              </div>
+              <div>
+                <span>Phone Battery Level: </span>
+                <span>{device.phone?.battery_level}%</span>
+              </div>
+              <div>
+                <span>Phone ID: </span>
+                <span>{device.phone?.device_id}</span>
+              </div>
+              <div>
+                <span>Phone IP: </span>
+                <span>{device.phone?.ip}</span>
+              </div>
+              <div>
+                <span>Phone Memory: </span>
+                <span>{formatBytes(device.phone?.memory, 2)}</span>
+              </div>
+            </PhoneContainer>
+          </div>
+          <Divider />
+          <div>
+            <div>
+              Event Hotkey Settings
+            </div>
+          </div>
+          <HotkeyContainer>
+            {eventMenu.map((eventName, index) => (
+              <HotkeyRow key={index}>
+                <HotkeyIndex>{(index + 1).toString()}</HotkeyIndex>
+                <HotkeyInput
+                  type="text"
+                  name="hotkeystring"
+                  placeholder={eventName}
+                  defaultValue={eventName}
+                  onChange={(e) => onEventnameChange(e, index)}
+                />
+              </HotkeyRow>
+            ))}
+          </HotkeyContainer>
+        </ControlsContainer>
+      </SettingsContainer>
+    </>
   );
 };
+
+const SettingsContainer = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #10181c;
+`;
+
+const SettingsHeader = styled.div`
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  background-color: #263238;
+  height: 56px;
+  padding: 0 24px;
+`;
+
+const CloseButton = styled.button`
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  background-color: #263238;
+`;
+
+const ControlsContainer = styled.div`
+  display: grid;
+  gap: 20px;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 0 24px;
+`;
+
+const HotkeyContainer = styled.div`
+  display: grid;
+  gap: 16px;
+`;
+
+const HotkeyRow = styled.div`
+  display: flex;
+  gap: 16px;
+`;
+
+const Divider = styled.div`
+  width: 100%;
+  height: 1px;
+  background-color: #263238;
+`;
+
+const PhoneContainer = styled.div`
+  font-size: 14px;
+`;
+
+const HotkeyIndex = styled.span`
+  line-height: 1;
+`
+
+const HotkeyInput = styled.input`
+  background-color: #263238;
+  border: none;
+  height: 48px;
+  margin: 0;
+  padding: 16px;
+  ::placeholder {
+    transform: translateY(-2px);
+    font-size: 14px;
+    color: #90a4ae;
+    opacity: 1
+  }
+  ::-ms-input-placeholder {
+    font-size: 14px;
+    color: #90a4ae;
+  }
+`

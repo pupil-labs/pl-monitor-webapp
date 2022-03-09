@@ -1,34 +1,20 @@
-import React, { useState, useEffect, useRef } from "react";
-import debug from "debug";
+import React, { useState, useEffect } from "react";
 import { utils } from "media-stream-library";
 import { GazeRtpPipeline } from "../media-stream-library-extensions/GazeRtpPipeline";
 import { Sensor } from "../pi-api";
 import * as constants from "./constants";
 import { Protocol } from "./protocols";
+// import debug from "debug";
+// const debugLog = debug("msp:ws-rtsp-application");
 
 export interface ScheduledMessage {
   readonly ntpTimestamp: number | undefined;
   readonly data: unknown;
 }
-const debugLog = debug("msp:ws-rtsp-application");
 
 /**
  * WebSocket + RTP playback component.
  */
-
-interface GazeCircleProps {
-  readonly forwardedRef?: React.Ref<HTMLCanvasElement>;
-  /**
-   * The source URI for the WebSocket server.
-   */
-  readonly sensor: Sensor;
-  readonly customParams?: string;
-  readonly secure?: boolean;
-  readonly delay: number;
-  readonly color: { r: number; g: number; b: number };
-  readonly alpha: number;
-  readonly size: number;
-}
 
 const wsUri = (protocol: Protocol.WS | Protocol.WSS, host: string) => {
   return host.length !== 0 ? `${protocol}//${host}/` : "";
@@ -61,43 +47,26 @@ interface GazeOverlayProps {
   readonly sensor: Sensor;
 }
 export const GazeOverlay: React.FC<GazeOverlayProps> = ({ sensor }, ref) => {
-  const [gazeDelay] = React.useState(0.0);
-  const [gazeColor, setGazeColor] = React.useState({
+  const gazeColor = {
     r: 200,
     g: 40,
     b: 40,
-  });
-  const [gazeOpacity, setGazeOpacity] = React.useState(0.8);
-  const [gazeRadius, setGazeRadius] = React.useState(80);
-  const [gazeStrokeWidth, setStrokeWidth] = React.useState(40);
+  };
+  const gazeStrokeWidth = "2%";
+  const gazeOpacity = 0.8;
+  const gazeRadius = "8%";
 
-  const [gazeHost, setGazeHost] = React.useState("");
-  const [gazeSearchParams, setGazeSearchParams] = React.useState("");
   const [gazePosition, setGazePosition] = React.useState({
     x_norm: 0,
     y_norm: 0,
   });
 
-  useEffect(() => {
-    if (sensor && sensor.connected) {
-      setGazeHost(`${sensor.ip}:${sensor.port}`);
-      setGazeSearchParams(sensor.params);
-    } else {
-      setGazeHost("");
-      setGazeSearchParams("");
-    }
-  }, [sensor]);
-
-  const delay = 0;
-  const videoWidth = constants.PI_WORLD_VIDEO_HEIGHT;
-  const videoHeight = constants.PI_WORLD_VIDEO_WIDTH;
   const [pipeline, setPipeline] = useState<null | GazeRtpPipeline>(null);
 
-  const secure = false;
   const customParams = "camera=gaze";
   useEffect(() => {
+    const secure = false;
     const host = `${sensor.ip}:${sensor.port}`;
-    const params = sensor.params;
     const ws = wsUri(secure ? Protocol.WSS : Protocol.WS, host);
     const rtsp = rtspUri(host, customParams);
     if (
@@ -114,8 +83,8 @@ export const GazeOverlay: React.FC<GazeOverlayProps> = ({ sensor }, ref) => {
             console.log();
             if (msg.gazePoint.worn) {
               setGazePosition({
-                x_norm: msg.gazePoint.x / videoWidth,
-                y_norm: msg.gazePoint.y / videoHeight,
+                x_norm: msg.gazePoint.x / constants.PI_WORLD_VIDEO_WIDTH,
+                y_norm: msg.gazePoint.y / constants.PI_WORLD_VIDEO_HEIGHT,
               });
             } else {
               setGazePosition({ x_norm: -0.1, y_norm: -0.1 });
@@ -146,12 +115,12 @@ export const GazeOverlay: React.FC<GazeOverlayProps> = ({ sensor }, ref) => {
   return (
     <svg width="100%" height="100%">
       <circle
-        r="8%"
+        r={gazeRadius}
         stroke={RGBToHex(gazeColor.r, gazeColor.g, gazeColor.b)}
         opacity={gazeOpacity}
         cx={`${gazePosition.x_norm * 100}%`}
         cy={`${gazePosition.y_norm * 100}%`}
-        strokeWidth="2%"
+        strokeWidth={gazeStrokeWidth}
         fill="None"
       />
     </svg>

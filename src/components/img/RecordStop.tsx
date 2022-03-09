@@ -9,7 +9,7 @@ export const RecordStop = () => {
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
     >
-      <circle cx="16" cy="16" r="15" stroke="#F44336" stroke-width="2" />
+      <circle cx="16" cy="16" r="15" stroke="#F44336" strokeWidth="2" />
       <rect
         x="10.666"
         y="10.666"
