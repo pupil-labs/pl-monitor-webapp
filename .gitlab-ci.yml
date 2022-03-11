@@ -1,35 +1,38 @@
-# Official framework image. Look for the different tagged releases at:
-# https://hub.docker.com/r/library/node/tags/
 image: node:lts
-# This folder is cached between builds
-# http://docs.gitlab.com/ce/ci/yaml/README.html#cache
-
 stages:
   - build
-  # - release
-
-variables:
-  # we do the sync manually in order to fix the path
-  GIT_SUBMODULE_STRATEGY: recursive
-
+  - staging
 
 build:
+  cache:
+    paths:
+      - node_modules/
+      - .yarn
   stage: build
   before_script:
-    - yarn install && yarn build
+    - yarn config set cache-folder .yarn
+    - yarn install
+  script:
+    - yarn build
     - export VERSION=$(node -pe "require('./package.json').version")-$CI_COMMIT_SHORT_SHA
     - echo $VERSION > build/version.txt
     - sed -i "s/%%APP_VERSION%%/$VERSION/" build/index.html
-  script:
     - du -h build
   artifacts:
     paths:
-    - build
+      - build
 
-# release:
-#   stage: release
-#   image: netroby/alpine-rsync
-#   dependencies:
-#     - build
-#   script:
-#     - echo "build release version"
+staging:
+  stage: staging
+  image: netroby/alpine-rsync
+  dependencies:
+    - build
+  script:
+    - echo "Deploying to staging"
+    - cp ${SSH_PRIVATE_KEY} id_rsa
+    - chmod 600 id_rsa
+    - rsync -hrvz --delete -e 'ssh -i id_rsa -o "StrictHostKeyChecking no"' build/ staging-@${SERVER_IP}:/home/staging-pi-monitor/build
+    - echo "Staging deployed"
+  environment:
+    name: staging
+    url: https://pistream-staging.pupil-labs.com/
