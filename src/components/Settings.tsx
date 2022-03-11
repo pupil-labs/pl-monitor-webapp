@@ -12,12 +12,12 @@ interface SettingsProps {
 }
 
 const formatBytes = (bytes: number | undefined, decimals: number) => {
-  if (bytes === 0 || bytes === undefined) return '0 Bytes';
+  if (bytes === 0 || bytes === undefined) return "0 Bytes";
   const k = 1024;
   const dm = decimals < 0 ? 0 : decimals;
-  const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+  const sizes = ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
   const i = Math.floor(Math.log(bytes) / Math.log(k));
-  return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + " " + sizes[i];
 };
 
 export const Settings: React.FC<SettingsProps> = ({
@@ -25,7 +25,6 @@ export const Settings: React.FC<SettingsProps> = ({
   device,
   toggleSettings,
 }) => {
-
   const dispatch = useDispatch();
 
   const onShowSettings = useCallback(() => {
@@ -38,13 +37,16 @@ export const Settings: React.FC<SettingsProps> = ({
     return state.monitor.presetEvents;
   });
 
-  const onEventnameChange = useCallback((e, index) => {
-    const newVal = {
-      name: e.target.value,
-      index: index
-    }
-    dispatch(monitorSlice.actions.editPresetEvent(newVal));
-  }, []);
+  const onEventnameChange = useCallback(
+    (e, index) => {
+      const newVal = {
+        name: e.target.value,
+        index: index,
+      };
+      dispatch(monitorSlice.actions.editPresetEvent(newVal));
+    },
+    [dispatch]
+  );
 
   return (
     <>
@@ -83,9 +85,7 @@ export const Settings: React.FC<SettingsProps> = ({
           </div>
           <Divider />
           <div>
-            <div>
-              Event Hotkey Settings
-            </div>
+            <div>Event Hotkey Settings</div>
           </div>
           <HotkeyContainer>
             {eventMenu.map((eventName, index) => (
@@ -168,7 +168,7 @@ const PhoneContainer = styled.div`
 
 const HotkeyIndex = styled.span`
   line-height: 1;
-`
+`;
 
 const HotkeyInput = styled.input`
   background-color: #263238;
@@ -180,10 +180,10 @@ const HotkeyInput = styled.input`
     transform: translateY(-2px);
     font-size: 14px;
     color: #90a4ae;
-    opacity: 1
+    opacity: 1;
   }
   ::-ms-input-placeholder {
     font-size: 14px;
     color: #90a4ae;
   }
-`
+`;

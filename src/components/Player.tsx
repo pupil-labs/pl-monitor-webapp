@@ -7,6 +7,7 @@ import {
   useLayoutEffect,
   useRef,
 } from "react";
+import { useDispatch } from "react-redux";
 import { Sdp } from "media-stream-library";
 import { GazeOverlay } from "./GazeOverlay";
 import styled from "styled-components";
@@ -103,8 +104,8 @@ export const Player = forwardRef<PlayerNativeElement, PlayerProps>(
     const [waiting, setWaiting] = useState(autoPlay);
     const [volume, setVolume] = useState<number>();
     const [format, setFormat] = useState<Format>(initialFormat);
-    const [settings, setShowSettings] = useState(settingsIsOpen);
-    const [newEvent, setShowCustomEvent] = useState(customEventIsOpen);
+    const [showSettings, setShowSettings] = useState(settingsIsOpen);
+    const [showCustomEvent, setShowCustomEvent] = useState(customEventIsOpen);
 
     /**
      * piApix parameters
@@ -205,21 +206,28 @@ export const Player = forwardRef<PlayerNativeElement, PlayerProps>(
       setRefresh((refreshCount) => refreshCount + 1);
     }, []);
 
-    const onShowSettings = useCallback(() => {
-      if (settings) {
-        setShowSettings(false);
-      } else {
-        setShowSettings(true);
-      }
-    }, [settings]);
+    const toggleShowSettings = useCallback(() => {
+      setShowSettings(!showSettings);
+    }, [showSettings]);
 
-    const onShowCustomEvent = useCallback(() => {
-      if (newEvent) {
-        setShowCustomEvent(false);
-      } else {
-        setShowCustomEvent(true);
-      }
-    }, [newEvent]);
+    const toggleShowCustomEvent = useCallback(() => {
+      setShowCustomEvent(!showCustomEvent);
+    }, [showCustomEvent]);
+
+    const dispatch = useDispatch();
+    const triggerEvent = useCallback(
+      (eventName) => {
+        if (eventName) {
+          dispatch(monitorSlice.actions.triggerEvent(eventName));
+        } else {
+          console.error("missing eventName, not sending");
+        }
+        if (showCustomEvent) {
+          toggleShowCustomEvent();
+        }
+      },
+      [dispatch, showCustomEvent, toggleShowCustomEvent]
+    );
 
     /**
      * Refresh when changing visibility (e.g. when you leave a tab the
@@ -328,7 +336,6 @@ export const Player = forwardRef<PlayerNativeElement, PlayerProps>(
     const eventMenu = useSelector((state: RootState) => {
       return state.monitor.presetEvents;
     });
-    // const addCustomEvent = useCallback((device) => {}, []);
 
     return (
       <PlayerArea>
@@ -428,8 +435,8 @@ export const Player = forwardRef<PlayerNativeElement, PlayerProps>(
                   </Layer>
                 ) : null}
                 {showControls &&
-                  showStatsOverlay &&
-                  videoProperties !== undefined ? (
+                showStatsOverlay &&
+                videoProperties !== undefined ? (
                   <Stats
                     format={format}
                     videoProperties={videoProperties}
@@ -450,7 +457,7 @@ export const Player = forwardRef<PlayerNativeElement, PlayerProps>(
                 <ControlButtons onClick={onPlayPause}>
                   {play === true ? <RecordStop /> : <RecordReady />}
                 </ControlButtons>
-                <ControlButtons onClick={onShowSettings}>
+                <ControlButtons onClick={toggleShowSettings}>
                   <SettingsIcon></SettingsIcon>
                 </ControlButtons>
               </ControlsContainer>
@@ -463,30 +470,32 @@ export const Player = forwardRef<PlayerNativeElement, PlayerProps>(
                     name={eventName}
                     hotkey={(index + 1).toString()}
                     key={index}
+                    onClick={() => triggerEvent(eventName)}
                   />
                 ))}
                 <EventButton
                   name="Custom Event"
                   hotkey="+"
-                  onClick={onShowCustomEvent}
+                  onClick={toggleShowCustomEvent}
                 />
               </EventsContainer>
             </ContainerWidth>
           </div>
         </GridContainer>
-        {settings && piHost && (
+        {showSettings && piHost && (
           <Settings
-            isOpen={settings}
-            toggleSettings={onShowSettings}
+            isOpen={showSettings}
+            toggleSettings={toggleShowSettings}
             device={piHost}
           />
         )}
-        {newEvent && (
+        <div style={{ display: showCustomEvent ? "block" : "none" }}>
           <CustomEvent
-            isOpen={newEvent}
-            toggleCustomEvent={onShowCustomEvent}
+            eventTriggerer={(eventName) => {
+              triggerEvent(eventName);
+            }}
           />
-        )}
+        </div>
       </PlayerArea>
     );
   }

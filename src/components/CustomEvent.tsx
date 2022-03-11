@@ -1,51 +1,37 @@
-import React, { useCallback } from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
-import * as monitorSlice from "../slices/monitorSlice";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../store";
-
 interface CustomEventProps {
-  readonly isOpen: boolean;
-  readonly eventName?: string;
-  readonly toggleCustomEvent: () => void;
+  readonly defaultEventName?: string;
+  readonly eventTriggerer: (eventName: string) => void;
 }
 
 export const CustomEvent: React.FC<CustomEventProps> = ({
-  isOpen,
-  eventName,
-  toggleCustomEvent
+  defaultEventName = "",
+  eventTriggerer,
 }) => {
+  const [eventName, setEventName] = useState(defaultEventName);
 
-  const eventMenu = useSelector((state: RootState) => {
-    return state.monitor.presetEvents;
-  });
-  const dispatch = useDispatch();
-  const createEvent = useCallback(() => {
-    if (isOpen) {
-      if (eventName !== undefined && eventMenu.length <= 8) {
-        dispatch(monitorSlice.actions.addCustomPresetEvent(eventName));
-        toggleCustomEvent();
-      } else {
-        toggleCustomEvent();
-      }
-    }
-  }, [isOpen, dispatch, eventName, toggleCustomEvent]);
-
-  const onEventnameChange = useCallback((e) => {
-    eventName = e.target.value
-  }, []);
-
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    // TODO(dan): what behavior is wanted here?
+    // if (event.key === "Enter") {
+    //   eventTriggerer(eventName);
+    // }
+    // if (event.key === "Escape") {
+    //   event.stopPropagation();
+    // }
+  };
   return (
     <EventCreationContainer>
       <input
         placeholder="Event Name"
         defaultValue={eventName}
-        onChange={(e) => onEventnameChange(e)}
+        onChange={(e) => setEventName(e.target.value)}
+        onKeyDown={handleKeyDown}
       />
       <CreateButton
         className=""
         aria-label="Create Event"
-        onClick={() => createEvent()}
+        onClick={() => eventTriggerer(eventName)}
       >
         Create
       </CreateButton>
@@ -63,9 +49,9 @@ const EventCreationContainer = styled.div`
   left: 0;
   right: 0;
   background-color: #10181c;
-`
+`;
 
 const CreateButton = styled.button`
   background-color: #1263cc;
   height: 48px;
-`
+`;
