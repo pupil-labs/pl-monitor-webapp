@@ -140,7 +140,6 @@ export const Monitor = (props: MonitorProps) => {
 
   return (
     <div style={{ height: "100%" }}>
-      <DeviceList piHosts={devices} />
       <div style={{ height: "100%" }}>
         {Object.entries(devices).map(([deviceId, device]) => {
           return (
@@ -158,6 +157,7 @@ export const Monitor = (props: MonitorProps) => {
           );
         })}
       </div>
+      <DeviceList piHosts={devices} />
     </div>
   );
 };

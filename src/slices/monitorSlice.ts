@@ -140,7 +140,7 @@ type RecordingStatusPayload = {
 type EventPayload = {
   name: string;
   index: number;
-}
+};
 
 export const monitorSlice = createSlice({
   name: "phone",
@@ -219,21 +219,19 @@ export const monitorSlice = createSlice({
       const { ip, hardware } = action.payload;
       state.devices[ip].hardware = hardware;
     },
-    addCustomPresetEvent: (state, action: PayloadAction<string>) => {
+    triggerEvent: (state, action: PayloadAction<string>) => {
       const eventName = action.payload;
-      state.presetEvents.push(eventName);
-    },
-    removeCustomPresetEvent: (state, action: PayloadAction<number>) => {
-      const index = action.payload;
-      if (index === state.presetEvents.length - 1) {
-        state.presetEvents.pop();
-      } else {
-        state.presetEvents[index] = "";
-      }
+      console.log("sending", eventName, "to api (TODO)");
     },
     editPresetEvent: (state, action: PayloadAction<EventPayload>) => {
       const event = action.payload;
-      state.presetEvents[event.index] = event.name;
+      if (event.index < state.presetEvents.length) {
+        if (event.name) {
+          state.presetEvents[event.index] = event.name;
+        } else {
+          state.presetEvents[event.index] = `Event ${event.index + 1}`;
+        }
+      }
     },
   },
 });
