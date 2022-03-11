@@ -233,7 +233,11 @@ export const monitorSlice = createSlice({
     },
     editPresetEvent: (state, action: PayloadAction<EventPayload>) => {
       const event = action.payload;
-      state.presetEvents[event.index] = event.name;
+      if (event.name.length !== 0) {
+        state.presetEvents[event.index] = event.name;
+      } else {
+        state.presetEvents.splice(event.index, 1);
+      }
     },
   },
 });
