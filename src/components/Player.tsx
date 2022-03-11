@@ -36,6 +36,8 @@ import SwapHorizIcon from "@mui/icons-material/SwapHoriz";
 import SettingsIcon from "@mui/icons-material/Settings";
 import { RecordReady, RecordStop } from "./img";
 import { Settings } from "./Settings";
+import { CustomEvent } from "./CustomEvent";
+import { EventButton } from "./EventButton";
 
 const DEFAULT_FORMAT = Format.RTP_H264;
 
@@ -71,6 +73,7 @@ interface PlayerProps {
    */
   readonly autoRetry?: boolean;
   readonly settingsIsOpen?: boolean;
+  readonly customEventIsOpen?: boolean;
 }
 
 export const Player = forwardRef<PlayerNativeElement, PlayerProps>(
@@ -89,6 +92,7 @@ export const Player = forwardRef<PlayerNativeElement, PlayerProps>(
       duration,
       autoRetry = false,
       settingsIsOpen = false,
+      customEventIsOpen = false,
     },
     ref
   ) => {
@@ -100,6 +104,7 @@ export const Player = forwardRef<PlayerNativeElement, PlayerProps>(
     const [volume, setVolume] = useState<number>();
     const [format, setFormat] = useState<Format>(initialFormat);
     const [settings, setShowSettings] = useState(settingsIsOpen);
+    const [newEvent, setShowCustomEvent] = useState(customEventIsOpen);
 
     /**
      * piApix parameters
@@ -207,6 +212,14 @@ export const Player = forwardRef<PlayerNativeElement, PlayerProps>(
         setShowSettings(true);
       }
     }, [settings]);
+
+    const onShowCustomEvent = useCallback(() => {
+      if (newEvent) {
+        setShowCustomEvent(false);
+      } else {
+        setShowCustomEvent(true);
+      }
+    }, [newEvent]);
 
     /**
      * Refresh when changing visibility (e.g. when you leave a tab the
@@ -415,8 +428,8 @@ export const Player = forwardRef<PlayerNativeElement, PlayerProps>(
                   </Layer>
                 ) : null}
                 {showControls &&
-                showStatsOverlay &&
-                videoProperties !== undefined ? (
+                  showStatsOverlay &&
+                  videoProperties !== undefined ? (
                   <Stats
                     format={format}
                     videoProperties={videoProperties}
@@ -452,7 +465,11 @@ export const Player = forwardRef<PlayerNativeElement, PlayerProps>(
                     key={index}
                   />
                 ))}
-                <EventButton name="Custom Event" hotkey="+" />
+                <EventButton
+                  name="Custom Event"
+                  hotkey="+"
+                  onClick={onShowCustomEvent}
+                />
               </EventsContainer>
             </ContainerWidth>
           </div>
@@ -464,74 +481,16 @@ export const Player = forwardRef<PlayerNativeElement, PlayerProps>(
             device={piHost}
           />
         )}
+        {newEvent && (
+          <CustomEvent
+            isOpen={newEvent}
+            toggleCustomEvent={onShowCustomEvent}
+          />
+        )}
       </PlayerArea>
     );
   }
 );
-
-// TODO(dan): move to eventbutton component
-export const EventButton = (props: { hotkey: string; name: string }) => {
-  // const dispatch = useDispatch();
-  // const [customName, setCustomName] = useState(name);
-
-  // // Handles show/hide stats
-  // const setCustomName = useCallback(
-  //   (newName) => {
-  //     setCustomName((prevState) => newName);
-  //   },
-  //   [setCustomName]
-  // );
-
-  // const toggleDevice = useCallback((device) => {
-  //   dispatch(monitorSlice.actions.showDevicePlayer(device.ip));
-  // }, []);
-
-  return (
-    <EventButtonContainer>
-      <EventButtonHotkey>{props.hotkey}</EventButtonHotkey>
-      <EventButtonName>{props.name}</EventButtonName>
-    </EventButtonContainer>
-  );
-};
-
-const EventButtonContainer = styled.button`
-  background: #10181c;
-  color: white;
-  text-align: center;
-  display: grid;
-  grid-template-rows: 1fr 20px);
-  justify-content: center;
-  align-items: center;
-  gap: 8px;
-  margin: 0;
-  border: none;
-  box-sizing: border-box;
-  :focus {
-    outline: none;
-    filter: unset;
-  }
-`;
-
-const EventButtonHotkey = styled.div`
-  padding: 12px;
-  border-radius: 50%;
-  height: 32px;
-  width: 32px;
-  background-color: #455a64;
-  margin: 0 auto;
-  font-size: 16px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`;
-const EventButtonName = styled.div`
-  text-align: center;
-  padding: 0px;
-  font-size: 14px;
-  @media (orientation: landscape) {
-    min-height: 32px;
-  }
-`;
 
 const PlayerArea = styled.div`
   position: relative;
