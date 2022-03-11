@@ -1,7 +1,8 @@
 import React, { useCallback } from "react";
 import styled from "styled-components";
 import * as monitorSlice from "../slices/monitorSlice";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../store";
 
 interface CustomEventProps {
   readonly isOpen: boolean;
@@ -15,10 +16,13 @@ export const CustomEvent: React.FC<CustomEventProps> = ({
   toggleCustomEvent
 }) => {
 
+  const eventMenu = useSelector((state: RootState) => {
+    return state.monitor.presetEvents;
+  });
   const dispatch = useDispatch();
   const createEvent = useCallback(() => {
     if (isOpen) {
-      if (eventName !== undefined) {
+      if (eventName !== undefined && eventMenu.length <= 9) {
         dispatch(monitorSlice.actions.addCustomPresetEvent(eventName));
         toggleCustomEvent();
       } else {
