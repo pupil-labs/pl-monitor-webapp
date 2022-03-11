@@ -42,7 +42,7 @@ export const Settings: React.FC<SettingsProps> = ({
     const newVal = {
       name: e.target.value,
       index: index
-    } 
+    }
     dispatch(monitorSlice.actions.editPresetEvent(newVal));
   }, []);
 
@@ -57,7 +57,7 @@ export const Settings: React.FC<SettingsProps> = ({
         </SettingsHeader>
         <ControlsContainer>
           <div>
-            <div style={{ padding: "16px 0"}}>Device Information</div>
+            <div style={{ padding: "16px 0" }}>Device Information</div>
             <PhoneContainer>
               <div>
                 <span>Phone Name: </span>
@@ -151,8 +151,9 @@ const HotkeyContainer = styled.div`
 `;
 
 const HotkeyRow = styled.div`
-  display: flex;
-  gap: 16px;
+  display: grid;
+  grid-template-columns: 20px auto;
+  gap: 8px;
 `;
 
 const Divider = styled.div`
