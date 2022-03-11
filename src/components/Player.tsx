@@ -337,6 +337,18 @@ export const Player = forwardRef<PlayerNativeElement, PlayerProps>(
       return state.monitor.presetEvents;
     });
 
+    useEffect(() => {
+      const keyDownHandler = (event: KeyboardEvent) => {
+        if (event.key === "Escape") {
+          setShowCustomEvent(false);
+          setShowSettings(false);
+        }
+      };
+      document.addEventListener("keydown", keyDownHandler, false);
+      return () => {
+        document.removeEventListener("keydown", keyDownHandler, false);
+      };
+    }, []);
     return (
       <PlayerArea>
         <PhoneStatus>
