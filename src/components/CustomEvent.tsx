@@ -22,7 +22,7 @@ export const CustomEvent: React.FC<CustomEventProps> = ({
   const dispatch = useDispatch();
   const createEvent = useCallback(() => {
     if (isOpen) {
-      if (eventName !== undefined && eventMenu.length <= 9) {
+      if (eventName !== undefined && eventMenu.length <= 8) {
         dispatch(monitorSlice.actions.addCustomPresetEvent(eventName));
         toggleCustomEvent();
       } else {
