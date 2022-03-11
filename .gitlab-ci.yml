@@ -1,0 +1,35 @@
+# Official framework image. Look for the different tagged releases at:
+# https://hub.docker.com/r/library/node/tags/
+image: node:lts
+# This folder is cached between builds
+# http://docs.gitlab.com/ce/ci/yaml/README.html#cache
+
+stages:
+  - build
+  # - release
+
+variables:
+  # we do the sync manually in order to fix the path
+  GIT_SUBMODULE_STRATEGY: recursive
+
+
+build:
+  stage: build
+  before_script:
+    - yarn install && yarn build
+    - export VERSION=$(node -pe "require('./package.json').version")-$CI_COMMIT_SHORT_SHA
+    - echo $VERSION > build/version.txt
+    - sed -i "s/%%APP_VERSION%%/$VERSION/" build/index.html
+  script:
+    - du -h build
+  artifacts:
+    paths:
+    - build
+
+# release:
+#   stage: release
+#   image: netroby/alpine-rsync
+#   dependencies:
+#     - build
+#   script:
+#     - echo "build release version"
