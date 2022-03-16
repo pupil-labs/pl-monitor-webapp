@@ -2,36 +2,43 @@ import React, { useState } from "react";
 import styled from "styled-components";
 interface CustomEventProps {
   readonly defaultEventName?: string;
+  readonly inputRef?: React.RefObject<HTMLInputElement>;
   readonly eventTriggerer: (eventName: string) => void;
 }
 
 export const CustomEvent: React.FC<CustomEventProps> = ({
   defaultEventName = "",
+  inputRef,
   eventTriggerer,
 }) => {
   const [eventName, setEventName] = useState(defaultEventName);
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    // TODO(dan): what behavior is wanted here?
-    // if (event.key === "Enter") {
-    //   eventTriggerer(eventName);
-    // }
-    // if (event.key === "Escape") {
-    //   event.stopPropagation();
-    // }
+    if (event.key === "Enter") {
+      eventTriggerer(eventName);
+      setEventName("");
+    }
+    if (event.key === "Escape") {
+      setEventName("");
+    }
   };
+
   return (
     <EventCreationContainer>
       <input
+        ref={inputRef}
         placeholder="Event Name"
-        defaultValue={eventName}
+        value={eventName}
         onChange={(e) => setEventName(e.target.value)}
         onKeyDown={handleKeyDown}
       />
       <CreateButton
         className=""
         aria-label="Create Event"
-        onClick={() => eventTriggerer(eventName)}
+        onClick={() => {
+          eventTriggerer(eventName)
+          setEventName("")
+        }}
       >
         Create
       </CreateButton>

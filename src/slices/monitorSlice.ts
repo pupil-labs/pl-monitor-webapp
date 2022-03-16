@@ -137,9 +137,14 @@ type RecordingStatusPayload = {
   recording: piapi.Recording;
 };
 
-type EventPayload = {
+type EditEventPayload = {
   name: string;
   index: number;
+};
+
+type EventPayload = {
+  name: string;
+  ip?: string;
 };
 
 export const monitorSlice = createSlice({
@@ -219,11 +224,28 @@ export const monitorSlice = createSlice({
       const { ip, hardware } = action.payload;
       state.devices[ip].hardware = hardware;
     },
-    triggerEvent: (state, action: PayloadAction<string>) => {
-      const eventName = action.payload;
-      console.log("sending", eventName, "to api (TODO)");
+    triggerEvent: (state, action: PayloadAction<EventPayload>) => {
+      const eventName = action.payload.name
+      const ip = action.payload.ip;
+
+      const opts = {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: eventName,
+        })
+      }
+
+      fetch(`http://${ip}:8080/api/event`, opts)
+        .then((res) => {
+          console.log(res.body)
+        })
+        .catch((error) => {
+          console.error('Error: ', error);
+
+        })
     },
-    editPresetEvent: (state, action: PayloadAction<EventPayload>) => {
+    editPresetEvent: (state, action: PayloadAction<EditEventPayload>) => {
       const event = action.payload;
       if (event.index < state.presetEvents.length) {
         if (event.name) {
