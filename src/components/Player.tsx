@@ -39,6 +39,7 @@ import { RecordReady, RecordStop } from "./img";
 import { Settings } from "./Settings";
 import { CustomEvent } from "./CustomEvent";
 import { EventButton } from "./EventButton";
+import * as piapi from "../pi-api";
 
 const DEFAULT_FORMAT = Format.RTP_H264;
 
@@ -215,7 +216,7 @@ export const Player = forwardRef<PlayerNativeElement, PlayerProps>(
       if (inputRef.current && showCustomEvent) {
         inputRef.current.focus();
       }
-    })
+    });
 
     const toggleShowCustomEvent = useCallback(() => {
       setShowCustomEvent(!showCustomEvent);
@@ -227,8 +228,8 @@ export const Player = forwardRef<PlayerNativeElement, PlayerProps>(
         if (eventName) {
           const eventObj = {
             name: eventName,
-            ip: piHost.phone?.ip
-          }
+            ip: piHost.phone?.ip,
+          };
           dispatch(monitorSlice.actions.triggerEvent(eventObj));
         } else {
           console.error("missing eventName, not sending");
@@ -458,8 +459,8 @@ export const Player = forwardRef<PlayerNativeElement, PlayerProps>(
                   </Layer>
                 ) : null}
                 {showControls &&
-                  showStatsOverlay &&
-                  videoProperties !== undefined ? (
+                showStatsOverlay &&
+                videoProperties !== undefined ? (
                   <Stats
                     format={format}
                     videoProperties={videoProperties}
@@ -478,7 +479,12 @@ export const Player = forwardRef<PlayerNativeElement, PlayerProps>(
                   <SwapHorizIcon></SwapHorizIcon>
                 </ControlButtons>
                 <ControlButtons onClick={onPlayPause}>
-                  {play === true ? <RecordStop /> : <RecordReady />}
+                  {piHost.current_recording?.action ===
+                  piapi.Recording.action.START ? (
+                    <RecordStop />
+                  ) : (
+                    <RecordReady />
+                  )}
                 </ControlButtons>
                 <ControlButtons onClick={toggleShowSettings}>
                   <SettingsIcon></SettingsIcon>

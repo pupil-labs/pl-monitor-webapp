@@ -111,7 +111,7 @@ if (process.env.NODE_ENV === "development") {
     current_recording: {
       id: "1234-1234-1243-1243",
       rec_duration_ns: 26045344000000,
-      action: piapi.Recording.action.START,
+      action: piapi.Recording.action.STOP,
       message: "",
       events: [
         { name: "dummy event 1", timestamp: 1643793833051380528 },
