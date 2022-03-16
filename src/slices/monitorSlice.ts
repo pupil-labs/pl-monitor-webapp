@@ -237,14 +237,6 @@ export const monitorSlice = createSlice({
     triggerEvent: (state, action: PayloadAction<EventPayload>) => {
       const eventName = action.payload.name;
       const ip = action.payload.ip;
-
-      const opts = {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name: eventName,
-        }),
-      };
       const apiClient = new piapi.PIClient({ BASE: `http://${ip}:8080/api` });
       apiClient.events
         .postEvent({ name: eventName })
