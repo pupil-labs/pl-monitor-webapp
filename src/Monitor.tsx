@@ -164,7 +164,13 @@ export const Monitor = (props: MonitorProps) => {
       <div style={{ height: "100%" }}>
         {Object.entries(devices).map(([deviceId, device]) => {
           return (
-            <div style={{ height: "100%" }} key={device.ip}>
+            <div
+              style={{
+                display: device.showPlayer ? "block" : "none",
+                height: "100%",
+              }}
+              key={device.ip}
+            >
               {device.showPlayer ? (
                 <Player
                   initialFormat={Format.RTP_H264}
