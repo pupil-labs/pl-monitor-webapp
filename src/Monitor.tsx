@@ -5,7 +5,6 @@ import ReconnectingWebSocket from "reconnecting-websocket";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "./store";
 import * as monitorSlice from "./slices/monitorSlice";
-// import { DeviceList } from "./components/DeviceList";
 import * as piapi from "./pi-api";
 
 const makeApiClient = (apiUrl: string) => {
@@ -184,7 +183,6 @@ export const Monitor = (props: MonitorProps) => {
           );
         })}
       </div>
-      {/* <DeviceList piHosts={devices} /> */}
     </div>
   );
 };

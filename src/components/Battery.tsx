@@ -16,57 +16,30 @@ export type BatteryProps = {
   size?: string;
 };
 
-export class BatteryIconA extends React.Component<BatteryProps> {
-  render() {
-    const percent = this.props.percent;
-    const sx = {
-      fontSize: 24,
-      verticalAlign: "middle",
-    };
-
-    if (percent > 95) {
-      return <BatteryFull sx={{ ...sx, color: common.white }} />;
-    } else if (percent >= 90) {
-      return <Battery90 sx={{ ...sx, color: common.white }} />;
-    } else if (percent >= 80) {
-      return <Battery80 sx={{ ...sx, color: common.white }} />;
-    } else if (percent >= 60) {
-      return <Battery60 sx={{ ...sx, color: common.white }} />;
-    } else if (percent >= 50) {
-      return <Battery50 sx={{ ...sx, color: common.white }} />;
-    } else if (percent >= 30) {
-      return <Battery30 sx={{ ...sx, color: orange[200] }} />;
-    } else {
-      return <Battery20 sx={{ ...sx, color: red[200] }} />;
-    }
-  }
-}
-
 export const BatteryIcon: React.FC<BatteryProps> = ({ percent, size }) => {
   if (percent > 95) {
-    return <BatteryFull style={{ width: size, height: size }} />;
+    return <BatteryFull style={{ color: common.white, fontSize: size }} />;
   } else if (percent >= 90) {
-    return <Battery90 style={{ width: size, height: size }} />;
+    return <Battery90 style={{ color: common.white, fontSize: size }} />;
   } else if (percent >= 80) {
-    return <Battery80 style={{ width: size, height: size }} />;
+    return <Battery80 style={{ color: common.white, fontSize: size }} />;
   } else if (percent >= 60) {
-    return <Battery60 style={{ width: size, height: size }} />;
+    return <Battery60 style={{ color: common.white, fontSize: size }} />;
   } else if (percent >= 50) {
-    return <Battery50 style={{ width: size, height: size }} />;
+    return <Battery50 style={{ color: common.white, fontSize: size }} />;
   } else if (percent >= 30) {
-    return <Battery30 style={{ width: size, height: size }} />;
+    return <Battery30 style={{ color: orange[300], fontSize: size }} />;
   } else {
-    return <Battery20 style={{ width: size, height: size }} />;
+    return <Battery20 style={{ color: red[200], fontSize: size }} />;
   }
 };
 
 export class BatteryIndicator extends React.Component<BatteryProps> {
   render() {
     const percent = this.props.percent;
-    const size = this.props.size;
     return (
       <BatteryIconContainer>
-        <BatteryIcon percent={percent} size={size} />
+        <BatteryIcon percent={percent} size={"1em"} />
         <span
           style={{ color: "white", verticalAlign: "middle", fontSize: "12px" }}
         >
