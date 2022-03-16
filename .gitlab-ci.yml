@@ -31,7 +31,7 @@ staging:
     - echo "Deploying to staging"
     - cp ${SSH_PRIVATE_KEY} id_rsa
     - chmod 600 id_rsa
-    - rsync -hrvz --delete -e 'ssh -i id_rsa -o "StrictHostKeyChecking no"' build/ staging-@${SERVER_IP}:/home/staging-pi-monitor/build
+    - rsync -hrvz --delete -e 'ssh -p 222 -i id_rsa -o "StrictHostKeyChecking no"' build/ staging-@${SERVER_IP}:/home/staging-pi-monitor/build
     - echo "Staging deployed"
   environment:
     name: staging
