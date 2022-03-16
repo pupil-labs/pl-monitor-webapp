@@ -1,13 +1,12 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { StatusEnvelope } from '../models/StatusEnvelope';
+import type { StatusEnvelope } from "../models/StatusEnvelope";
 
-import type { CancelablePromise } from '../core/CancelablePromise';
-import type { BaseHttpRequest } from '../core/BaseHttpRequest';
+import type { CancelablePromise } from "../core/CancelablePromise";
+import type { BaseHttpRequest } from "../core/BaseHttpRequest";
 
 export class StatusService {
-
   constructor(public readonly httpRequest: BaseHttpRequest) {}
 
   /**
@@ -17,9 +16,8 @@ export class StatusService {
    */
   public getStatus(): CancelablePromise<StatusEnvelope> {
     return this.httpRequest.request({
-      method: 'GET',
-      url: '/status',
+      method: "GET",
+      url: "/status",
     });
   }
-
 }

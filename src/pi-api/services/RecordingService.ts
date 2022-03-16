@@ -16,12 +16,12 @@ export class RecordingService {
    * @returns RecordingStartEnvelope recording started
    * @throws ApiError
    */
-  public postRecordingStart(): CancelablePromise<RecordingStartEnvelope> {
+  postRecordingStart(): CancelablePromise<RecordingStartEnvelope> {
     return this.httpRequest.request({
       method: "POST",
       url: "/recording:start",
       errors: {
-        500: `recording start failed <br />Possible errors: <br /> - Recording running <br /> - Template has required fields <br /> - Low battery <br /> - Low storage <br /> - No wearer selected <br /> - No workspace selected <br /> - Setup bottom sheets not completed`,
+        400: `recording start failed <br />Possible errors: <br /> - Recording running <br /> - Template has required fields <br /> - Low battery <br /> - Low storage <br /> - No wearer selected <br /> - No workspace selected <br /> - Setup bottom sheets not completed`,
       },
     });
   }
@@ -32,7 +32,7 @@ export class RecordingService {
    * @returns RecordingStopEnvelope recording stopped and saved
    * @throws ApiError
    */
-  public postRecordingStopAndSave(): CancelablePromise<RecordingStopEnvelope> {
+  postRecordingStopAndSave(): CancelablePromise<RecordingStopEnvelope> {
     return this.httpRequest.request({
       method: "POST",
       url: "/recording:stop_and_save",
@@ -48,7 +48,7 @@ export class RecordingService {
    * @returns RecordingCancelEnvelope recording stopped and discarded
    * @throws ApiError
    */
-  public postRecordingCancel(): CancelablePromise<RecordingCancelEnvelope> {
+  postRecordingCancel(): CancelablePromise<RecordingCancelEnvelope> {
     return this.httpRequest.request({
       method: "POST",
       url: "/recording:cancel",

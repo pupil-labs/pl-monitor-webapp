@@ -6,5 +6,5 @@ import type { Envelope } from "./Envelope";
 import type { Status } from "./Status";
 
 export type StatusEnvelope = Omit<Envelope, "result"> & {
-  result: Status[];
+  result: Array<Status>;
 };

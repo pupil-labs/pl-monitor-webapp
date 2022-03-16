@@ -4,6 +4,6 @@
 
 export type Event = {
   name: string;
-  timestamp?: number;
+  timestamp: number;
   readonly recording_id: string;
 };
