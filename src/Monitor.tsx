@@ -156,28 +156,7 @@ export const Monitor = (props: MonitorProps) => {
           }
         })
       );
-      // dispatch(monitorSlice.actions.deviceDetected());
     });
-    // console.log("fetching...");
-    // fetch(`${apiUrl}/status`, {
-    //   method: "GET",
-    //   // body: "a=1",
-    //   mode: "cors",
-    // })
-    //   .then((response) => {
-    //     if (response.status == 200) {
-    //       response.json().then((data) => {
-    //         console.log("api response", data);
-    //         dispatch(monitorSlice.actions.deviceDetected(props.host));
-    //       });
-    //     } else {
-    //       throw "non 200 api response";
-    //     }
-    //   })
-    //   .then()
-    //   .catch((e) => {
-    //     console.error("error making request to api", e);
-    //   });
   }, [dispatch, props.host]);
 
   return (

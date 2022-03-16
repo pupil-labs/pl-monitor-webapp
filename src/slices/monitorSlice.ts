@@ -91,34 +91,36 @@ interface MonitorState {
 const initialState: MonitorState = {
   presetEvents: ["Event 1", "Event 2", "Event 3", "Event 4", "Event 5"],
   messages: ["Snackbar"],
-  devices: {
-    "192.168.1.1": {
-      showPlayer: true,
-      is_dummy: true,
-      online: true,
-      state: ConnectionState.DISCONNECTED,
-      ip: "192.168.1.1",
-      phone: {
-        battery_level: 60,
-        device_id: "1235",
-        device_name: "Dummy Device",
-        ip: "192.168.1.1",
-        memory: 12351251235,
-      },
-      current_recording: {
-        id: "1234-1234-1243-1243",
-        rec_duration_ns: 26045344000000,
-        action: piapi.Recording.action.START,
-        message: "",
-        events: [
-          { name: "dummy event 1", timestamp: 1643793833051380528 },
-          { name: "dummy event 2", timestamp: 1643793833051380528 },
-        ],
-      },
-      sensors: {},
-    },
-  },
+  devices: {},
 };
+
+if (process.env.NODE_ENV === "development") {
+  initialState.devices["1.3.3.7"] = {
+    showPlayer: true,
+    is_dummy: true,
+    online: true,
+    state: ConnectionState.DISCONNECTED,
+    ip: "1.3.3.7",
+    phone: {
+      battery_level: 60,
+      device_id: "1235",
+      device_name: "Dummy Device",
+      ip: "1.3.3.7",
+      memory: 12351251235,
+    },
+    current_recording: {
+      id: "1234-1234-1243-1243",
+      rec_duration_ns: 26045344000000,
+      action: piapi.Recording.action.START,
+      message: "",
+      events: [
+        { name: "dummy event 1", timestamp: 1643793833051380528 },
+        { name: "dummy event 2", timestamp: 1643793833051380528 },
+      ],
+    },
+    sensors: {},
+  };
+}
 
 type PhoneConnectionStateAction = {
   ip: IPAddress;
