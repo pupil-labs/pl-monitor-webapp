@@ -15,7 +15,7 @@ const isHtml5VideoPipeline = (
 
 const StatsWrapper = styled.div`
   position: absolute;
-  top: 24px;
+  top: 240px;
   left: 24px;
   width: 360px;
   min-width: 240px;

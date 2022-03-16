@@ -1,4 +1,4 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "../store";
 import * as piapi from "../pi-api";
 import { Recording } from "../pi-api";
@@ -65,6 +65,7 @@ export type PiHost = {
   sensors: {
     [key: string]: piapi.Sensor;
   };
+  lastError: string;
   phone?: Phone;
   showPlayer?: boolean;
   hardware?: piapi.Hardware;
@@ -108,6 +109,7 @@ if (process.env.NODE_ENV === "development") {
       ip: "1.3.3.7",
       memory: 12351251235,
     },
+    lastError: "",
     current_recording: {
       id: "1234-1234-1243-1243",
       rec_duration_ns: 26045344000000,
@@ -144,12 +146,63 @@ type EditEventPayload = {
 
 type EventPayload = {
   name: string;
-  ip?: string;
+  ip: string;
 };
+
+interface PiHostApiError {
+  ip: string;
+  error: string;
+}
+
+export const startRecording = createAsyncThunk<
+  piapi.RecordingStart,
+  string,
+  {
+    rejectValue: PiHostApiError;
+  }
+>("recordings/startRecording", async (ip, thunkApi) => {
+  const apiClient = new piapi.PIClient({ BASE: `http://${ip}:8080/api` });
+  try {
+    const response = await apiClient.recording.postRecordingStart();
+    return response.result as piapi.RecordingStart;
+  } catch (err: any) {
+    return thunkApi.rejectWithValue({
+      ip: ip,
+      error: err.body.message,
+    } as PiHostApiError);
+  }
+});
+
+export const stopAndSaveRecording = createAsyncThunk<
+  piapi.RecordingStop,
+  string,
+  {
+    rejectValue: PiHostApiError;
+  }
+>("recordings/startRecording", async (ip, thunkApi) => {
+  const apiClient = new piapi.PIClient({ BASE: `http://${ip}:8080/api` });
+  try {
+    const response = await apiClient.recording.postRecordingStopAndSave();
+    return response.result as piapi.RecordingStop;
+  } catch (err: any) {
+    return thunkApi.rejectWithValue({
+      ip: ip,
+      error: err.body.message,
+    } as PiHostApiError);
+  }
+});
 
 export const monitorSlice = createSlice({
   name: "phone",
   initialState,
+  extraReducers: (builder) => {
+    builder.addCase(startRecording.fulfilled, (state, action) => {
+      state.devices[action.meta.arg].lastError = "";
+    });
+    builder.addCase(startRecording.rejected, (state, action: any) => {
+      state.devices[action.meta.arg].lastError = action.payload.error || "";
+    });
+  },
   reducers: {
     showDevicePlayer: (state, action: PayloadAction<IPAddress>) => {
       for (const ip in state.devices) {
@@ -162,6 +215,7 @@ export const monitorSlice = createSlice({
         state.devices[phone.ip] = {
           ip: phone.ip,
           online: true,
+          lastError: "",
           state: ConnectionState.DISCONNECTED,
           phone: phone,
           sensors: {},
@@ -183,6 +237,7 @@ export const monitorSlice = createSlice({
         device.online = action.payload.state === ConnectionState.CONNECTED;
       }
       device.state = action.payload.state;
+      device.lastError = "";
     },
     recordingStatusReceived: (
       state,
@@ -195,6 +250,7 @@ export const monitorSlice = createSlice({
       if (recording.action === Recording.action.START) {
         events = [];
       }
+      state.devices[ip].lastError = "";
       state.devices[ip].current_recording = {
         ...recording,
         events: events,
@@ -205,6 +261,7 @@ export const monitorSlice = createSlice({
       if (!state.devices[ip]) {
         state.devices[ip] = {
           ip: ip,
+          lastError: "",
           online: false,
           state: ConnectionState.DISCONNECTED,
           phone: undefined,

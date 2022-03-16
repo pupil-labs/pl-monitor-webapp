@@ -41,6 +41,7 @@ import { CustomEvent } from "./CustomEvent";
 import { EventButton } from "./EventButton";
 import * as piapi from "../pi-api";
 import { StreamingDevices } from "./StreamingDevices";
+import { Alert, Snackbar } from "@mui/material";
 
 const DEFAULT_FORMAT = Format.RTP_H264;
 
@@ -101,7 +102,7 @@ export const Player = forwardRef<PlayerNativeElement, PlayerProps>(
     },
     ref
   ) => {
-    // const dispatch = useDispatch();
+    const dispatch = useDispatch();
     const [play, setPlay] = useState(autoPlay);
     const [offset, setOffset] = useState(0);
     const [refresh, setRefresh] = useState(0);
@@ -110,7 +111,12 @@ export const Player = forwardRef<PlayerNativeElement, PlayerProps>(
     const [format, setFormat] = useState<Format>(initialFormat);
     const [showSettings, setShowSettings] = useState(settingsIsOpen);
     const [showCustomEvent, setShowCustomEvent] = useState(customEventIsOpen);
-    const [showStreamingDevices, setShowStreamingDevices] = useState(streamingDevicesIsOpen);
+    const [showStreamingDevices, setShowStreamingDevices] = useState(
+      streamingDevicesIsOpen
+    );
+
+    const isRecording =
+      piHost.current_recording?.action === piapi.Recording.action.START;
 
     /**
      * piApix parameters
@@ -179,6 +185,18 @@ export const Player = forwardRef<PlayerNativeElement, PlayerProps>(
       setWaiting(true);
     }, []);
 
+    const onRecordButton = useCallback(() => {
+      if (!isRecording) {
+        console.log("starting recording");
+        const res = dispatch(monitorSlice.startRecording(piHost.ip));
+        console.log("starting recording response", res);
+      } else {
+        console.log("stopping recording");
+        const res = dispatch(monitorSlice.stopAndSaveRecording(piHost.ip));
+        console.log("stopping recording response", res);
+      }
+    }, [dispatch, isRecording, piHost.ip]);
+
     const onScreenshot = useCallback(() => {
       if (videoProperties === undefined) {
         return undefined;
@@ -230,13 +248,12 @@ export const Player = forwardRef<PlayerNativeElement, PlayerProps>(
       }
     });
 
-    const dispatch = useDispatch();
     const triggerEvent = useCallback(
       (eventName) => {
-        if (eventName) {
+        if (eventName && piHost.phone) {
           const eventObj = {
             name: eventName,
-            ip: piHost.phone?.ip,
+            ip: piHost.phone.ip,
           };
           dispatch(monitorSlice.actions.triggerEvent(eventObj));
         } else {
@@ -246,7 +263,7 @@ export const Player = forwardRef<PlayerNativeElement, PlayerProps>(
           toggleShowCustomEvent();
         }
       },
-      [dispatch, showCustomEvent, toggleShowCustomEvent, piHost.phone?.ip]
+      [dispatch, showCustomEvent, toggleShowCustomEvent, piHost.phone]
     );
 
     /**
@@ -369,6 +386,8 @@ export const Player = forwardRef<PlayerNativeElement, PlayerProps>(
         document.removeEventListener("keydown", keyDownHandler, false);
       };
     }, []);
+
+    const handleClose = () => {};
     return (
       <PlayerArea>
         <PhoneStatus>
@@ -406,6 +425,7 @@ export const Player = forwardRef<PlayerNativeElement, PlayerProps>(
                     }}
                   ></div>
                 </Layer>
+
                 {showWorldSensor ? (
                   <Layer>
                     <PlaybackArea
@@ -467,8 +487,8 @@ export const Player = forwardRef<PlayerNativeElement, PlayerProps>(
                   </Layer>
                 ) : null}
                 {showControls &&
-                  showStatsOverlay &&
-                  videoProperties !== undefined ? (
+                showStatsOverlay &&
+                videoProperties !== undefined ? (
                   <Stats
                     format={format}
                     videoProperties={videoProperties}
@@ -476,6 +496,19 @@ export const Player = forwardRef<PlayerNativeElement, PlayerProps>(
                     volume={volume}
                   />
                 ) : null}
+                <Snackbar
+                  open={!!piHost.lastError}
+                  autoHideDuration={2000}
+                  onClose={handleClose}
+                >
+                  <Alert
+                    onClose={handleClose}
+                    severity="error"
+                    sx={{ width: "100%" }}
+                  >
+                    {piHost.lastError}
+                  </Alert>
+                </Snackbar>
               </Container>
             </Limiter>
           </MediaStreamPlayerContainer>
@@ -486,13 +519,8 @@ export const Player = forwardRef<PlayerNativeElement, PlayerProps>(
                 <ControlButtons onClick={toggleStreamingDevices}>
                   <SwapHorizIcon />
                 </ControlButtons>
-                <ControlButtons onClick={onPlayPause}>
-                  {piHost.current_recording?.action ===
-                    piapi.Recording.action.START ? (
-                    <RecordStop />
-                  ) : (
-                    <RecordReady />
-                  )}
+                <ControlButtons onClick={onRecordButton}>
+                  {isRecording ? <RecordStop /> : <RecordReady />}
                 </ControlButtons>
                 <ControlButtons onClick={toggleShowSettings}>
                   <SettingsIcon></SettingsIcon>
@@ -535,9 +563,7 @@ export const Player = forwardRef<PlayerNativeElement, PlayerProps>(
           />
         </div>
         <div style={{ display: showStreamingDevices ? "block" : "none" }}>
-          <StreamingDevices
-            toggleView={toggleStreamingDevices}
-          />
+          <StreamingDevices toggleView={toggleStreamingDevices} />
         </div>
       </PlayerArea>
     );
