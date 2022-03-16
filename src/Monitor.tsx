@@ -5,7 +5,7 @@ import ReconnectingWebSocket from "reconnecting-websocket";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "./store";
 import * as monitorSlice from "./slices/monitorSlice";
-import { DeviceList } from "./components/DeviceList";
+// import { DeviceList } from "./components/DeviceList";
 import * as piapi from "./pi-api";
 
 const makeApiClient = (apiUrl: string) => {
@@ -179,12 +179,12 @@ export const Monitor = (props: MonitorProps) => {
                   showControls={true}
                 />
               ) : null}
-              <NetworkDevice key={device.ip} device={device}></NetworkDevice>
+              <NetworkDevice device={device}></NetworkDevice>
             </div>
           );
         })}
       </div>
-      <DeviceList piHosts={devices} />
+      {/* <DeviceList piHosts={devices} /> */}
     </div>
   );
 };

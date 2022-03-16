@@ -40,6 +40,7 @@ import { Settings } from "./Settings";
 import { CustomEvent } from "./CustomEvent";
 import { EventButton } from "./EventButton";
 import * as piapi from "../pi-api";
+import { StreamingDevices } from "./StreamingDevices";
 
 const DEFAULT_FORMAT = Format.RTP_H264;
 
@@ -76,6 +77,7 @@ interface PlayerProps {
   readonly autoRetry?: boolean;
   readonly settingsIsOpen?: boolean;
   readonly customEventIsOpen?: boolean;
+  readonly streamingDevicesIsOpen?: boolean;
 }
 
 export const Player = forwardRef<PlayerNativeElement, PlayerProps>(
@@ -95,6 +97,7 @@ export const Player = forwardRef<PlayerNativeElement, PlayerProps>(
       autoRetry = false,
       settingsIsOpen = false,
       customEventIsOpen = false,
+      streamingDevicesIsOpen = false,
     },
     ref
   ) => {
@@ -107,6 +110,7 @@ export const Player = forwardRef<PlayerNativeElement, PlayerProps>(
     const [format, setFormat] = useState<Format>(initialFormat);
     const [showSettings, setShowSettings] = useState(settingsIsOpen);
     const [showCustomEvent, setShowCustomEvent] = useState(customEventIsOpen);
+    const [showStreamingDevices, setShowStreamingDevices] = useState(streamingDevicesIsOpen);
 
     /**
      * piApix parameters
@@ -211,16 +215,20 @@ export const Player = forwardRef<PlayerNativeElement, PlayerProps>(
       setShowSettings(!showSettings);
     }, [showSettings]);
 
+    const toggleStreamingDevices = useCallback(() => {
+      setShowStreamingDevices(!showStreamingDevices);
+    }, [showStreamingDevices]);
+
+    const toggleShowCustomEvent = useCallback(() => {
+      setShowCustomEvent(!showCustomEvent);
+    }, [showCustomEvent]);
+
     const inputRef = React.createRef<HTMLInputElement>();
     useEffect(() => {
       if (inputRef.current && showCustomEvent) {
         inputRef.current.focus();
       }
     });
-
-    const toggleShowCustomEvent = useCallback(() => {
-      setShowCustomEvent(!showCustomEvent);
-    }, [showCustomEvent]);
 
     const dispatch = useDispatch();
     const triggerEvent = useCallback(
@@ -459,8 +467,8 @@ export const Player = forwardRef<PlayerNativeElement, PlayerProps>(
                   </Layer>
                 ) : null}
                 {showControls &&
-                showStatsOverlay &&
-                videoProperties !== undefined ? (
+                  showStatsOverlay &&
+                  videoProperties !== undefined ? (
                   <Stats
                     format={format}
                     videoProperties={videoProperties}
@@ -475,12 +483,12 @@ export const Player = forwardRef<PlayerNativeElement, PlayerProps>(
             <Divider />
             <ContainerWidth>
               <ControlsContainer>
-                <ControlButtons>
-                  <SwapHorizIcon></SwapHorizIcon>
+                <ControlButtons onClick={toggleStreamingDevices}>
+                  <SwapHorizIcon />
                 </ControlButtons>
                 <ControlButtons onClick={onPlayPause}>
                   {piHost.current_recording?.action ===
-                  piapi.Recording.action.START ? (
+                    piapi.Recording.action.START ? (
                     <RecordStop />
                   ) : (
                     <RecordReady />
@@ -524,6 +532,11 @@ export const Player = forwardRef<PlayerNativeElement, PlayerProps>(
             eventTriggerer={(eventName) => {
               triggerEvent(eventName);
             }}
+          />
+        </div>
+        <div style={{ display: showStreamingDevices ? "block" : "none" }}>
+          <StreamingDevices
+            toggleView={toggleStreamingDevices}
           />
         </div>
       </PlayerArea>
