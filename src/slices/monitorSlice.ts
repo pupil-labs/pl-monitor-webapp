@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "../store";
 import * as piapi from "../pi-api";
-import { RecordingAction } from "../pi-api";
+import { Recording } from "../pi-api";
 
 type IPAddress = string;
 export type Phone = {
@@ -25,10 +25,7 @@ export type Event = {
   timestamp: number;
 };
 
-export type Recording = {
-  id: string;
-  rec_duration_ns: number;
-  action: piapi.RecordingAction;
+export type RecordingWithEvents = Recording & {
   events: Event[];
 };
 
@@ -64,7 +61,7 @@ export type PiHost = {
   is_dummy?: boolean;
   state: ConnectionState;
   online: boolean;
-  current_recording?: Recording;
+  current_recording?: RecordingWithEvents;
   sensors: {
     [key: string]: piapi.Sensor;
   };
@@ -111,7 +108,8 @@ const initialState: MonitorState = {
       current_recording: {
         id: "1234-1234-1243-1243",
         rec_duration_ns: 26045344000000,
-        action: piapi.RecordingAction.START,
+        action: piapi.Recording.action.START,
+        message: "",
         events: [
           { name: "dummy event 1", timestamp: 1643793833051380528 },
           { name: "dummy event 2", timestamp: 1643793833051380528 },
@@ -153,6 +151,16 @@ export const monitorSlice = createSlice({
     },
     phoneStateReceived: (state, action: PayloadAction<Phone>) => {
       const phone = action.payload;
+      if (!state.devices[phone.ip]) {
+        state.devices[phone.ip] = {
+          ip: phone.ip,
+          online: true,
+          state: ConnectionState.DISCONNECTED,
+          phone: phone,
+          sensors: {},
+          showPlayer: Object.values(state.devices).length < 1,
+        };
+      }
       state.devices[phone.ip].phone = phone;
     },
     recordingMessageReceived: (state, action: PayloadAction<string>) => {
@@ -177,7 +185,7 @@ export const monitorSlice = createSlice({
       const previousRecordingState = state.devices[ip].current_recording;
 
       let events = previousRecordingState ? previousRecordingState.events : [];
-      if (recording.action === RecordingAction.START) {
+      if (recording.action === Recording.action.START) {
         events = [];
       }
       state.devices[ip].current_recording = {
@@ -203,11 +211,11 @@ export const monitorSlice = createSlice({
       const sensorKey = `${sensor.sensor}-${sensor.conn_type}`;
       const device = state.devices[sensor.ip];
       device.sensors[sensorKey] = sensor;
-      if (sensor.conn_type === piapi.ConnectionType.WEBSOCKET) {
-        if (sensor.sensor === piapi.SensorName.GAZE) {
+      if (sensor.conn_type === piapi.Sensor.conn_type.WEBSOCKET) {
+        if (sensor.sensor === piapi.Sensor.sensor.GAZE) {
           device.gazeSensor = sensor;
         }
-        if (sensor.sensor === piapi.SensorName.WORLD) {
+        if (sensor.sensor === piapi.Sensor.sensor.WORLD) {
           device.worldSensor = sensor;
         }
       }

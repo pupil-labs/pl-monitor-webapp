@@ -6,6 +6,15 @@ import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "./store";
 import * as monitorSlice from "./slices/monitorSlice";
 import { DeviceList } from "./components/DeviceList";
+import * as piapi from "./pi-api";
+
+const makeApiClient = (apiUrl: string) => {
+  const apiClient = new piapi.PIClient({
+    BASE: apiUrl,
+    // TOKEN: '1234',
+  });
+  return apiClient;
+};
 export type MonitorProps = {
   host: string;
 };
@@ -135,7 +144,40 @@ export const Monitor = (props: MonitorProps) => {
   });
 
   useEffect(() => {
-    dispatch(monitorSlice.actions.deviceDetected(props.host));
+    const client = makeApiClient(`http://${props.host}:8080/api`);
+    client.status.getStatus().then((value) => {
+      console.log(
+        value.result.forEach((status) => {
+          switch (status.model) {
+            case "Phone":
+              const phone = status.data as piapi.Phone;
+              dispatch(monitorSlice.actions.phoneStateReceived(phone));
+              break;
+          }
+        })
+      );
+      // dispatch(monitorSlice.actions.deviceDetected());
+    });
+    // console.log("fetching...");
+    // fetch(`${apiUrl}/status`, {
+    //   method: "GET",
+    //   // body: "a=1",
+    //   mode: "cors",
+    // })
+    //   .then((response) => {
+    //     if (response.status == 200) {
+    //       response.json().then((data) => {
+    //         console.log("api response", data);
+    //         dispatch(monitorSlice.actions.deviceDetected(props.host));
+    //       });
+    //     } else {
+    //       throw "non 200 api response";
+    //     }
+    //   })
+    //   .then()
+    //   .catch((e) => {
+    //     console.error("error making request to api", e);
+    //   });
   }, [dispatch, props.host]);
 
   return (
