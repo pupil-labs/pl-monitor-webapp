@@ -4,5 +4,5 @@
 
 export type EventPost = {
   name: string;
-  timestamp: number;
+  timestamp?: number;
 };

@@ -235,25 +235,25 @@ export const monitorSlice = createSlice({
       state.devices[ip].hardware = hardware;
     },
     triggerEvent: (state, action: PayloadAction<EventPayload>) => {
-      const eventName = action.payload.name
+      const eventName = action.payload.name;
       const ip = action.payload.ip;
 
       const opts = {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           name: eventName,
-        })
-      }
-
-      fetch(`http://${ip}:8080/api/event`, opts)
-        .then((res) => {
-          console.log(res.body)
+        }),
+      };
+      const apiClient = new piapi.PIClient({ BASE: `http://${ip}:8080/api` });
+      apiClient.events
+        .postEvent({ name: eventName })
+        .then((value) => {
+          console.log(`event saved`, value.result);
         })
         .catch((error) => {
-          console.error('Error: ', error);
-
-        })
+          console.error(`error sending event to backend`, error);
+        });
     },
     editPresetEvent: (state, action: PayloadAction<EditEventPayload>) => {
       const event = action.payload;
