@@ -1,4 +1,4 @@
-import {
+import React, {
   useState,
   forwardRef,
   useEffect,
@@ -210,6 +210,13 @@ export const Player = forwardRef<PlayerNativeElement, PlayerProps>(
       setShowSettings(!showSettings);
     }, [showSettings]);
 
+    const inputRef = React.createRef<HTMLInputElement>();
+    useEffect(() => {
+      if (inputRef.current && showCustomEvent) {
+        inputRef.current.focus();
+      }
+    })
+
     const toggleShowCustomEvent = useCallback(() => {
       setShowCustomEvent(!showCustomEvent);
     }, [showCustomEvent]);
@@ -218,7 +225,11 @@ export const Player = forwardRef<PlayerNativeElement, PlayerProps>(
     const triggerEvent = useCallback(
       (eventName) => {
         if (eventName) {
-          dispatch(monitorSlice.actions.triggerEvent(eventName));
+          const eventObj = {
+            name: eventName,
+            ip: piHost.phone?.ip
+          }
+          dispatch(monitorSlice.actions.triggerEvent(eventObj));
         } else {
           console.error("missing eventName, not sending");
         }
@@ -226,7 +237,7 @@ export const Player = forwardRef<PlayerNativeElement, PlayerProps>(
           toggleShowCustomEvent();
         }
       },
-      [dispatch, showCustomEvent, toggleShowCustomEvent]
+      [dispatch, showCustomEvent, toggleShowCustomEvent, piHost.phone?.ip]
     );
 
     /**
@@ -447,8 +458,8 @@ export const Player = forwardRef<PlayerNativeElement, PlayerProps>(
                   </Layer>
                 ) : null}
                 {showControls &&
-                showStatsOverlay &&
-                videoProperties !== undefined ? (
+                  showStatsOverlay &&
+                  videoProperties !== undefined ? (
                   <Stats
                     format={format}
                     videoProperties={videoProperties}
@@ -503,6 +514,7 @@ export const Player = forwardRef<PlayerNativeElement, PlayerProps>(
         )}
         <div style={{ display: showCustomEvent ? "block" : "none" }}>
           <CustomEvent
+            inputRef={inputRef}
             eventTriggerer={(eventName) => {
               triggerEvent(eventName);
             }}
