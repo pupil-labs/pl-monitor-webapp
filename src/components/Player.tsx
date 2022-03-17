@@ -258,7 +258,6 @@ export const Player = forwardRef<PlayerNativeElement, PlayerProps>(
       if (!!piHost.lastError) {
         setShowSnackbar(true)
         setMessage(piHost.lastError)
-        dispatch(monitorSlice.actions.recordingMessageReceived(piHost.lastError));
       }
     }, [piHost, dispatch]);
 
