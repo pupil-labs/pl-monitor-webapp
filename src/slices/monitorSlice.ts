@@ -148,6 +148,10 @@ type EventPayload = {
   name: string;
   ip: string;
 };
+type DeviceSnackbarMessage = {
+  ip: string;
+  message: string;
+};
 
 interface PiHostApiError {
   ip: string;
@@ -200,7 +204,11 @@ export const monitorSlice = createSlice({
       state.devices[action.meta.arg].lastError = "";
     });
     builder.addCase(startRecording.rejected, (state, action: any) => {
-      state.devices[action.meta.arg].lastError = action.payload.error || "";
+      let error = "";
+      if (action.payload.error) {
+        error = `${action.payload.error}`;
+      }
+      state.devices[action.meta.arg].lastError = error;
     });
   },
   reducers: {
@@ -224,9 +232,12 @@ export const monitorSlice = createSlice({
       }
       state.devices[phone.ip].phone = phone;
     },
-    recordingMessageReceived: (state, action: PayloadAction<string>) => {
-      const message = action.payload;
-      state.messages.push(message);
+    setDeviceSnackbar: (
+      state,
+      action: PayloadAction<DeviceSnackbarMessage>
+    ) => {
+      const { ip, message } = action.payload;
+      state.devices[ip].lastError = message;
     },
     phoneConnectionStateChanged: (
       state,

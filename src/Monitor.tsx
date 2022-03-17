@@ -27,7 +27,6 @@ export const NetworkDevice = (props: NetworkDeviceProps) => {
   const dispatch = useDispatch();
 
   const startPIWebsocketHandler = () => {
-    dispatch(monitorSlice.actions.recordingMessageReceived("Test message"));
     dispatch(
       monitorSlice.actions.phoneConnectionStateChanged({
         ip: device.ip,

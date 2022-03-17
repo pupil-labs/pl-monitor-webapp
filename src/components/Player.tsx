@@ -252,14 +252,17 @@ export const Player = forwardRef<PlayerNativeElement, PlayerProps>(
     const [message, setMessage] = useState("");
     const handleClose = useCallback(() => {
       setShowSnackbar(!showSnackbar);
+      dispatch(
+        monitorSlice.actions.setDeviceSnackbar({ ip: piHost.ip, message: "" })
+      );
     }, [showSnackbar]);
 
     useEffect(() => {
-      if (!!piHost.lastError) {
-        setShowSnackbar(true)
-        setMessage(piHost.lastError)
+      if (piHost.lastError) {
+        setShowSnackbar(true);
+        setMessage(piHost.lastError);
       }
-    }, [piHost, dispatch]);
+    }, [piHost.lastError]);
 
     const triggerEvent = useCallback(
       (eventName) => {
@@ -499,8 +502,8 @@ export const Player = forwardRef<PlayerNativeElement, PlayerProps>(
                   </Layer>
                 ) : null}
                 {showControls &&
-                  showStatsOverlay &&
-                  videoProperties !== undefined ? (
+                showStatsOverlay &&
+                videoProperties !== undefined ? (
                   <Stats
                     format={format}
                     videoProperties={videoProperties}
@@ -509,7 +512,7 @@ export const Player = forwardRef<PlayerNativeElement, PlayerProps>(
                   />
                 ) : null}
                 <Snackbar
-                  anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+                  anchorOrigin={{ vertical: "top", horizontal: "center" }}
                   open={showSnackbar}
                   autoHideDuration={3000}
                   onClose={handleClose}
