@@ -248,6 +248,20 @@ export const Player = forwardRef<PlayerNativeElement, PlayerProps>(
       }
     });
 
+    const [showSnackbar, setShowSnackbar] = useState(false);
+    const [message, setMessage] = useState("");
+    const handleClose = useCallback(() => {
+      setShowSnackbar(!showSnackbar);
+    }, [showSnackbar]);
+
+    useEffect(() => {
+      if (!!piHost.lastError) {
+        setShowSnackbar(true)
+        setMessage(piHost.lastError)
+        dispatch(monitorSlice.actions.recordingMessageReceived(piHost.lastError));
+      }
+    }, [piHost.lastError, dispatch]);
+
     const triggerEvent = useCallback(
       (eventName) => {
         if (eventName && piHost.phone) {
@@ -387,7 +401,6 @@ export const Player = forwardRef<PlayerNativeElement, PlayerProps>(
       };
     }, []);
 
-    const handleClose = () => {};
     return (
       <PlayerArea>
         <PhoneStatus>
@@ -487,8 +500,8 @@ export const Player = forwardRef<PlayerNativeElement, PlayerProps>(
                   </Layer>
                 ) : null}
                 {showControls &&
-                showStatsOverlay &&
-                videoProperties !== undefined ? (
+                  showStatsOverlay &&
+                  videoProperties !== undefined ? (
                   <Stats
                     format={format}
                     videoProperties={videoProperties}
@@ -497,16 +510,19 @@ export const Player = forwardRef<PlayerNativeElement, PlayerProps>(
                   />
                 ) : null}
                 <Snackbar
-                  open={!!piHost.lastError}
-                  autoHideDuration={2000}
+                  anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+                  open={showSnackbar}
+                  autoHideDuration={3000}
                   onClose={handleClose}
                 >
                   <Alert
+                    style={{ backgroundColor: "rgba(38,50,56,0.8)" }}
                     onClose={handleClose}
                     severity="error"
+                    variant="filled"
                     sx={{ width: "100%" }}
                   >
-                    {piHost.lastError}
+                    {message}
                   </Alert>
                 </Snackbar>
               </Container>
