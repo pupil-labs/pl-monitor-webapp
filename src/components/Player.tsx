@@ -253,7 +253,7 @@ export const Player = forwardRef<PlayerNativeElement, PlayerProps>(
     const handleClose = useCallback(() => {
       setShowSnackbar(!showSnackbar);
       dispatch(
-        monitorSlice.actions.setDeviceSnackbar({ ip: piHost.ip, message: "" })
+        monitorSlice.actions.setDeviceLastError({ ip: piHost.ip, message: "" })
       );
     }, [showSnackbar]);
 

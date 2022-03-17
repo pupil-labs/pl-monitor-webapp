@@ -232,7 +232,7 @@ export const monitorSlice = createSlice({
       }
       state.devices[phone.ip].phone = phone;
     },
-    setDeviceSnackbar: (
+    setDeviceLastError: (
       state,
       action: PayloadAction<DeviceSnackbarMessage>
     ) => {
