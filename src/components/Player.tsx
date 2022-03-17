@@ -260,7 +260,7 @@ export const Player = forwardRef<PlayerNativeElement, PlayerProps>(
         setMessage(piHost.lastError)
         dispatch(monitorSlice.actions.recordingMessageReceived(piHost.lastError));
       }
-    }, [piHost.lastError, dispatch]);
+    }, [piHost, dispatch]);
 
     const triggerEvent = useCallback(
       (eventName) => {
