@@ -198,7 +198,7 @@ export const stopAndSaveRecording = createAsyncThunk<
 
 interface SaveEventPayload {
   name: string;
-  ip: string | undefined;
+  ip: string;
 }
 
 export const saveEvent = createAsyncThunk<
