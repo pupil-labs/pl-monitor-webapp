@@ -86,6 +86,7 @@ interface MonitorState {
   activeDevice?: PiHost;
   presetEvents: string[];
   messages: string[];
+  timestamp: number;
 }
 
 // Define the initial state using that type
@@ -93,6 +94,7 @@ const initialState: MonitorState = {
   presetEvents: ["Event 1", "Event 2", "Event 3", "Event 4", "Event 5"],
   messages: [""],
   devices: {},
+  timestamp: 0,
 };
 
 if (process.env.NODE_ENV === "development") {
@@ -144,10 +146,6 @@ type EditEventPayload = {
   index: number;
 };
 
-type EventPayload = {
-  name: string;
-  ip: string;
-};
 type DeviceSnackbarMessage = {
   ip: string;
   message: string;
@@ -191,6 +189,31 @@ export const stopAndSaveRecording = createAsyncThunk<
   } catch (err: any) {
     return thunkApi.rejectWithValue({
       ip: ip,
+      error: err.body.message,
+    } as PiHostApiError);
+  }
+});
+
+interface eventProp {
+  name: string,
+  ip: string | undefined,
+}
+
+export const saveEvent = createAsyncThunk<
+  Event,
+  eventProp,
+  {
+    rejectValue: PiHostApiError;
+  }
+>("event/saveEvent", async (event, thunkApi) => {
+  const apiClient = new piapi.PIClient({ BASE: `http://${event.ip}:8080/api` });
+  try {
+    const response = await apiClient.events
+      .postEvent({ name: event.name })
+    return response.result as Event
+  } catch (err: any) {
+    return thunkApi.rejectWithValue({
+      ip: event.ip,
       error: err.body.message,
     } as PiHostApiError);
   }
@@ -301,19 +324,6 @@ export const monitorSlice = createSlice({
     ) => {
       const { ip, hardware } = action.payload;
       state.devices[ip].hardware = hardware;
-    },
-    triggerEvent: (state, action: PayloadAction<EventPayload>) => {
-      const eventName = action.payload.name;
-      const ip = action.payload.ip;
-      const apiClient = new piapi.PIClient({ BASE: `http://${ip}:8080/api` });
-      apiClient.events
-        .postEvent({ name: eventName })
-        .then((value) => {
-          console.log(`event saved`, value.result);
-        })
-        .catch((error) => {
-          console.error(`error sending event to backend`, error);
-        });
     },
     editPresetEvent: (state, action: PayloadAction<EditEventPayload>) => {
       const event = action.payload;
