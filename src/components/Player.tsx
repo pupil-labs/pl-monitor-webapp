@@ -314,7 +314,7 @@ export const Player = forwardRef<PlayerNativeElement, PlayerProps>(
           toggleShowCustomEvent();
         }
       },
-      [dispatch, showCustomEvent, toggleShowCustomEvent, piHost.phone, eventError]
+      [dispatch, showCustomEvent, toggleShowCustomEvent, piHost.phone]
     );
 
     /**
