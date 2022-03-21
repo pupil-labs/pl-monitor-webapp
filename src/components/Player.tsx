@@ -276,12 +276,12 @@ export const Player = forwardRef<PlayerNativeElement, PlayerProps>(
     }, [piHost.lastError]);
 
     const convertUnixTimestamp = (timestamp: number) => {
-      const t = new Date(timestamp / 10000000)
-      const h = t.getHours()
-      const m = t.getMinutes() < 10 ? "0" + t.getMinutes() : t.getMinutes()
-      const s = t.getSeconds() < 10 ? "0" + t.getSeconds() : t.getSeconds()
-      return (`${h}:${m}:${s}`)
-    }
+      const t = new Date(timestamp / 10000000);
+      const h = t.getHours();
+      const m = t.getMinutes() < 10 ? "0" + t.getMinutes() : t.getMinutes();
+      const s = t.getSeconds() < 10 ? "0" + t.getSeconds() : t.getSeconds();
+      return `${h}:${m}:${s}`;
+    };
 
     const triggerEvent = useCallback(
       async (eventName) => {
@@ -290,23 +290,26 @@ export const Player = forwardRef<PlayerNativeElement, PlayerProps>(
             name: eventName,
             ip: piHost.phone.ip,
           };
-          const res = await dispatch(monitorSlice.saveEvent(eventObj))
-          const eventResponse = Promise.resolve(res)
-          eventResponse.then((res) => {
-            setEventError(false)
-            const response = Object.values(res)
-            return response[1].timestamp
-          }).then((timestamp) => {
-            const time = convertUnixTimestamp(timestamp)
-            setEventSavedMessage(`${eventName} created @ ${time}`)
-            setEventError(false)
-            setShowMessageSnackbar(true)
-          }).catch((error) => {
-            console.error(error.message);
-            setEventSavedMessage(`Event creation unsuccessful`)
-            setEventError(true)
-            setShowMessageSnackbar(true)
-          });
+          const res = await dispatch(monitorSlice.saveEvent(eventObj));
+          const eventResponse = Promise.resolve(res);
+          eventResponse
+            .then((res) => {
+              setEventError(false);
+              const response = Object.values(res);
+              return response[1].timestamp;
+            })
+            .then((timestamp) => {
+              const time = convertUnixTimestamp(timestamp);
+              setEventSavedMessage(`${eventName} created @ ${time}`);
+              setEventError(false);
+              setShowMessageSnackbar(true);
+            })
+            .catch((error) => {
+              console.error(error.message);
+              setEventSavedMessage(`Event creation unsuccessful`);
+              setEventError(true);
+              setShowMessageSnackbar(true);
+            });
         } else {
           console.error("missing eventName, not sending");
         }
@@ -314,7 +317,13 @@ export const Player = forwardRef<PlayerNativeElement, PlayerProps>(
           toggleShowCustomEvent();
         }
       },
-      [dispatch, showCustomEvent, toggleShowCustomEvent, piHost.phone, eventError]
+      [
+        dispatch,
+        showCustomEvent,
+        toggleShowCustomEvent,
+        piHost.phone,
+        eventError,
+      ]
     );
 
     /**
@@ -438,20 +447,20 @@ export const Player = forwardRef<PlayerNativeElement, PlayerProps>(
     useEffect(() => {
       const keyDownHandler = (event: KeyboardEvent) => {
         switch (event.key) {
-          case '1':
-            triggerEvent(eventMenu[0])
+          case "1":
+            triggerEvent(eventMenu[0]);
             break;
-          case '2':
-            triggerEvent(eventMenu[1])
+          case "2":
+            triggerEvent(eventMenu[1]);
             break;
-          case '3':
-            triggerEvent(eventMenu[2])
+          case "3":
+            triggerEvent(eventMenu[2]);
             break;
-          case '4':
-            triggerEvent(eventMenu[3])
+          case "4":
+            triggerEvent(eventMenu[3]);
             break;
-          case '5':
-            triggerEvent(eventMenu[4])
+          case "5":
+            triggerEvent(eventMenu[4]);
             break;
         }
       };
@@ -560,8 +569,8 @@ export const Player = forwardRef<PlayerNativeElement, PlayerProps>(
                   </Layer>
                 ) : null}
                 {showControls &&
-                  showStatsOverlay &&
-                  videoProperties !== undefined ? (
+                showStatsOverlay &&
+                videoProperties !== undefined ? (
                   <Stats
                     format={format}
                     videoProperties={videoProperties}
@@ -594,7 +603,13 @@ export const Player = forwardRef<PlayerNativeElement, PlayerProps>(
                   <Alert
                     style={{ backgroundColor: "rgba(38,50,56,0.8)" }}
                     onClose={handleEventSnackClose}
-                    icon={eventError ? <ErrorOutlineOutlined fontSize="inherit" /> : <></>}
+                    icon={
+                      eventError ? (
+                        <ErrorOutlineOutlined fontSize="inherit" />
+                      ) : (
+                        <></>
+                      )
+                    }
                     severity="error"
                     variant="filled"
                     sx={{ width: "100%" }}
