@@ -20,13 +20,9 @@ export enum ConnectionState {
   CONNECTING = "connecting",
   UNKNOWN = "unknown",
 }
-export type Event = {
-  name: string;
-  timestamp: number;
-};
 
 export type RecordingWithEvents = Recording & {
-  events: Event[];
+  events: piapi.Event[];
 };
 
 // export enum SensorKind {
@@ -97,7 +93,7 @@ const initialState: MonitorState = {
   timestamp: 0,
 };
 
-if (process.env.NODE_ENV === "development") {
+if (0 && process.env.NODE_ENV === "development") {
   initialState.devices["1.3.3.7"] = {
     showPlayer: true,
     is_dummy: true,
@@ -118,8 +114,14 @@ if (process.env.NODE_ENV === "development") {
       action: piapi.Recording.action.STOP,
       message: "",
       events: [
-        { name: "dummy event 1", timestamp: 1643793833051380528 },
-        { name: "dummy event 2", timestamp: 1643793833051380528 },
+        {
+          name: "dummy event 1",
+          timestamp: 1643793833051380528,
+        },
+        {
+          name: "dummy event 2",
+          timestamp: 1643793833051380528,
+        },
       ],
     },
     sensors: {},
@@ -200,7 +202,7 @@ interface SaveEventPayload {
 }
 
 export const saveEvent = createAsyncThunk<
-  Event,
+  piapi.Event,
   SaveEventPayload,
   {
     rejectValue: PiHostApiError;
@@ -209,7 +211,7 @@ export const saveEvent = createAsyncThunk<
   const apiClient = new piapi.PIClient({ BASE: `http://${event.ip}:8080/api` });
   try {
     const response = await apiClient.events.postEvent({ name: event.name });
-    return response.result as Event;
+    return response.result as piapi.Event;
   } catch (err: any) {
     return thunkApi.rejectWithValue({
       ip: event.ip,
