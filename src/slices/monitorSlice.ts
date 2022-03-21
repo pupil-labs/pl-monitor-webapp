@@ -194,23 +194,22 @@ export const stopAndSaveRecording = createAsyncThunk<
   }
 });
 
-interface eventProp {
-  name: string,
-  ip: string | undefined,
+interface SaveEventPayload {
+  name: string;
+  ip: string | undefined;
 }
 
 export const saveEvent = createAsyncThunk<
   Event,
-  eventProp,
+  SaveEventPayload,
   {
     rejectValue: PiHostApiError;
   }
 >("event/saveEvent", async (event, thunkApi) => {
   const apiClient = new piapi.PIClient({ BASE: `http://${event.ip}:8080/api` });
   try {
-    const response = await apiClient.events
-      .postEvent({ name: event.name })
-    return response.result as Event
+    const response = await apiClient.events.postEvent({ name: event.name });
+    return response.result as Event;
   } catch (err: any) {
     return thunkApi.rejectWithValue({
       ip: event.ip,
