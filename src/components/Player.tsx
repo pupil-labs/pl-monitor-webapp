@@ -42,6 +42,7 @@ import { EventButton } from "./EventButton";
 import * as piapi from "../pi-api";
 import { StreamingDevices } from "./StreamingDevices";
 import { Alert, Snackbar } from "@mui/material";
+import { ErrorOutlineOutlined } from "@mui/icons-material";
 
 const DEFAULT_FORMAT = Format.RTP_H264;
 
@@ -255,7 +256,17 @@ export const Player = forwardRef<PlayerNativeElement, PlayerProps>(
       dispatch(
         monitorSlice.actions.setDeviceLastError({ ip: piHost.ip, message: "" })
       );
-    }, [showSnackbar]);
+    }, [showSnackbar, dispatch, piHost.ip]);
+
+    const eventMenu = useSelector((state: RootState) => {
+      return state.monitor.presetEvents;
+    });
+    const [showMessageSnackbar, setShowMessageSnackbar] = useState(false);
+    const [eventSavedMessage, setEventSavedMessage] = useState("");
+    const [eventError, setEventError] = useState(false);
+    const handleEventSnackClose = useCallback(() => {
+      setShowMessageSnackbar(!showMessageSnackbar);
+    }, [showMessageSnackbar]);
 
     useEffect(() => {
       if (piHost.lastError) {
@@ -264,14 +275,38 @@ export const Player = forwardRef<PlayerNativeElement, PlayerProps>(
       }
     }, [piHost.lastError]);
 
+    const convertUnixTimestamp = (timestamp: number) => {
+      const t = new Date(timestamp / 10000000)
+      const h = t.getHours()
+      const m = t.getMinutes() < 10 ? "0" + t.getMinutes() : t.getMinutes()
+      const s = t.getSeconds() < 10 ? "0" + t.getSeconds() : t.getSeconds()
+      return (`${h}:${m}:${s}`)
+    }
+
     const triggerEvent = useCallback(
-      (eventName) => {
+      async (eventName) => {
         if (eventName && piHost.phone) {
           const eventObj = {
             name: eventName,
             ip: piHost.phone.ip,
           };
-          dispatch(monitorSlice.actions.triggerEvent(eventObj));
+          const res = await dispatch(monitorSlice.saveEvent(eventObj))
+          const eventResponse = Promise.resolve(res)
+          eventResponse.then((res) => {
+            setEventError(false)
+            const response = Object.values(res)
+            return response[1].timestamp
+          }).then((timestamp) => {
+            const time = convertUnixTimestamp(timestamp)
+            setEventSavedMessage(`${eventName} created @ ${time}`)
+            setEventError(false)
+            setShowMessageSnackbar(true)
+          }).catch((error) => {
+            console.error(error.message);
+            setEventSavedMessage(`Event creation unsuccessful`)
+            setEventError(true)
+            setShowMessageSnackbar(true)
+          });
         } else {
           console.error("missing eventName, not sending");
         }
@@ -279,7 +314,7 @@ export const Player = forwardRef<PlayerNativeElement, PlayerProps>(
           toggleShowCustomEvent();
         }
       },
-      [dispatch, showCustomEvent, toggleShowCustomEvent, piHost.phone]
+      [dispatch, showCustomEvent, toggleShowCustomEvent, piHost.phone, eventError]
     );
 
     /**
@@ -386,9 +421,6 @@ export const Player = forwardRef<PlayerNativeElement, PlayerProps>(
 
     const gazeSensor = piHost.sensors["gaze-WEBSOCKET"];
     const showGazeSensor = gazeSensor && gazeSensor.connected;
-    const eventMenu = useSelector((state: RootState) => {
-      return state.monitor.presetEvents;
-    });
 
     useEffect(() => {
       const keyDownHandler = (event: KeyboardEvent) => {
@@ -402,6 +434,32 @@ export const Player = forwardRef<PlayerNativeElement, PlayerProps>(
         document.removeEventListener("keydown", keyDownHandler, false);
       };
     }, []);
+
+    useEffect(() => {
+      const keyDownHandler = (event: KeyboardEvent) => {
+        switch (event.key) {
+          case '1':
+            triggerEvent(eventMenu[0])
+            break;
+          case '2':
+            triggerEvent(eventMenu[1])
+            break;
+          case '3':
+            triggerEvent(eventMenu[2])
+            break;
+          case '4':
+            triggerEvent(eventMenu[3])
+            break;
+          case '5':
+            triggerEvent(eventMenu[4])
+            break;
+        }
+      };
+      document.addEventListener("keydown", keyDownHandler, false);
+      return () => {
+        document.removeEventListener("keydown", keyDownHandler, false);
+      };
+    }, [triggerEvent, eventMenu]);
 
     return (
       <PlayerArea>
@@ -502,8 +560,8 @@ export const Player = forwardRef<PlayerNativeElement, PlayerProps>(
                   </Layer>
                 ) : null}
                 {showControls &&
-                showStatsOverlay &&
-                videoProperties !== undefined ? (
+                  showStatsOverlay &&
+                  videoProperties !== undefined ? (
                   <Stats
                     format={format}
                     videoProperties={videoProperties}
@@ -525,6 +583,23 @@ export const Player = forwardRef<PlayerNativeElement, PlayerProps>(
                     sx={{ width: "100%" }}
                   >
                     {message}
+                  </Alert>
+                </Snackbar>
+                <Snackbar
+                  anchorOrigin={{ vertical: "top", horizontal: "center" }}
+                  open={showMessageSnackbar}
+                  autoHideDuration={3000}
+                  onClose={handleEventSnackClose}
+                >
+                  <Alert
+                    style={{ backgroundColor: "rgba(38,50,56,0.8)" }}
+                    onClose={handleEventSnackClose}
+                    icon={eventError ? <ErrorOutlineOutlined fontSize="inherit" /> : <></>}
+                    severity="error"
+                    variant="filled"
+                    sx={{ width: "100%" }}
+                  >
+                    {eventSavedMessage}
                   </Alert>
                 </Snackbar>
               </Container>
