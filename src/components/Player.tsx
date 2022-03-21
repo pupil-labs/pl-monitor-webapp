@@ -41,8 +41,7 @@ import { CustomEvent } from "./CustomEvent";
 import { EventButton } from "./EventButton";
 import * as piapi from "../pi-api";
 import { StreamingDevices } from "./StreamingDevices";
-import { Alert, Snackbar } from "@mui/material";
-import { ErrorOutlineOutlined } from "@mui/icons-material";
+import { Alert, AlertColor, Snackbar } from "@mui/material";
 
 const DEFAULT_FORMAT = Format.RTP_H264;
 
@@ -249,72 +248,80 @@ export const Player = forwardRef<PlayerNativeElement, PlayerProps>(
       }
     });
 
+    type SnackbarMessage = {
+      message: string;
+      severity: AlertColor;
+    };
+    const emptySnackbarMessage = {
+      message: "",
+      severity: "info",
+    } as SnackbarMessage;
+    const [snackMessage, setSnackbarMessage] =
+      useState<SnackbarMessage>(emptySnackbarMessage);
     const [showSnackbar, setShowSnackbar] = useState(false);
-    const [message, setMessage] = useState("");
-    const handleClose = useCallback(() => {
-      setShowSnackbar(!showSnackbar);
-      dispatch(
-        monitorSlice.actions.setDeviceLastError({ ip: piHost.ip, message: "" })
-      );
-    }, [showSnackbar, dispatch, piHost.ip]);
+
+    const clearSnackbar = () => {
+      setShowSnackbar(false);
+    };
+    const displaySnackbarMessage = useCallback(
+      (snackMessage: SnackbarMessage) => {
+        setSnackbarMessage(snackMessage);
+        setShowSnackbar(true);
+      },
+      []
+    );
+    useEffect(() => {
+      if (piHost.notifications.length) {
+        const notification =
+          piHost.notifications[piHost.notifications.length - 1];
+        displaySnackbarMessage({
+          message: notification.message,
+          severity: notification.severity,
+        });
+      } else {
+        clearSnackbar();
+      }
+    }, [piHost.notifications, displaySnackbarMessage]);
 
     const eventMenu = useSelector((state: RootState) => {
       return state.monitor.presetEvents;
     });
-    const [showMessageSnackbar, setShowMessageSnackbar] = useState(false);
-    const [eventSavedMessage, setEventSavedMessage] = useState("");
-    const [eventError, setEventError] = useState(false);
-    const handleEventSnackClose = useCallback(() => {
-      setShowMessageSnackbar(!showMessageSnackbar);
-    }, [showMessageSnackbar]);
-
-    useEffect(() => {
-      if (piHost.lastError) {
-        setShowSnackbar(true);
-        setMessage(piHost.lastError);
-      }
-    }, [piHost.lastError]);
 
     const convertUnixTimestamp = (timestamp: number) => {
-      const t = new Date(timestamp / 10000000)
-      const h = t.getHours()
-      const m = t.getMinutes() < 10 ? "0" + t.getMinutes() : t.getMinutes()
-      const s = t.getSeconds() < 10 ? "0" + t.getSeconds() : t.getSeconds()
-      return (`${h}:${m}:${s}`)
-    }
+      const t = new Date(timestamp / 1000000);
+      const h = t.getHours();
+      const m = t.getMinutes() < 10 ? "0" + t.getMinutes() : t.getMinutes();
+      const s = t.getSeconds() < 10 ? "0" + t.getSeconds() : t.getSeconds();
+      return `${h}:${m}:${s}`;
+    };
+
+    useEffect(() => {
+      const events = piHost.current_recording?.events;
+      if (events && events.length) {
+        const event = events[events.length - 1];
+        const humanTime = convertUnixTimestamp(event.timestamp);
+        const message = `${event.name} created @ ${humanTime}`;
+        displaySnackbarMessage({
+          message: message,
+          severity: "info",
+        });
+      }
+    }, [piHost.current_recording?.events, displaySnackbarMessage]);
 
     const triggerEvent = useCallback(
-      async (eventName) => {
+      (eventName) => {
         if (eventName && piHost.phone) {
-          const eventObj = {
+          const saveEventPayload = {
             name: eventName,
             ip: piHost.phone.ip,
           };
-          const res = await dispatch(monitorSlice.saveEvent(eventObj))
-          const eventResponse = Promise.resolve(res)
-          eventResponse.then((res) => {
-            setEventError(false)
-            const response = Object.values(res)
-            return response[1].timestamp
-          }).then((timestamp) => {
-            const time = convertUnixTimestamp(timestamp)
-            setEventSavedMessage(`${eventName} created @ ${time}`)
-            setEventError(false)
-            setShowMessageSnackbar(true)
-          }).catch((error) => {
-            console.error(error.message);
-            setEventSavedMessage(`Event creation unsuccessful`)
-            setEventError(true)
-            setShowMessageSnackbar(true)
-          });
-        } else {
-          console.error("missing eventName, not sending");
+          dispatch(monitorSlice.saveEvent(saveEventPayload));
         }
         if (showCustomEvent) {
           toggleShowCustomEvent();
         }
       },
-      [dispatch, showCustomEvent, toggleShowCustomEvent, piHost.phone]
+      [dispatch, piHost.phone, showCustomEvent, toggleShowCustomEvent]
     );
 
     /**
@@ -438,20 +445,20 @@ export const Player = forwardRef<PlayerNativeElement, PlayerProps>(
     useEffect(() => {
       const keyDownHandler = (event: KeyboardEvent) => {
         switch (event.key) {
-          case '1':
-            triggerEvent(eventMenu[0])
+          case "1":
+            triggerEvent(eventMenu[0]);
             break;
-          case '2':
-            triggerEvent(eventMenu[1])
+          case "2":
+            triggerEvent(eventMenu[1]);
             break;
-          case '3':
-            triggerEvent(eventMenu[2])
+          case "3":
+            triggerEvent(eventMenu[2]);
             break;
-          case '4':
-            triggerEvent(eventMenu[3])
+          case "4":
+            triggerEvent(eventMenu[3]);
             break;
-          case '5':
-            triggerEvent(eventMenu[4])
+          case "5":
+            triggerEvent(eventMenu[4]);
             break;
         }
       };
@@ -560,8 +567,8 @@ export const Player = forwardRef<PlayerNativeElement, PlayerProps>(
                   </Layer>
                 ) : null}
                 {showControls &&
-                  showStatsOverlay &&
-                  videoProperties !== undefined ? (
+                showStatsOverlay &&
+                videoProperties !== undefined ? (
                   <Stats
                     format={format}
                     videoProperties={videoProperties}
@@ -572,34 +579,24 @@ export const Player = forwardRef<PlayerNativeElement, PlayerProps>(
                 <Snackbar
                   anchorOrigin={{ vertical: "top", horizontal: "center" }}
                   open={showSnackbar}
-                  autoHideDuration={3000}
-                  onClose={handleClose}
+                  autoHideDuration={2000}
+                  onClose={clearSnackbar}
                 >
                   <Alert
-                    style={{ backgroundColor: "rgba(38,50,56,0.8)" }}
-                    onClose={handleClose}
-                    severity="error"
+                    style={
+                      {
+                        info: { background: "rgba(38,50,56,0.8)" },
+                        error: { background: "rgba(211,47,47,0.8)" },
+                        warning: { background: "rgba(237,108,2,0.8)" },
+                        success: { background: "rgba(46,125,50,0.8)" },
+                      }[snackMessage.severity]
+                    }
+                    onClose={clearSnackbar}
+                    severity={snackMessage.severity}
                     variant="filled"
                     sx={{ width: "100%" }}
                   >
-                    {message}
-                  </Alert>
-                </Snackbar>
-                <Snackbar
-                  anchorOrigin={{ vertical: "top", horizontal: "center" }}
-                  open={showMessageSnackbar}
-                  autoHideDuration={3000}
-                  onClose={handleEventSnackClose}
-                >
-                  <Alert
-                    style={{ backgroundColor: "rgba(38,50,56,0.8)" }}
-                    onClose={handleEventSnackClose}
-                    icon={eventError ? <ErrorOutlineOutlined fontSize="inherit" /> : <></>}
-                    severity="error"
-                    variant="filled"
-                    sx={{ width: "100%" }}
-                  >
-                    {eventSavedMessage}
+                    {snackMessage.message}
                   </Alert>
                 </Snackbar>
               </Container>

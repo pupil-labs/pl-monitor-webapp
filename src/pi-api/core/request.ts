@@ -253,7 +253,19 @@ const getResponseBody = async (response: Response): Promise<any> => {
         if (isJSON) {
           return await response.json();
         } else {
-          return await response.text();
+          const data = await response.text();
+          if (
+            contentType === "text/plain" &&
+            data.startsWith("{") &&
+            data.endsWith("}")
+          ) {
+            try {
+              return JSON.parse(data);
+            } catch (error) {
+              console.error("error decoding response as json");
+            }
+            return data;
+          }
         }
       }
     } catch (error) {
