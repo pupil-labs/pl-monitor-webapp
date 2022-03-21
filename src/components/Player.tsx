@@ -276,7 +276,7 @@ export const Player = forwardRef<PlayerNativeElement, PlayerProps>(
           piHost.notifications[piHost.notifications.length - 1];
         displaySnackbarMessage({
           message: notification.message,
-          severity: notification.isError ? "error" : "info",
+          severity: notification.severity,
         });
       } else {
         clearSnackbar();
@@ -584,9 +584,12 @@ export const Player = forwardRef<PlayerNativeElement, PlayerProps>(
                 >
                   <Alert
                     style={
-                      snackMessage.severity == "error"
-                        ? {}
-                        : { backgroundColor: "rgba(38,50,56,0.8)" }
+                      {
+                        info: { background: "rgba(38,50,56,0.8)" },
+                        error: { background: "rgba(211,47,47,0.8)" },
+                        warning: { background: "rgba(237,108,2,0.8)" },
+                        success: { background: "rgba(46,125,50,0.8)" },
+                      }[snackMessage.severity]
                     }
                     onClose={clearSnackbar}
                     severity={snackMessage.severity}

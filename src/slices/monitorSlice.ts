@@ -2,6 +2,7 @@ import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "../store";
 import * as piapi from "../pi-api";
 import { Recording } from "../pi-api";
+import { AlertColor } from "@mui/material";
 
 type IPAddress = string;
 export type Phone = {
@@ -155,7 +156,7 @@ type EditEventPayload = {
 
 type DeviceNotification = {
   message: string;
-  isError: boolean;
+  severity: AlertColor;
 };
 
 interface PiHostApiError {
@@ -188,7 +189,7 @@ export const stopAndSaveRecording = createAsyncThunk<
   {
     rejectValue: PiHostApiError;
   }
->("recordings/startRecording", async (ip: IPAddress, thunkApi) => {
+>("recordings/stopAndSaveRecording", async (ip: IPAddress, thunkApi) => {
   const apiClient = new piapi.PIClient({ BASE: `http://${ip}:8080/api` });
   try {
     const response = await apiClient.recording.postRecordingStopAndSave();
@@ -227,11 +228,28 @@ export const monitorSlice = createSlice({
   name: "phone",
   initialState,
   extraReducers: (builder) => {
-    builder.addCase(startRecording.fulfilled, (state, action) => {});
+    builder.addCase(startRecording.fulfilled, (state, action) => {
+      state.devices[action.meta.arg].notifications.push({
+        message: `Recording started: ${action.payload.id}`,
+        severity: "info",
+      });
+    });
     builder.addCase(startRecording.rejected, (state, action) => {
       state.devices[action.meta.arg].notifications.push({
         message: `Error starting recording: ${action.payload?.error}`,
-        isError: true,
+        severity: "error",
+      });
+    });
+    builder.addCase(stopAndSaveRecording.fulfilled, (state, action) => {
+      state.devices[action.meta.arg].notifications.push({
+        message: `Recording saved`,
+        severity: "success",
+      });
+    });
+    builder.addCase(stopAndSaveRecording.rejected, (state, action) => {
+      state.devices[action.meta.arg].notifications.push({
+        message: `Error stopping recording: ${action.payload?.error}`,
+        severity: "error",
       });
     });
     builder.addCase(saveEvent.fulfilled, (state, action) => {
@@ -248,7 +266,7 @@ export const monitorSlice = createSlice({
     builder.addCase(saveEvent.rejected, (state, action) => {
       state.devices[action.meta.arg.ip].notifications.push({
         message: `Error sending event: ${action.payload?.error}`,
-        isError: true,
+        severity: "error",
       });
     });
   },
