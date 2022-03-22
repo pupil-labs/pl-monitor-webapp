@@ -99,7 +99,7 @@ const initialState: MonitorState = {
   timestamp: 0,
 };
 
-if (0 && process.env.NODE_ENV === "development") {
+if (process.env.NODE_ENV === "development") {
   initialState.devices["1.3.3.7"] = {
     showPlayer: true,
     is_dummy: true,
