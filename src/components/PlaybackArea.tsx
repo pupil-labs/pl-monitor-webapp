@@ -195,7 +195,6 @@ export const PlaybackArea: React.FC<PlaybackAreaProps> = ({
         videocodec: "h264",
       })
     );
-    console.log("zzz", ws, rtsp);
     return (
       <WsRtspVideo
         key={refresh}

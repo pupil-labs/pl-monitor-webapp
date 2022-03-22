@@ -158,6 +158,11 @@ export const Player = forwardRef<PlayerNativeElement, PlayerProps>(
 
     const onPlaying = useCallback(
       (props: VideoProperties) => {
+        const el = props.el as HTMLMediaElement;
+        if (el && el.buffered !== undefined && el.buffered.length > 0) {
+          const endTime = el.buffered.end(el.buffered.length - 1);
+          el.currentTime = endTime;
+        }
         setVideoProperties(props);
         setWaiting(false);
         setVolume(props.volume);
@@ -167,7 +172,6 @@ export const Player = forwardRef<PlayerNativeElement, PlayerProps>(
       },
       [setWaiting]
     );
-
     const onPlayPause = useCallback(() => {
       if (play) {
         setPlay(false);
@@ -328,12 +332,15 @@ export const Player = forwardRef<PlayerNativeElement, PlayerProps>(
      * Refresh when changing visibility (e.g. when you leave a tab the
      * video will halt, so when you return we need to play again).
      */
+
     useEffect(() => {
       const cb = () => {
         if (document.visibilityState === "visible") {
+          console.log("vis");
           setPlay(true);
           // setHost(hostname);
         } else if (document.visibilityState === "hidden") {
+          console.log("hid");
           setPlay(false);
           setWaiting(false);
           // setHost("");
