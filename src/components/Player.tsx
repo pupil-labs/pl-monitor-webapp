@@ -439,6 +439,7 @@ export const Player = forwardRef<PlayerNativeElement, PlayerProps>(
         if (event.key === "Escape") {
           setShowCustomEvent(false);
           setShowSettings(false);
+          setShowStreamingDevices(false);
         }
       };
       document.addEventListener("keydown", keyDownHandler, false);
