@@ -254,6 +254,20 @@ export const Controls: React.FC<ControlsProps> = ({
         isHTMLMediaElement(el) && el.buffered.length > 0
           ? start + el.buffered.end(el.buffered.length - 1)
           : played;
+
+      // <antidrift>
+      // When switching tab in a browser or if the video element is not in view
+      // the browser may cause the video to sleep which leads to player being
+      // delayed, we check for this and reset to latest video time if the drift
+      // is over a certain threshold. This breaks the seek bar, but we don't use it.
+      const deltaSeconds = Math.abs(played - buffered);
+      const maxDeltaSeconds = 0.3;
+      if (deltaSeconds > maxDeltaSeconds && isHTMLMediaElement(el)) {
+        const videoEl = el as HTMLMediaElement;
+        videoEl.currentTime = videoEl.buffered.end(el.buffered.length - 1);
+      }
+      // </antidrift>
+
       const total = __duration === Infinity ? buffered : __duration;
 
       const counter = `${Duration.fromMillis(played * 1000).toFormat(

@@ -336,11 +336,9 @@ export const Player = forwardRef<PlayerNativeElement, PlayerProps>(
     useEffect(() => {
       const cb = () => {
         if (document.visibilityState === "visible") {
-          console.log("vis");
           setPlay(true);
           // setHost(hostname);
         } else if (document.visibilityState === "hidden") {
-          console.log("hid");
           setPlay(false);
           setWaiting(false);
           // setHost("");
