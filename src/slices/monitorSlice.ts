@@ -178,7 +178,7 @@ export const startRecording = createAsyncThunk<
   } catch (err: any) {
     return thunkApi.rejectWithValue({
       ip: ip,
-      error: err.body.message,
+      error: err.body?.message || "network error",
     } as PiHostApiError);
   }
 });
@@ -197,7 +197,7 @@ export const stopAndSaveRecording = createAsyncThunk<
   } catch (err: any) {
     return thunkApi.rejectWithValue({
       ip: ip,
-      error: err.body.message,
+      error: err.body?.message || "network error",
     } as PiHostApiError);
   }
 });
@@ -219,7 +219,7 @@ export const saveEvent = createAsyncThunk<
   } catch (err: any) {
     return thunkApi.rejectWithValue({
       ip: event.ip,
-      error: err.body.message,
+      error: err.body?.message || "network error",
     } as PiHostApiError);
   }
 });
