@@ -37,7 +37,7 @@ export class RecordingService {
       method: "POST",
       url: "/recording:stop_and_save",
       errors: {
-        500: `recording stop and save failed <br />Possible errors: <br /> - Recording not running <br /> - template has required fields`,
+        400: `recording stop and save failed <br />Possible errors: <br /> - Recording not running <br /> - template has required fields`,
       },
     });
   }
@@ -53,7 +53,7 @@ export class RecordingService {
       method: "POST",
       url: "/recording:cancel",
       errors: {
-        500: `recording cancel failed <br />Possible errors: <br /> - Recording not running`,
+        400: `recording cancel failed <br />Possible errors: <br /> - Recording not running`,
       },
     });
   }
