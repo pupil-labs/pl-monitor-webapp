@@ -32,8 +32,13 @@ export const StreamingDevices: React.FC<StreamingDevicesProps> = ({
     [dispatch]
   );
   const handleDeviceClick = (device: any) => {
-    toggleDevice(device);
-    toggleView();
+    if (0) {
+      // TODO(dan): for when port is available in NetworkDevice model
+      window.open(`http://${device.ip}:${device.port}/`, "_blank");
+    } else {
+      toggleDevice(device);
+      toggleView();
+    }
   };
 
   return (
