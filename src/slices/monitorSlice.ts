@@ -173,12 +173,14 @@ export const startRecording = createAsyncThunk<
 >("recordings/startRecording", async (ip: IPAddress, thunkApi) => {
   const apiClient = new piapi.PIClient({ BASE: `http://${ip}:8080/api` });
   try {
-    const response = await apiClient.recording.postRecordingStart();
+    const promise = apiClient.recording.postRecordingStart();
+    setTimeout(() => promise.cancel(), 500);
+    const response = await promise;
     return response.result as piapi.RecordingStart;
   } catch (err: any) {
     return thunkApi.rejectWithValue({
       ip: ip,
-      error: err.body?.message || "network error",
+      error: err.body?.message || "Network error",
     } as PiHostApiError);
   }
 });
@@ -192,12 +194,14 @@ export const stopAndSaveRecording = createAsyncThunk<
 >("recordings/stopAndSaveRecording", async (ip: IPAddress, thunkApi) => {
   const apiClient = new piapi.PIClient({ BASE: `http://${ip}:8080/api` });
   try {
-    const response = await apiClient.recording.postRecordingStopAndSave();
+    const promise = apiClient.recording.postRecordingStopAndSave();
+    setTimeout(() => promise.cancel(), 1000);
+    const response = await promise;
     return response.result as piapi.RecordingStop;
   } catch (err: any) {
     return thunkApi.rejectWithValue({
       ip: ip,
-      error: err.body?.message || "network error",
+      error: err.body?.message || "Network error",
     } as PiHostApiError);
   }
 });
@@ -214,12 +218,14 @@ export const saveEvent = createAsyncThunk<
 >("event/saveEvent", async (event, thunkApi) => {
   const apiClient = new piapi.PIClient({ BASE: `http://${event.ip}:8080/api` });
   try {
-    const response = await apiClient.events.postEvent({ name: event.name });
+    const promise = apiClient.events.postEvent({ name: event.name });
+    setTimeout(() => promise.cancel(), 500);
+    const response = await promise;
     return response.result as piapi.Event;
   } catch (err: any) {
     return thunkApi.rejectWithValue({
       ip: event.ip,
-      error: err.body?.message || "network error",
+      error: err.body?.message || "Network error",
     } as PiHostApiError);
   }
 });
