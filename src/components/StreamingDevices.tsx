@@ -31,6 +31,10 @@ export const StreamingDevices: React.FC<StreamingDevicesProps> = ({
     },
     [dispatch]
   );
+  const handleDeviceClick = (device: any) => {
+    toggleDevice(device);
+    toggleView();
+  };
 
   return (
     <StreamingContainer>
@@ -93,10 +97,7 @@ export const StreamingDevices: React.FC<StreamingDevicesProps> = ({
                 {device.online ? (
                   <OutboundLink
                     aria-label="connect"
-                    onClick={() => {
-                      toggleDevice(device);
-                      toggleView();
-                    }}
+                    onClick={() => handleDeviceClick(device)}
                   >
                     <OpenInNewIcon />
                   </OutboundLink>

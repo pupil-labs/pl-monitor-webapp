@@ -5,7 +5,13 @@ import { Monitor } from "./Monitor";
 export class App extends React.Component {
   render() {
     let host = window.location.hostname;
-    host = "pi.local";
+    if (
+      host.includes("pistream") ||
+      host.includes("localhost") ||
+      host.includes("127.0.0.1")
+    ) {
+      host = "pi.local";
+    }
     return (
       <div className="App">
         <Monitor host={host}></Monitor>
