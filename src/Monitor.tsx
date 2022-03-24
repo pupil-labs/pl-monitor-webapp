@@ -29,11 +29,14 @@ export const NetworkDevice = (props: NetworkDeviceProps) => {
   const startPIWebsocketHandler = () => {
     dispatch(
       monitorSlice.actions.phoneConnectionStateChanged({
-        ip: device.ip,
+        hostId: device.hostId,
         state: monitorSlice.ConnectionState.CONNECTING,
       })
     );
-    let client = new ReconnectingWebSocket(`ws://${device.ip}:8080/api/status`);
+    const parseUrl = new URL(device.apiUrl);
+    let client = new ReconnectingWebSocket(
+      `ws://${parseUrl.host}${parseUrl.pathname}/status`
+    );
     let stopped = false;
 
     client.onerror = function () {
@@ -43,7 +46,7 @@ export const NetworkDevice = (props: NetworkDeviceProps) => {
       console.log(`WebSocket Opened`, client);
       dispatch(
         monitorSlice.actions.phoneConnectionStateChanged({
-          ip: device.ip,
+          hostId: device.hostId,
           state: monitorSlice.ConnectionState.CONNECTED,
         })
       );
@@ -58,7 +61,7 @@ export const NetworkDevice = (props: NetworkDeviceProps) => {
       if (!stopped) {
         dispatch(
           monitorSlice.actions.phoneConnectionStateChanged({
-            ip: device.ip,
+            hostId: device.hostId,
             state: monitorSlice.ConnectionState.DISCONNECTED,
           })
         );
@@ -89,12 +92,16 @@ export const NetworkDevice = (props: NetworkDeviceProps) => {
             );
             break;
           case "NetworkDevice":
-            dispatch(monitorSlice.actions.deviceDetected(messageJSON.data.ip));
+            const ip = messageJSON.data.ip;
+            const port = messageJSON.data.port || 8080;
+            dispatch(
+              monitorSlice.actions.deviceDetected({ ip: ip, port: port })
+            );
             break;
           case "Recording":
             dispatch(
               monitorSlice.actions.recordingStatusReceived({
-                ip: device.ip,
+                hostId: device.hostId,
                 recording: messageJSON.data,
               })
             );
@@ -102,7 +109,7 @@ export const NetworkDevice = (props: NetworkDeviceProps) => {
           case "Hardware":
             dispatch(
               monitorSlice.actions.hardwareStatusReceived({
-                ip: device.ip,
+                hostId: device.hostId,
                 hardware: messageJSON.data,
               })
             );
@@ -167,7 +174,7 @@ export const Monitor = (props: MonitorProps) => {
                 display: device.showPlayer ? "block" : "none",
                 height: "100%",
               }}
-              key={device.ip}
+              key={device.hostId}
             >
               {device.showPlayer ? (
                 <Player
