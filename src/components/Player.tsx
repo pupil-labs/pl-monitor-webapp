@@ -42,6 +42,7 @@ import { EventButton } from "./EventButton";
 import * as piapi from "../pi-api";
 import { StreamingDevices } from "./StreamingDevices";
 import { Alert, AlertColor, Snackbar } from "@mui/material";
+import { ElapsedTimer } from "./ElapsedTimer"
 
 const DEFAULT_FORMAT = Format.RTP_H264;
 
@@ -301,7 +302,7 @@ export const Player = forwardRef<PlayerNativeElement, PlayerProps>(
 
     useEffect(() => {
       const events = piHost.current_recording?.events;
-      if (events && events.length) {
+      if (events && events.length && isRecording) {
         const event = events[events.length - 1];
         const humanTime = convertUnixTimestamp(event.timestamp);
         const message = `${event.name} created @ ${humanTime}`;
@@ -310,7 +311,7 @@ export const Player = forwardRef<PlayerNativeElement, PlayerProps>(
           severity: "info",
         });
       }
-    }, [piHost.current_recording?.events, displaySnackbarMessage]);
+    }, [piHost.current_recording?.events, displaySnackbarMessage, isRecording]);
 
     const triggerEvent = useCallback(
       (eventName) => {
@@ -605,6 +606,10 @@ export const Player = forwardRef<PlayerNativeElement, PlayerProps>(
                     {snackMessage.message}
                   </Alert>
                 </Snackbar>
+                <ElapsedTimer
+                  recording={piHost.current_recording}
+                  rec_status={isRecording}
+                />
               </Container>
             </Limiter>
           </MediaStreamPlayerContainer>
