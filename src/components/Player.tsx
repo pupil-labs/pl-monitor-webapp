@@ -42,7 +42,7 @@ import { EventButton } from "./EventButton";
 import * as piapi from "../pi-api";
 import { StreamingDevices } from "./StreamingDevices";
 import { Alert, AlertColor, Snackbar } from "@mui/material";
-import { ElapsedTimer } from "./ElapsedTimer"
+import { ElapsedTimer } from "./ElapsedTimer";
 
 const DEFAULT_FORMAT = Format.RTP_H264;
 
@@ -606,10 +606,13 @@ export const Player = forwardRef<PlayerNativeElement, PlayerProps>(
                     {snackMessage.message}
                   </Alert>
                 </Snackbar>
-                <ElapsedTimer
-                  recording={piHost.current_recording}
-                  rec_status={isRecording}
-                />
+                {piHost.current_recording?.action === "START" ? (
+                  <ElapsedTimer
+                    startNanoseconds={
+                      piHost.current_recording?.rec_duration_ns || 0
+                    }
+                  />
+                ) : null}
               </Container>
             </Limiter>
           </MediaStreamPlayerContainer>
