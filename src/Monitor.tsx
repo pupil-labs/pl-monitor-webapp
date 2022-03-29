@@ -29,21 +29,24 @@ export const NetworkDevice = (props: NetworkDeviceProps) => {
   const startPIWebsocketHandler = () => {
     dispatch(
       monitorSlice.actions.phoneConnectionStateChanged({
-        ip: device.ip,
+        hostId: device.hostId,
         state: monitorSlice.ConnectionState.CONNECTING,
       })
     );
-    let client = new ReconnectingWebSocket(`ws://${device.ip}:8080/api/status`);
+    const parseUrl = new URL(device.apiUrl);
+    let client = new ReconnectingWebSocket(
+      `ws://${parseUrl.host}${parseUrl.pathname}/status`
+    );
     let stopped = false;
 
     client.onerror = function () {
-      console.log(`WebSocket Error`, client);
+      console.error(`WebSocket Error`, client);
     };
     client.onopen = function () {
-      console.log(`WebSocket Opened`, client);
+      console.debug(`WebSocket Opened`, client);
       dispatch(
         monitorSlice.actions.phoneConnectionStateChanged({
-          ip: device.ip,
+          hostId: device.hostId,
           state: monitorSlice.ConnectionState.CONNECTED,
         })
       );
@@ -54,11 +57,11 @@ export const NetworkDevice = (props: NetworkDeviceProps) => {
       // heartbeat();
     };
     client.onclose = function () {
-      console.log(`WebSocket Closed`, client);
+      console.debug(`WebSocket Closed`, client);
       if (!stopped) {
         dispatch(
           monitorSlice.actions.phoneConnectionStateChanged({
-            ip: device.ip,
+            hostId: device.hostId,
             state: monitorSlice.ConnectionState.DISCONNECTED,
           })
         );
@@ -66,7 +69,7 @@ export const NetworkDevice = (props: NetworkDeviceProps) => {
     };
 
     client.onmessage = function (message) {
-      console.log("WebSocket Message Received", device, message.data);
+      console.debug("WebSocket Message Received", device, message.data);
       if (typeof message.data === "string") {
         let messageJSON;
         try {
@@ -89,12 +92,16 @@ export const NetworkDevice = (props: NetworkDeviceProps) => {
             );
             break;
           case "NetworkDevice":
-            dispatch(monitorSlice.actions.deviceDetected(messageJSON.data.ip));
+            const ip = messageJSON.data.ip;
+            const port = messageJSON.data.port || 8080;
+            dispatch(
+              monitorSlice.actions.deviceDetected({ ip: ip, port: port })
+            );
             break;
           case "Recording":
             dispatch(
               monitorSlice.actions.recordingStatusReceived({
-                ip: device.ip,
+                hostId: device.hostId,
                 recording: messageJSON.data,
               })
             );
@@ -102,7 +109,7 @@ export const NetworkDevice = (props: NetworkDeviceProps) => {
           case "Hardware":
             dispatch(
               monitorSlice.actions.hardwareStatusReceived({
-                ip: device.ip,
+                hostId: device.hostId,
                 hardware: messageJSON.data,
               })
             );
@@ -142,18 +149,16 @@ export const Monitor = (props: MonitorProps) => {
   });
 
   useEffect(() => {
-    const client = makeApiClient(`http://${props.host}:8080/api`);
+    const client = makeApiClient(`http://${props.host}/api`);
     client.status.getStatus().then((value) => {
-      console.log(
-        value.result.forEach((status) => {
-          switch (status.model) {
-            case "Phone":
-              const phone = status.data as piapi.Phone;
-              dispatch(monitorSlice.actions.phoneStateReceived(phone));
-              break;
-          }
-        })
-      );
+      value.result.forEach((status) => {
+        switch (status.model) {
+          case "Phone":
+            const phone = status.data as piapi.Phone;
+            dispatch(monitorSlice.actions.phoneStateReceived(phone));
+            break;
+        }
+      });
     });
   }, [dispatch, props.host]);
 
@@ -167,7 +172,7 @@ export const Monitor = (props: MonitorProps) => {
                 display: device.showPlayer ? "block" : "none",
                 height: "100%",
               }}
-              key={device.ip}
+              key={device.hostId}
             >
               {device.showPlayer ? (
                 <Player

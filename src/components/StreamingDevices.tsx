@@ -1,6 +1,6 @@
 import React, { useCallback } from "react";
 import styled from "styled-components";
-import { monitorSlice } from "../slices/monitorSlice";
+import { monitorSlice, PiHost } from "../slices/monitorSlice";
 import CloseIcon from "@mui/icons-material/Close";
 import OpenInNewIcon from "@mui/icons-material/OpenInNew";
 import { useSelector, useDispatch } from "react-redux";
@@ -27,17 +27,27 @@ export const StreamingDevices: React.FC<StreamingDevicesProps> = ({
   const dispatch = useDispatch();
   const toggleDevice = useCallback(
     (device) => {
-      dispatch(monitorSlice.actions.showDevicePlayer(device.ip));
+      dispatch(monitorSlice.actions.showDevicePlayer(device.hostId));
     },
     [dispatch]
   );
-  const handleDeviceClick = (device: any) => {
-    if (0) {
-      // TODO(dan): for when port is available in NetworkDevice model
-      window.open(`http://${device.ip}:${device.port}/`, "_blank");
-    } else {
+  const handleDeviceClick = (device: PiHost) => {
+    const newTab = true;
+    const linkToDevice = false;
+
+    if (!newTab) {
       toggleDevice(device);
       toggleView();
+    } else {
+      const deviceApiUrl = new URL(device.apiUrl);
+      if (linkToDevice) {
+        deviceApiUrl.pathname = `/`;
+        window.open(`${deviceApiUrl}`, "_blank");
+      } else {
+        const externalUrl = new URL(window.location.href);
+        externalUrl.search = `?host=${deviceApiUrl.host}`;
+        window.open(`${externalUrl}`, "_blank");
+      }
     }
   };
 
@@ -52,7 +62,7 @@ export const StreamingDevices: React.FC<StreamingDevicesProps> = ({
       <DevicesContainer>
         {Object.values(devices).map((device) => {
           return (
-            <div key={device.ip}>
+            <div key={device.hostId}>
               <Devices>
                 <div>
                   <div>
@@ -97,7 +107,9 @@ export const StreamingDevices: React.FC<StreamingDevicesProps> = ({
                     </span>
                     {device.phone ? device.phone.device_name : "unknown"}
                   </div>
-                  <DeviceInfo>Phone IP: {device.ip}</DeviceInfo>
+                  <DeviceInfo>
+                    Phone IP: {device.phone ? device.phone.ip : "unknown"}
+                  </DeviceInfo>
                 </div>
                 {device.online ? (
                   <OutboundLink

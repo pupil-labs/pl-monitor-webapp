@@ -193,14 +193,14 @@ export const Player = forwardRef<PlayerNativeElement, PlayerProps>(
     const onRecordButton = useCallback(() => {
       if (!isRecording) {
         console.log("starting recording");
-        const res = dispatch(monitorSlice.startRecording(piHost.ip));
+        const res = dispatch(monitorSlice.startRecording(piHost));
         console.log("starting recording response", res);
       } else {
         console.log("stopping recording");
-        const res = dispatch(monitorSlice.stopAndSaveRecording(piHost.ip));
+        const res = dispatch(monitorSlice.stopAndSaveRecording(piHost));
         console.log("stopping recording response", res);
       }
-    }, [dispatch, isRecording, piHost.ip]);
+    }, [dispatch, isRecording, piHost]);
 
     const onScreenshot = useCallback(() => {
       if (videoProperties === undefined) {
@@ -318,7 +318,7 @@ export const Player = forwardRef<PlayerNativeElement, PlayerProps>(
         if (eventName && piHost.phone) {
           const saveEventPayload = {
             name: eventName,
-            ip: piHost.phone.ip,
+            piHost: piHost,
           };
           dispatch(monitorSlice.saveEvent(saveEventPayload));
         }
@@ -326,7 +326,7 @@ export const Player = forwardRef<PlayerNativeElement, PlayerProps>(
           toggleShowCustomEvent();
         }
       },
-      [dispatch, piHost.phone, showCustomEvent, toggleShowCustomEvent]
+      [dispatch, piHost, showCustomEvent, toggleShowCustomEvent]
     );
 
     /**
