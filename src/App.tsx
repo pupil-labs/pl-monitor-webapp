@@ -4,14 +4,21 @@ import { Monitor } from "./Monitor";
 
 export class App extends React.Component {
   render() {
-    let host = window.location.hostname;
+    let host = window.location.host;
     if (
       host.includes("pistream") ||
       host.includes("localhost") ||
       host.includes("127.0.0.1")
     ) {
-      host = "pi.local";
+      host = "pi.local:8080";
     }
+
+    const currentUrl = new URL(window.location.href);
+    const customHost = currentUrl.searchParams.get("host");
+    if (customHost) {
+      host = customHost;
+    }
+
     return (
       <div className="App">
         <Monitor host={host}></Monitor>

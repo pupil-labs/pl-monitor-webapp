@@ -91,7 +91,7 @@ const initialState: MonitorState = {
 
 if (process.env.NODE_ENV === "development") {
   initialState.devices["1.3.3.7"] = {
-    showPlayer: true,
+    showPlayer: false,
     is_dummy: true,
     online: true,
     state: ConnectionState.DISCONNECTED,
@@ -289,7 +289,9 @@ export const monitorSlice = createSlice({
           state: ConnectionState.DISCONNECTED,
           phone: phone,
           sensors: {},
-          showPlayer: Object.values(state.devices).length < 1,
+          showPlayer:
+            Object.values(state.devices).filter((device) => device.showPlayer)
+              .length < 1,
         };
       }
       state.devices[phone.ip].phone = phone;
@@ -335,7 +337,9 @@ export const monitorSlice = createSlice({
           notifications: [],
           phone: undefined,
           sensors: {},
-          showPlayer: Object.values(state.devices).length < 1,
+          showPlayer:
+            Object.values(state.devices).filter((device) => device.showPlayer)
+              .length < 1,
         };
       }
     },

@@ -40,10 +40,10 @@ export const NetworkDevice = (props: NetworkDeviceProps) => {
     let stopped = false;
 
     client.onerror = function () {
-      console.log(`WebSocket Error`, client);
+      console.error(`WebSocket Error`, client);
     };
     client.onopen = function () {
-      console.log(`WebSocket Opened`, client);
+      console.debug(`WebSocket Opened`, client);
       dispatch(
         monitorSlice.actions.phoneConnectionStateChanged({
           hostId: device.hostId,
@@ -57,7 +57,7 @@ export const NetworkDevice = (props: NetworkDeviceProps) => {
       // heartbeat();
     };
     client.onclose = function () {
-      console.log(`WebSocket Closed`, client);
+      console.debug(`WebSocket Closed`, client);
       if (!stopped) {
         dispatch(
           monitorSlice.actions.phoneConnectionStateChanged({
@@ -69,7 +69,7 @@ export const NetworkDevice = (props: NetworkDeviceProps) => {
     };
 
     client.onmessage = function (message) {
-      console.log("WebSocket Message Received", device, message.data);
+      console.debug("WebSocket Message Received", device, message.data);
       if (typeof message.data === "string") {
         let messageJSON;
         try {
@@ -149,18 +149,16 @@ export const Monitor = (props: MonitorProps) => {
   });
 
   useEffect(() => {
-    const client = makeApiClient(`http://${props.host}:8080/api`);
+    const client = makeApiClient(`http://${props.host}/api`);
     client.status.getStatus().then((value) => {
-      console.log(
-        value.result.forEach((status) => {
-          switch (status.model) {
-            case "Phone":
-              const phone = status.data as piapi.Phone;
-              dispatch(monitorSlice.actions.phoneStateReceived(phone));
-              break;
-          }
-        })
-      );
+      value.result.forEach((status) => {
+        switch (status.model) {
+          case "Phone":
+            const phone = status.data as piapi.Phone;
+            dispatch(monitorSlice.actions.phoneStateReceived(phone));
+            break;
+        }
+      });
     });
   }, [dispatch, props.host]);
 

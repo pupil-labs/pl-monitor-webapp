@@ -32,14 +32,22 @@ export const StreamingDevices: React.FC<StreamingDevicesProps> = ({
     [dispatch]
   );
   const handleDeviceClick = (device: PiHost) => {
-    if (1) {
-      // TODO(dan): for when port is available in NetworkDevice model
-      const externalUrl = new URL(device.apiUrl);
-      externalUrl.pathname = "/";
-      window.open(`${externalUrl}`, "_blank");
-    } else {
+    const newTab = true;
+    const linkToDevice = false;
+
+    if (!newTab) {
       toggleDevice(device);
       toggleView();
+    } else {
+      const deviceApiUrl = new URL(device.apiUrl);
+      if (linkToDevice) {
+        deviceApiUrl.pathname = `/`;
+        window.open(`${deviceApiUrl}`, "_blank");
+      } else {
+        const externalUrl = new URL(window.location.href);
+        externalUrl.search = `?host=${deviceApiUrl.host}`;
+        window.open(`${externalUrl}`, "_blank");
+      }
     }
   };
 
