@@ -32,22 +32,25 @@ export const StreamingDevices: React.FC<StreamingDevicesProps> = ({
     [dispatch]
   );
   const handleDeviceClick = (device: PiHost) => {
-    const newTab = true;
-    const linkToDevice = false;
+    const isDevServer = false; //isDevelopmentServer();
+    const deviceApiUrl = new URL(device.apiUrl);
 
-    if (!newTab) {
-      toggleDevice(device);
-      toggleView();
-    } else {
-      const deviceApiUrl = new URL(device.apiUrl);
-      if (linkToDevice) {
-        deviceApiUrl.pathname = `/`;
-        window.open(`${deviceApiUrl}`, "_blank");
+    if (isDevServer) {
+      const openInSameTab = true;
+      if (openInSameTab) {
+        // switch to device in current tab
+        toggleDevice(device);
+        toggleView();
       } else {
+        // load device in new tab on current host
         const externalUrl = new URL(window.location.href);
         externalUrl.search = `?host=${deviceApiUrl.host}`;
         window.open(`${externalUrl}`, "_blank");
       }
+    } else {
+      // load device in new tab on device host
+      deviceApiUrl.pathname = `/`;
+      window.open(`${deviceApiUrl}`, "_blank");
     }
   };
 
