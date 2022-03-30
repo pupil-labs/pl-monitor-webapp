@@ -81,37 +81,42 @@ export const StreamingDevices: React.FC<StreamingDevicesProps> = ({
                       >
                         <FiberManualRecordIcon sx={{ fontSize: "1em" }} />
                       </span>
-                      <span
-                        style={{
-                          color: device.gazeSensor?.connected
-                            ? deepPurple["A200"]
-                            : "gray",
-                        }}
-                      >
-                        <EyeCameraIcon sx={{ fontSize: "1em" }} />
-                      </span>
-                      <span
-                        style={{
-                          color: device.worldSensor?.connected
-                            ? teal["A700"]
-                            : "gray",
-                        }}
-                      >
-                        <WorldCameraIcon sx={{ fontSize: "1em" }} />
-                      </span>
-                      <span>
-                        {device.phone ? (
-                          <BatteryIcon
-                            size="1em"
-                            percent={device.phone.battery_level}
-                          />
-                        ) : null}
-                      </span>
+                      {device.phone ? (
+                        <span>
+                          <span
+                            style={{
+                              color: device.gazeSensor?.connected
+                                ? deepPurple["A200"]
+                                : "gray",
+                            }}
+                          >
+                            <EyeCameraIcon sx={{ fontSize: "1em" }} />
+                          </span>
+                          <span
+                            style={{
+                              color: device.worldSensor?.connected
+                                ? teal["A700"]
+                                : "gray",
+                            }}
+                          >
+                            <WorldCameraIcon sx={{ fontSize: "1em" }} />
+                          </span>
+
+                          <span>
+                            <BatteryIcon
+                              size="1em"
+                              percent={device.phone.battery_level}
+                            />
+                          </span>
+                        </span>
+                      ) : null}
                     </span>
-                    {device.phone ? device.phone.device_name : "unknown"}
+                    <span style={{ paddingLeft: 5 }}>
+                      {device.phone ? device.phone.device_name : "unknown"}
+                    </span>
                   </div>
                   <DeviceInfo>
-                    Phone IP: {device.phone ? device.phone.ip : "unknown"}
+                    Phone IP: {device.phone ? device.phone.ip : device.hostId}
                   </DeviceInfo>
                 </div>
                 {device.online ? (
