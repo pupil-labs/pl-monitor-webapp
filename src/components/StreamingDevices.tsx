@@ -11,6 +11,7 @@ import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
 import { BatteryIcon } from "./Battery";
 import { deepPurple, teal } from "@mui/material/colors";
 import * as piapi from "../pi-api";
+import { isDevelopmentServer } from "../App";
 interface StreamingDevicesProps {
   readonly toggleView: () => void;
 }
@@ -64,6 +65,9 @@ export const StreamingDevices: React.FC<StreamingDevicesProps> = ({
       </StreamingHeader>
       <DevicesContainer>
         {Object.values(devices).map((device) => {
+          if (!device.phone) {
+            return null;
+          }
           return (
             <div key={device.hostId}>
               <Devices>
