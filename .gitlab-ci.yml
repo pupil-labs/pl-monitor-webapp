@@ -14,7 +14,7 @@ build:
     - yarn install
   script:
     - yarn build
-    - export VERSION=$(node -pe "require('./package.json').version")-$CI_COMMIT_SHORT_SHA
+    - export VERSION=`git describe`
     - echo $VERSION > build/version.txt
     - sed -i "s/%%APP_VERSION%%/$VERSION/" build/index.html
     - du -h build
