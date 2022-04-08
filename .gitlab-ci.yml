@@ -14,7 +14,7 @@ build:
     - yarn install
   script:
     - yarn build
-    - export VERSION=`git describe`
+    - export VERSION=`git describe --always --tags --dirty`
     - echo $VERSION > build/version.txt
     - sed -i "s/%%APP_VERSION%%/$VERSION/" build/index.html
     - du -h build
