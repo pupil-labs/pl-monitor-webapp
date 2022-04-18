@@ -7,16 +7,15 @@ import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../store";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import CameraAltIcon from "@mui/icons-material/CameraAlt";
+import { WorldCameraIcon } from "./Icon";
+import { EyeCameraIcon } from "./Icon";
 import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
 import { BatteryIcon } from "./Battery";
-import { deepPurple, teal } from "@mui/material/colors";
 import * as piapi from "../pi-api";
 import { isDevelopmentServer } from "../App";
 interface StreamingDevicesProps {
   readonly toggleView: () => void;
 }
-const WorldCameraIcon = VisibilityIcon;
-const EyeCameraIcon = CameraAltIcon;
 
 export const StreamingDevices: React.FC<StreamingDevicesProps> = ({
   toggleView,
@@ -73,7 +72,7 @@ export const StreamingDevices: React.FC<StreamingDevicesProps> = ({
               <Devices>
                 <div>
                   <div>
-                    <span style={{ lineHeight: 1, verticalAlign: "middle" }}>
+                    <span style={{ lineHeight: 1 }}>
                       <span
                         style={{
                           color:
@@ -83,29 +82,14 @@ export const StreamingDevices: React.FC<StreamingDevicesProps> = ({
                               : "",
                         }}
                       >
-                        <FiberManualRecordIcon sx={{ fontSize: "1em" }} />
+                        <FiberManualRecordIcon
+                          sx={{ verticalAlign: "middle", fontSize: "1em" }}
+                        />
                       </span>
                       {device.phone ? (
                         <span>
-                          <span
-                            style={{
-                              color: device.gazeSensor?.connected
-                                ? deepPurple["A200"]
-                                : "gray",
-                            }}
-                          >
-                            <EyeCameraIcon sx={{ fontSize: "1em" }} />
-                          </span>
-                          <span
-                            style={{
-                              color: device.worldSensor?.connected
-                                ? teal["A700"]
-                                : "gray",
-                            }}
-                          >
-                            <WorldCameraIcon sx={{ fontSize: "1em" }} />
-                          </span>
-
+                          <EyeCameraIcon device={device} />
+                          <WorldCameraIcon device={device} />
                           <span>
                             <BatteryIcon
                               size="1em"

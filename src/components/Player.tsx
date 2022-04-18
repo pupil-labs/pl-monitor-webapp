@@ -43,7 +43,8 @@ import * as piapi from "../pi-api";
 import { StreamingDevices } from "./StreamingDevices";
 import { Alert, AlertColor, Snackbar } from "@mui/material";
 import { ElapsedTimer } from "./ElapsedTimer";
-
+import { EyeCameraIcon } from "./Icon";
+import { WorldCameraIcon } from "./Icon";
 const DEFAULT_FORMAT = Format.RTP_H264;
 
 interface PlayerProps {
@@ -482,10 +483,31 @@ export const Player = forwardRef<PlayerNativeElement, PlayerProps>(
             <>
               <DeviceName>{piHost.phone.device_name}</DeviceName>
               <PhoneStatusRight>
-                <BatteryIndicator
-                  percent={piHost.phone.battery_level}
-                  size="20px"
-                />
+                <span style={{ lineHeight: 1, verticalAlign: "middle" }}>
+                  {/* <span
+                    style={{
+                      color:
+                        piHost.current_recording?.action ===
+                        piapi.Recording.action.START
+                          ? "red"
+                          : "",
+                    }}
+                  >
+                    <FiberManualRecordIcon sx={{ fontSize: "1em" }} />
+                  </span> */}
+                  {piHost.phone ? (
+                    <span>
+                      <EyeCameraIcon device={piHost} />
+                      <WorldCameraIcon device={piHost} />
+                      <span>
+                        <BatteryIndicator
+                          size="1em"
+                          percent={piHost.phone.battery_level}
+                        />
+                      </span>
+                    </span>
+                  ) : null}
+                </span>
               </PhoneStatusRight>
             </>
           ) : (
