@@ -58,6 +58,7 @@ export type PiHost = {
     [key: string]: piapi.Sensor;
   };
   notifications: DeviceNotification[];
+  isServingWebapp: boolean;
   phone?: piapi.Phone;
   showPlayer?: boolean;
   hardware?: piapi.Hardware;
@@ -95,6 +96,7 @@ if (process.env.NODE_ENV === "development") {
     is_dummy: true,
     online: true,
     state: ConnectionState.DISCONNECTED,
+    isServingWebapp: false,
     hostId: "1.3.3.7",
     apiUrl: "http://1.3.3.7:8080/api",
     phone: {
@@ -131,6 +133,11 @@ export type HostID = string;
 type PhoneConnectionStateAction = {
   hostId: HostID;
   state: ConnectionState;
+};
+
+type PhoneStateReceivedPayload = {
+  phone: piapi.Phone;
+  isInitial: boolean; // if phone state is for device serving the webapp
 };
 
 type HardwareStatusPayload = {
@@ -277,8 +284,12 @@ export const monitorSlice = createSlice({
         state.devices[hostId].showPlayer = hostId === action.payload;
       }
     },
-    phoneStateReceived: (state, action: PayloadAction<piapi.Phone>) => {
-      const phone = action.payload;
+    phoneStateReceived: (
+      state,
+      action: PayloadAction<PhoneStateReceivedPayload>
+    ) => {
+      const phone = action.payload.phone;
+      const isInitial = action.payload.isInitial;
       const port = phone.port ? phone.port : 8080;
       if (!state.devices[phone.ip]) {
         state.devices[phone.ip] = {
@@ -286,6 +297,7 @@ export const monitorSlice = createSlice({
           apiUrl: `http://${phone.ip}:${port}/api`,
           online: true,
           notifications: [],
+          isServingWebapp: false,
           state: ConnectionState.DISCONNECTED,
           phone: phone,
           sensors: {},
@@ -295,6 +307,9 @@ export const monitorSlice = createSlice({
         };
       }
       state.devices[phone.ip].phone = phone;
+      if (isInitial) {
+        state.devices[phone.ip].isServingWebapp = true;
+      }
     },
     phoneConnectionStateChanged: (
       state,
@@ -335,6 +350,7 @@ export const monitorSlice = createSlice({
           online: false,
           state: ConnectionState.DISCONNECTED,
           notifications: [],
+          isServingWebapp: false,
           phone: undefined,
           sensors: {},
           showPlayer:

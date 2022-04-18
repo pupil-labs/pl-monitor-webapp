@@ -84,7 +84,12 @@ export const NetworkDevice = (props: NetworkDeviceProps) => {
         }
         switch (messageJSON.model) {
           case "Phone":
-            dispatch(monitorSlice.actions.phoneStateReceived(messageJSON.data));
+            dispatch(
+              monitorSlice.actions.phoneStateReceived({
+                phone: messageJSON.data,
+                isInitial: false,
+              })
+            );
             break;
           case "Sensor":
             dispatch(
@@ -155,7 +160,12 @@ export const Monitor = (props: MonitorProps) => {
         switch (status.model) {
           case "Phone":
             const phone = status.data as piapi.Phone;
-            dispatch(monitorSlice.actions.phoneStateReceived(phone));
+            dispatch(
+              monitorSlice.actions.phoneStateReceived({
+                phone: phone,
+                isInitial: true,
+              })
+            );
             break;
         }
       });

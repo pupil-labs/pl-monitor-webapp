@@ -5,8 +5,6 @@ import CloseIcon from "@mui/icons-material/Close";
 import OpenInNewIcon from "@mui/icons-material/OpenInNew";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../store";
-import VisibilityIcon from "@mui/icons-material/Visibility";
-import CameraAltIcon from "@mui/icons-material/CameraAlt";
 import { WorldCameraIcon } from "./Icon";
 import { EyeCameraIcon } from "./Icon";
 import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
@@ -32,7 +30,7 @@ export const StreamingDevices: React.FC<StreamingDevicesProps> = ({
     [dispatch]
   );
   const handleDeviceClick = (device: PiHost) => {
-    const isDevServer = false; //isDevelopmentServer();
+    const isDevServer = isDevelopmentServer();
     const deviceApiUrl = new URL(device.apiUrl);
 
     if (isDevServer) {
@@ -54,6 +52,15 @@ export const StreamingDevices: React.FC<StreamingDevicesProps> = ({
     }
   };
 
+  const devicesInMenu: PiHost[] = [];
+  for (const device of Object.values(devices)) {
+    if (!device.phone) {
+      continue;
+    }
+    if (!device.isServingWebapp) {
+      devicesInMenu.push(device);
+    }
+  }
   return (
     <StreamingContainer>
       <StreamingHeader>
@@ -63,63 +70,64 @@ export const StreamingDevices: React.FC<StreamingDevicesProps> = ({
         <div>Streaming Devices</div>
       </StreamingHeader>
       <DevicesContainer>
-        {Object.values(devices).map((device) => {
-          if (!device.phone) {
-            return null;
-          }
-          return (
-            <div key={device.hostId}>
-              <Devices>
-                <div>
+        {devicesInMenu.length ? (
+          devicesInMenu.map((device) => {
+            return (
+              <div key={device.hostId}>
+                <Devices>
                   <div>
-                    <span style={{ lineHeight: 1 }}>
-                      <span
-                        style={{
-                          color:
-                            device.current_recording?.action ===
-                            piapi.Recording.action.START
-                              ? "red"
-                              : "",
-                        }}
-                      >
-                        <FiberManualRecordIcon
-                          sx={{ verticalAlign: "middle", fontSize: "1em" }}
-                        />
-                      </span>
-                      {device.phone ? (
-                        <span>
-                          <EyeCameraIcon device={device} />
-                          <WorldCameraIcon device={device} />
-                          <span>
-                            <BatteryIcon
-                              size="1em"
-                              percent={device.phone.battery_level}
-                            />
-                          </span>
+                    <div>
+                      <span style={{ lineHeight: 1 }}>
+                        <span
+                          style={{
+                            color:
+                              device.current_recording?.action ===
+                              piapi.Recording.action.START
+                                ? "red"
+                                : "",
+                          }}
+                        >
+                          <FiberManualRecordIcon
+                            sx={{ verticalAlign: "middle", fontSize: "1em" }}
+                          />
                         </span>
-                      ) : null}
-                    </span>
-                    <span style={{ paddingLeft: 5 }}>
-                      {device.phone ? device.phone.device_name : "unknown"}
-                    </span>
+                        {device.phone ? (
+                          <span>
+                            <EyeCameraIcon device={device} />
+                            <WorldCameraIcon device={device} />
+                            <span>
+                              <BatteryIcon
+                                size="1em"
+                                percent={device.phone.battery_level}
+                              />
+                            </span>
+                          </span>
+                        ) : null}
+                      </span>
+                      <span style={{ paddingLeft: 5 }}>
+                        {device.phone ? device.phone.device_name : "unknown"}
+                      </span>
+                    </div>
+                    <DeviceInfo>
+                      Phone IP: {device.phone ? device.phone.ip : device.hostId}
+                    </DeviceInfo>
                   </div>
-                  <DeviceInfo>
-                    Phone IP: {device.phone ? device.phone.ip : device.hostId}
-                  </DeviceInfo>
-                </div>
-                {device.online ? (
-                  <OutboundLink
-                    aria-label="connect"
-                    onClick={() => handleDeviceClick(device)}
-                  >
-                    <OpenInNewIcon />
-                  </OutboundLink>
-                ) : null}
-              </Devices>
-              <Divider />
-            </div>
-          );
-        })}
+                  {device.online ? (
+                    <OutboundLink
+                      aria-label="connect"
+                      onClick={() => handleDeviceClick(device)}
+                    >
+                      <OpenInNewIcon />
+                    </OutboundLink>
+                  ) : null}
+                </Devices>
+                <Divider />
+              </div>
+            );
+          })
+        ) : (
+          <p>There are currently no other devices connected</p>
+        )}
       </DevicesContainer>
     </StreamingContainer>
   );
