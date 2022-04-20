@@ -6,6 +6,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "./store";
 import * as monitorSlice from "./slices/monitorSlice";
 import * as piapi from "./pi-api";
+import { isDevelopmentServer } from "./App";
 
 const makeApiClient = (apiUrl: string) => {
   const apiClient = new piapi.PIClient({
@@ -189,7 +190,7 @@ export const Monitor = (props: MonitorProps) => {
                   initialFormat={Format.RTP_H264}
                   autoPlay={true}
                   piHost={device}
-                  showControls={true}
+                  showControls={isDevelopmentServer()}
                 />
               ) : null}
               <NetworkDevice device={device}></NetworkDevice>
