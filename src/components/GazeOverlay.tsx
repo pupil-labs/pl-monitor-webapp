@@ -97,7 +97,7 @@ export const GazeOverlay: React.FC<GazeOverlayProps> = ({ sensor }, ref) => {
       let scheduler: utils.Scheduler<ScheduledMessage> | undefined;
 
       return () => {
-        console.log("close pipeline and clear video");
+        console.log("close gaze pipeline and clear video");
         newPipeline.close();
         // metadataEl.src = ''
         scheduler?.reset();

@@ -205,7 +205,8 @@ export const WsRtspVideo: React.FC<WsRtspVideoProps> = ({
       }
 
       return () => {
-        debugLog("close pipeline and clear video");
+        console.log("close wsrtsp pipeline and clear video");
+        // debugLog("close wsrtsp pipeline and clear video");
         newPipeline.close();
         videoEl.src = "";
         scheduler?.reset();

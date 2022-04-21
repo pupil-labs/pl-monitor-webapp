@@ -116,6 +116,8 @@ export const Player = forwardRef<PlayerNativeElement, PlayerProps>(
     const [showStreamingDevices, setShowStreamingDevices] = useState(
       streamingDevicesIsOpen
     );
+    const [worldHost, setWorldHost] = useState("");
+    const [showWorldSensor, setShowWorldSensor] = useState(false);
 
     const isRecording =
       piHost.current_recording?.action === piapi.Recording.action.START;
@@ -423,15 +425,23 @@ export const Player = forwardRef<PlayerNativeElement, PlayerProps>(
      * control bar with play/pause/stop/refresh and a settings menu.
      */
     const worldSensor = piHost.sensors["world-WEBSOCKET"];
-    let showWorldSensor = false;
-    let worldHost = "";
-    if (piHost.is_dummy) {
-      worldHost = "dummy";
-      showWorldSensor = true;
-    } else if (worldSensor && worldSensor.connected) {
-      worldHost = `${worldSensor.ip}:${worldSensor.port}`;
-      showWorldSensor = true;
-    }
+    useEffect(() => {
+      if (!piHost.online) {
+        setWorldHost("");
+        setShowWorldSensor(false);
+        return;
+      }
+      if (piHost.is_dummy) {
+        setWorldHost("dummy");
+        setShowWorldSensor(true);
+      } else if (worldSensor && worldSensor.connected) {
+        setWorldHost(`${worldSensor.ip}:${worldSensor.port}`);
+        setShowWorldSensor(true);
+      } else {
+        setWorldHost("");
+        setShowWorldSensor(false);
+      }
+    }, [worldSensor, piHost]);
 
     const gazeSensor = piHost.sensors["gaze-WEBSOCKET"];
     const showGazeSensor = gazeSensor && gazeSensor.connected;
