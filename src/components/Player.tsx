@@ -306,7 +306,7 @@ export const Player = forwardRef<PlayerNativeElement, PlayerProps>(
       if (events && events.length && isRecording) {
         const event = events[events.length - 1];
         const humanTime = convertUnixTimestamp(event.timestamp);
-        const message = `${event.name} created @ ${humanTime}`;
+        const message = `Event ${event.name} recorded @ ${humanTime}`;
         displaySnackbarMessage({
           message: message,
           severity: "info",
