@@ -34,13 +34,13 @@ export const CustomEvent: React.FC<CustomEventProps> = ({
       />
       <CreateButton
         className=""
-        aria-label="Create Event"
+        aria-label="Send Event"
         onClick={() => {
-          eventTriggerer(eventName)
-          setEventName("")
+          eventTriggerer(eventName);
+          setEventName("");
         }}
       >
-        Create
+        Send
       </CreateButton>
     </EventCreationContainer>
   );
