@@ -584,8 +584,8 @@ export const Player = forwardRef<PlayerNativeElement, PlayerProps>(
                 <Layer>
                   <Feedback waiting={waiting} />
                 </Layer>
-                {showControls && videoProperties !== undefined ? (
-                  <Layer>
+                {videoProperties !== undefined ? (
+                  <Layer style={{ display: showControls ? "block" : "none" }}>
                     <Controls
                       play={play}
                       videoProperties={videoProperties}
