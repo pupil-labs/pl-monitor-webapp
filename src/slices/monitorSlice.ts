@@ -84,7 +84,7 @@ interface MonitorState {
 
 // Define the initial state using that type
 const initialState: MonitorState = {
-  presetEvents: ["Event 1", "Event 2", "Event 3", "Event 4", "Event 5"],
+  presetEvents: ["Event 1", "Event 2"],
   messages: [""],
   devices: {},
   timestamp: 0,
@@ -388,6 +388,8 @@ export const monitorSlice = createSlice({
         } else {
           state.presetEvents[event.index] = `Event ${event.index + 1}`;
         }
+      } else if (event.name.length) {
+        state.presetEvents.push(`${event.name}`);
       }
     },
   },

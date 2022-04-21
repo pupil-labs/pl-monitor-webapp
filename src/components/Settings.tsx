@@ -33,9 +33,14 @@ export const Settings: React.FC<SettingsProps> = ({
     }
   }, [isOpen, toggleSettings]);
 
-  const eventMenu = useSelector((state: RootState) => {
-    return state.monitor.presetEvents;
+  const presetEvents = useSelector((state: RootState) => {
+    return state.monitor.presetEvents.slice(0, 7);
   });
+  const eventMenu: string[] = [];
+  presetEvents.map((x) => {
+    eventMenu.push(x);
+  });
+  eventMenu.push("");
 
   const onEventnameChange = useCallback(
     (e, index) => {
@@ -94,7 +99,7 @@ export const Settings: React.FC<SettingsProps> = ({
                 <HotkeyInput
                   type="text"
                   name="hotkeystring"
-                  placeholder={eventName}
+                  placeholder={eventName || "New Event"}
                   defaultValue={eventName}
                   onChange={(e) => onEventnameChange(e, index)}
                 />
