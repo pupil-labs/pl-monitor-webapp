@@ -12,10 +12,10 @@ export const EyeCameraIcon: React.FC<EyeCameraIconProps> = ({ device }) => {
     <span
       style={{
         verticalAlign: "bottom",
-        color: device?.gazeSensor?.connected ? deepPurple["A200"] : "gray",
+        color: device?.gazeSensor?.connected ? teal["A700"] : "gray",
       }}
     >
-      <CameraAltIcon sx={{ fontSize: "1em" }} />
+      <VisibilityIcon sx={{ fontSize: "1em" }} />
     </span>
   );
 };
@@ -29,10 +29,10 @@ export const WorldCameraIcon: React.FC<WorldCameraIconProps> = ({ device }) => {
     <span
       style={{
         verticalAlign: "bottom",
-        color: device?.worldSensor?.connected ? teal["A700"] : "gray",
+        color: device?.worldSensor?.connected ? deepPurple["A200"] : "gray",
       }}
     >
-      <VisibilityIcon sx={{ fontSize: "1em" }} />
+      <CameraAltIcon sx={{ fontSize: "1em" }} />
     </span>
   );
 };
