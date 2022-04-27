@@ -119,6 +119,8 @@ const SettingsContainer = styled.div`
   right: 0;
   bottom: 0;
   background-color: #10181c;
+  overflow: auto;
+  height: 100%;
 `;
 
 const SettingsHeader = styled.div`
@@ -128,6 +130,8 @@ const SettingsHeader = styled.div`
   background-color: #263238;
   height: 56px;
   padding: 0 24px;
+  position: fixed;
+  width: 100%;
 `;
 
 const CloseButton = styled.button`
@@ -148,11 +152,13 @@ const ControlsContainer = styled.div`
   max-width: 800px;
   margin: 0 auto;
   padding: 0 24px;
+  padding-top: 56px;
 `;
 
 const HotkeyContainer = styled.div`
   display: grid;
   gap: 16px;
+  padding-bottom: 24px;
 `;
 
 const HotkeyRow = styled.div`
