@@ -1,4 +1,4 @@
-import React from 'react'
+import React from "react";
 
 export const Play = ({ title }: { readonly title?: string }) => {
   return (
@@ -12,5 +12,5 @@ export const Play = ({ title }: { readonly title?: string }) => {
       <path d="M8 5v14l11-7z" />
       <path d="M0 0h24v24H0z" fill="none" />
     </svg>
-  )
-}
+  );
+};

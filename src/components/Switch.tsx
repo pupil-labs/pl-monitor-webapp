@@ -1,18 +1,18 @@
-import React, { ChangeEventHandler } from 'react'
-import styled from 'styled-components'
+import React, { ChangeEventHandler } from "react";
+import styled from "styled-components";
 
 const Container = styled.label`
   position: relative;
   display: inline-block;
   width: 28px;
   height: 16px;
-`
+`;
 
 const Input = styled.input`
   opacity: 0;
   width: 0;
   height: 0;
-`
+`;
 
 const Slider = styled.span`
   border-radius: 16px;
@@ -27,7 +27,7 @@ const Slider = styled.span`
 
   &:before {
     border-radius: 50%;
-    content: '';
+    content: "";
     position: absolute;
     height: 12px;
     width: 12px;
@@ -48,12 +48,12 @@ const Slider = styled.span`
   ${Input}:focus + & {
     box-shadow: 0 0 1px #2196f3;
   }
-`
+`;
 
 export interface SwitchProps {
-  readonly name?: string
-  readonly checked: boolean
-  readonly onChange: ChangeEventHandler<HTMLInputElement>
+  readonly name?: string;
+  readonly checked: boolean;
+  readonly onChange: ChangeEventHandler<HTMLInputElement>;
 }
 
 export const Switch: React.FC<SwitchProps> = (props) => {
@@ -62,5 +62,5 @@ export const Switch: React.FC<SwitchProps> = (props) => {
       <Input type="checkbox" {...props} />
       <Slider />
     </Container>
-  )
-}
+  );
+};

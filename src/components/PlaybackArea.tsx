@@ -101,7 +101,7 @@ const rtspUri = (host: string, searchParams: string) => {
 const mediaUri = (
   protocol: Protocol.HTTP | Protocol.HTTPS,
   host: string,
-  searchParams: string
+  searchParams: string,
 ) => {
   return host.length !== 0
     ? `${protocol}//${host}/axis-cgi/media.cgi?${searchParams}`
@@ -111,7 +111,7 @@ const mediaUri = (
 const imgUri = (
   protocol: Protocol.HTTP | Protocol.HTTPS,
   host: string,
-  searchParams: string
+  searchParams: string,
 ) => {
   return host.length !== 0
     ? `${protocol}//${host}/axis-cgi/jpg/image.cgi?${searchParams}`
@@ -193,7 +193,7 @@ export const PlaybackArea: React.FC<PlaybackAreaProps> = ({
         ...parameters,
         timestamp,
         videocodec: "h264",
-      })
+      }),
     );
     return (
       <WsRtspVideo
@@ -224,7 +224,7 @@ export const PlaybackArea: React.FC<PlaybackAreaProps> = ({
         ...parameters,
         timestamp,
         videocodec: "jpeg",
-      })
+      }),
     );
 
     return (
@@ -243,7 +243,7 @@ export const PlaybackArea: React.FC<PlaybackAreaProps> = ({
       searchParams(FORMAT_API[format], {
         ...parameters,
         timestamp,
-      })
+      }),
     );
 
     return (
@@ -265,7 +265,7 @@ export const PlaybackArea: React.FC<PlaybackAreaProps> = ({
         timestamp,
         videocodec: "h264",
         container: "mp4",
-      })
+      }),
     );
 
     return (

@@ -36,7 +36,7 @@ const getHeightPct = (aspectRatio: number) => {
 const ContainerBody = styled.div.attrs<{ readonly aspectRatio: number }>(
   ({ aspectRatio }) => {
     return { style: { paddingTop: `${getHeightPct(aspectRatio)}%` } };
-  }
+  },
 )<{ readonly aspectRatio: number }>`
   width: 100%;
   position: relative;

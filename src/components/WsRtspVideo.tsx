@@ -117,7 +117,7 @@ export const WsRtspVideo: React.FC<WsRtspVideoProps> = ({
 
   // State tied to resources
   const [pipeline, setPipeline] = useState<null | pipelines.Html5VideoPipeline>(
-    null
+    null,
   );
   const [fetching, setFetching] = useState(false);
 
@@ -200,7 +200,7 @@ export const WsRtspVideo: React.FC<WsRtspVideoProps> = ({
       if (__metadataHandlerRef.current !== undefined) {
         scheduler = attachMetadataHandler(
           newPipeline,
-          __metadataHandlerRef.current
+          __metadataHandlerRef.current,
         );
       }
 

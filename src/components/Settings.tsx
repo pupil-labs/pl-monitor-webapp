@@ -50,7 +50,7 @@ export const Settings: React.FC<SettingsProps> = ({
       };
       dispatch(monitorSlice.actions.editPresetEvent(newVal));
     },
-    [dispatch]
+    [dispatch],
   );
 
   return (

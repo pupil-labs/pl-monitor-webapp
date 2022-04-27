@@ -80,7 +80,7 @@ export const HttpMp4Video: React.FC<HttpMp4VideoProps> = ({
 
   // State tied to resources
   const [pipeline, setPipeline] = useState<null | pipelines.HttpMsePipeline>(
-    null
+    null,
   );
   const [fetching, setFetching] = useState(false);
 
@@ -162,7 +162,7 @@ export const HttpMp4Video: React.FC<HttpMp4VideoProps> = ({
       pipeline.onHeaders = (headers) => {
         __sensorTmRef.current = parseTransformHeader(
           headers.get("video-sensor-transform") ??
-            headers.get("video-metadata-transform")
+            headers.get("video-metadata-transform"),
         );
       };
       pipeline.http.play();
@@ -175,7 +175,7 @@ export const HttpMp4Video: React.FC<HttpMp4VideoProps> = ({
 };
 
 const parseTransformHeader = (
-  value: string | null | undefined
+  value: string | null | undefined,
 ): TransformationMatrix | undefined => {
   if (value === undefined || value === null) {
     return undefined;
@@ -183,6 +183,6 @@ const parseTransformHeader = (
   return value
     .split(";")
     .map((row) =>
-      row.split(",").map(Number)
+      row.split(",").map(Number),
     ) as unknown as TransformationMatrix;
 };

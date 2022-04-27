@@ -1,20 +1,20 @@
-import { useState, useCallback } from 'react'
+import { useState, useCallback } from "react";
 
 export const useSwitch = (
   initialValue = false,
 ): readonly [boolean, (state?: boolean) => void] => {
-  const [value, setValue] = useState(initialValue)
+  const [value, setValue] = useState(initialValue);
 
   const toggleValue = useCallback(
     (state?: boolean) => {
       if (state !== undefined) {
-        setValue(state)
+        setValue(state);
       } else {
-        setValue((oldValue) => !oldValue)
+        setValue((oldValue) => !oldValue);
       }
     },
     [setValue],
-  )
+  );
 
-  return [value, toggleValue]
-}
+  return [value, toggleValue];
+};

@@ -20,7 +20,7 @@ export class PIClient {
 
   constructor(
     config?: Partial<OpenAPIConfig>,
-    HttpRequest: HttpRequestConstructor = FetchHttpRequest
+    HttpRequest: HttpRequestConstructor = FetchHttpRequest,
   ) {
     this.request = new HttpRequest({
       BASE: config?.BASE ?? "http://pi.local:8080/api",

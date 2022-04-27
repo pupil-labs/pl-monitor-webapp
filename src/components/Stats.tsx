@@ -8,7 +8,7 @@ import { Html5VideoPipeline } from "media-stream-library";
 import { Format } from "./formats";
 
 const isHtml5VideoPipeline = (
-  pipeline: PlayerPipeline | null | undefined
+  pipeline: PlayerPipeline | null | undefined,
 ): pipeline is Html5VideoPipeline => {
   return (pipeline as Html5VideoPipeline)?.tracks !== undefined;
 };
@@ -158,13 +158,13 @@ const StatsData: React.FC<StatsProps> = ({
     ];
     if (isHtml5VideoPipeline(pipeline)) {
       const tracks = pipeline.tracks?.map((track, index) =>
-        Object.assign({ index }, track)
+        Object.assign({ index }, track),
       );
       const videoTrack = tracks?.find((track) => track.type === "video");
       if (videoTrack !== undefined) {
         const { coding, profile, level } = videoTrack?.codec;
         const framerate = Number(
-          pipeline.framerate[videoTrack.index].toFixed(2)
+          pipeline.framerate[videoTrack.index].toFixed(2),
         );
         const bitrate = Math.round(pipeline.bitrate[videoTrack.index] / 1000);
 
@@ -236,7 +236,7 @@ export const Stats: React.FC<StatsProps> = ({
       e.preventDefault();
       setShowStats((prevState) => !prevState);
     },
-    [setShowStats]
+    [setShowStats],
   );
 
   return (

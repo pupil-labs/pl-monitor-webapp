@@ -1,4 +1,4 @@
-const webpack = require('webpack');
+const webpack = require("webpack");
 
 module.exports = function override(config, env) {
   let loaders = config.resolve;
@@ -12,7 +12,7 @@ module.exports = function override(config, env) {
     new webpack.ProvidePlugin({
       Buffer: ["buffer", "Buffer"],
       process: "process/browser",
-    })
+    }),
   );
   return config;
 };

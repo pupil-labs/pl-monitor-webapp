@@ -27,7 +27,7 @@ export const StreamingDevices: React.FC<StreamingDevicesProps> = ({
     (device) => {
       dispatch(monitorSlice.actions.showDevicePlayer(device.hostId));
     },
-    [dispatch]
+    [dispatch],
   );
   const handleDeviceClick = (device: PiHost) => {
     const isDevServer = isDevelopmentServer();

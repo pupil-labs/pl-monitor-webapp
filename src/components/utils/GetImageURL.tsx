@@ -2,10 +2,10 @@ export const getImageURL = (
   el: CanvasImageSource,
   { width, height }: { readonly width: number; readonly height: number },
 ) => {
-  const canvas = document.createElement('canvas')
+  const canvas = document.createElement("canvas");
 
-  canvas.width = width
-  canvas.height = height
+  canvas.width = width;
+  canvas.height = height;
 
   /**
    * This has been tested and works on Chrome and Firefox.
@@ -13,7 +13,7 @@ export const getImageURL = (
    *
    * 2020-07-15
    */
-  canvas?.getContext('2d')?.drawImage(el, 0, 0, width, height)
+  canvas?.getContext("2d")?.drawImage(el, 0, 0, width, height);
 
-  return canvas?.toDataURL('image/jpeg')
-}
+  return canvas?.toDataURL("image/jpeg");
+};

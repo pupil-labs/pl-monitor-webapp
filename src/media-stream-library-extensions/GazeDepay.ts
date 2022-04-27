@@ -18,7 +18,7 @@ export class GazeDepay extends Tube {
       transform: function (
         msg: Message | CustomMessage,
         encoding: any,
-        callback: any
+        callback: any,
       ) {
         if (msg.type === MessageType.SDP) {
           let validMedia;

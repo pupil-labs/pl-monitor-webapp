@@ -71,7 +71,7 @@ const ProgressBarPlayed = styled.div.attrs<{ readonly fraction: number }>(
     return {
       style: { transform: `scaleX(${fraction})` },
     };
-  }
+  },
 )<{ readonly fraction: number }>`
   background-color: rgb(240, 180, 0);
   height: 100%;
@@ -87,7 +87,7 @@ const ProgressBarBuffered = styled.div.attrs<{ readonly fraction: number }>(
     return {
       style: { transform: `scaleX(${fraction})` },
     };
-  }
+  },
 )<{ readonly fraction: number }>`
   background-color: rgba(255, 255, 255, 0.2);
   height: 100%;
@@ -103,7 +103,7 @@ const ProgressTimestamp = styled.div.attrs<{ readonly left: number }>(
     return {
       style: { left: `${left}px` },
     };
-  }
+  },
 )<{ readonly left: number }>`
   background-color: rgb(56, 55, 51);
   border-radius: 3px;
@@ -179,7 +179,7 @@ export const Controls: React.FC<ControlsProps> = ({
   const [settings, setSettings] = useState(false);
   const toggleSettings = useCallback(
     () => setSettings((currentSettings) => !currentSettings),
-    [setSettings]
+    [setSettings],
   );
 
   const onVolumeChange = useCallback(
@@ -188,7 +188,7 @@ export const Controls: React.FC<ControlsProps> = ({
         setVolume(parseFloat(e.target.value));
       }
     },
-    [setVolume]
+    [setVolume],
   );
 
   const [totalDuration, setTotalDuration] = useState(duration);
@@ -271,7 +271,7 @@ export const Controls: React.FC<ControlsProps> = ({
       const total = __duration === Infinity ? buffered : __duration;
 
       const counter = `${Duration.fromMillis(played * 1000).toFormat(
-        "h:mm:ss"
+        "h:mm:ss",
       )} / ${Duration.fromMillis(total * 1000).toFormat("h:mm:ss")}`;
       setProgress({
         playedFraction: played / total,
@@ -311,7 +311,7 @@ export const Controls: React.FC<ControlsProps> = ({
 
       onSeek(fraction * totalDuration);
     },
-    [totalDuration, onSeek]
+    [totalDuration, onSeek],
   );
 
   const [timestamp, setTimestamp] = useState({ left: 0, label: "" });

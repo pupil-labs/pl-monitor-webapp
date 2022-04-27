@@ -1,6 +1,6 @@
-import { RefObject, useState, useEffect } from 'react'
+import { RefObject, useState, useEffect } from "react";
 
-const DEFAULT_TIMEOUT = 3000
+const DEFAULT_TIMEOUT = 3000;
 
 /**
  * Listen to activity on an element by the user.
@@ -13,38 +13,38 @@ export const useUserActive = (
   ref: RefObject<HTMLElement>,
   duration = DEFAULT_TIMEOUT,
 ) => {
-  const [userActive, setUserActive] = useState(false)
-  const startUserActive = () => setUserActive(true)
-  const stopUserActive = () => setUserActive(false)
+  const [userActive, setUserActive] = useState(false);
+  const startUserActive = () => setUserActive(true);
+  const stopUserActive = () => setUserActive(false);
 
   useEffect(() => {
     if (userActive) {
-      const timer = setTimeout(stopUserActive, duration)
+      const timer = setTimeout(stopUserActive, duration);
       return () => {
-        clearTimeout(timer)
-      }
+        clearTimeout(timer);
+      };
     }
-  })
+  });
 
   useEffect(() => {
-    const el = ref.current
+    const el = ref.current;
 
     if (el === null) {
-      return
+      return;
     }
 
-    el.addEventListener('pointermove', startUserActive)
+    el.addEventListener("pointermove", startUserActive);
     if (userActive) {
-      el.addEventListener('pointerleave', stopUserActive)
+      el.addEventListener("pointerleave", stopUserActive);
     }
 
     return () => {
-      el.removeEventListener('pointermove', startUserActive)
+      el.removeEventListener("pointermove", startUserActive);
       if (userActive) {
-        el.removeEventListener('pointerleave', stopUserActive)
+        el.removeEventListener("pointerleave", stopUserActive);
       }
-    }
-  }, [userActive, ref])
+    };
+  }, [userActive, ref]);
 
-  return userActive
-}
+  return userActive;
+};

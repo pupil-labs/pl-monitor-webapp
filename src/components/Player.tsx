@@ -102,7 +102,7 @@ export const Player = forwardRef<PlayerNativeElement, PlayerProps>(
       customEventIsOpen = false,
       streamingDevicesIsOpen = false,
     },
-    ref
+    ref,
   ) => {
     const dispatch = useDispatch();
     const [play, setPlay] = useState(autoPlay);
@@ -114,7 +114,7 @@ export const Player = forwardRef<PlayerNativeElement, PlayerProps>(
     const [showSettings, setShowSettings] = useState(settingsIsOpen);
     const [showCustomEvent, setShowCustomEvent] = useState(customEventIsOpen);
     const [showStreamingDevices, setShowStreamingDevices] = useState(
-      streamingDevicesIsOpen
+      streamingDevicesIsOpen,
     );
     const [worldHost, setWorldHost] = useState("");
     const [showWorldSensor, setShowWorldSensor] = useState(false);
@@ -143,14 +143,14 @@ export const Player = forwardRef<PlayerNativeElement, PlayerProps>(
     const [showStatsOverlay, toggleStatsOverlay] = useSwitch(
       window?.localStorage !== undefined
         ? window.localStorage.getItem("stats-overlay") === "on"
-        : false
+        : false,
     );
 
     useEffect(() => {
       if (window?.localStorage !== undefined) {
         window.localStorage.setItem(
           "stats-overlay",
-          showStatsOverlay ? "on" : "off"
+          showStatsOverlay ? "on" : "off",
         );
       }
     }, [showStatsOverlay]);
@@ -174,7 +174,7 @@ export const Player = forwardRef<PlayerNativeElement, PlayerProps>(
         // @ts-ignore
         props.el.playbackRate = 3;
       },
-      [setWaiting]
+      [setWaiting],
     );
     const onPlayPause = useCallback(() => {
       if (play) {
@@ -276,7 +276,7 @@ export const Player = forwardRef<PlayerNativeElement, PlayerProps>(
         setSnackbarMessage(snackMessage);
         setShowSnackbar(true);
       },
-      []
+      [],
     );
     useEffect(() => {
       if (piHost.notifications.length) {
@@ -329,7 +329,7 @@ export const Player = forwardRef<PlayerNativeElement, PlayerProps>(
           toggleShowCustomEvent();
         }
       },
-      [dispatch, piHost, showCustomEvent, toggleShowCustomEvent]
+      [dispatch, piHost, showCustomEvent, toggleShowCustomEvent],
     );
 
     /**
@@ -715,7 +715,7 @@ export const Player = forwardRef<PlayerNativeElement, PlayerProps>(
         </div>
       </PlayerArea>
     );
-  }
+  },
 );
 
 const PlayerArea = styled.div`

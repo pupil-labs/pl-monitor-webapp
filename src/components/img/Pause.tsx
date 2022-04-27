@@ -1,4 +1,4 @@
-import React from 'react'
+import React from "react";
 
 export const Pause = ({ title }: { readonly title?: string }) => {
   return (
@@ -12,5 +12,5 @@ export const Pause = ({ title }: { readonly title?: string }) => {
       <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" />
       <path d="M0 0h24v24H0z" fill="none" />
     </svg>
-  )
-}
+  );
+};

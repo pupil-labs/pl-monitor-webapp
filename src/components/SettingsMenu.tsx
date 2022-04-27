@@ -87,22 +87,22 @@ export const SettingsMenu: React.FC<SettingsMenuProps> = ({
           console.warn("internal error");
       }
     },
-    [onPiApix]
+    [onPiApix],
   );
 
   const changeStatsOverlay: ChangeEventHandler<HTMLInputElement> = useCallback(
     (e) => toggleStats(e.target.checked),
-    [toggleStats]
+    [toggleStats],
   );
 
   const changeFormat: ChangeEventHandler<HTMLSelectElement> = useCallback(
     (e) => onFormat(e.target.value as Format),
-    [onFormat]
+    [onFormat],
   );
 
   const changeResolution: ChangeEventHandler<HTMLSelectElement> = useCallback(
     (e) => onPiApix("resolution", e.target.value),
-    [onPiApix]
+    [onPiApix],
   );
 
   // FIXME(dan): this is to stop compiler errors about unused vars, we will

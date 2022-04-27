@@ -47,7 +47,7 @@ export interface MetadataHandler {
  */
 export const attachMetadataHandler = (
   pipeline: pipelines.Html5VideoPipeline,
-  { parser, cb }: MetadataHandler
+  { parser, cb }: MetadataHandler,
 ): utils.Scheduler<ScheduledMessage> => {
   /**
    * When a metadata handler is available on this component, it will be
@@ -60,7 +60,7 @@ export const attachMetadataHandler = (
   const xmlMessageHandler = (msg: XmlMessage) => {
     const xmlDocument = xmlParser.parseFromString(
       msg.data.toString(),
-      "text/xml"
+      "text/xml",
     );
     const newMsg = parser({ ...msg, xmlDocument });
     if (msg.ntpTimestamp !== undefined) {

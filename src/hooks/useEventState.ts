@@ -1,4 +1,4 @@
-import { RefObject, useState, useEffect, useCallback } from 'react'
+import { RefObject, useState, useEffect, useCallback } from "react";
 
 /**
  * Use a state set by an event:
@@ -13,21 +13,21 @@ export const useEventState = (
   ref: RefObject<HTMLElement>,
   eventName: string,
 ): readonly [boolean, () => void] => {
-  const [eventState, setEventState] = useState(false)
+  const [eventState, setEventState] = useState(false);
 
-  const setEventStateTrue = useCallback(() => setEventState(true), [])
-  const setEventStateFalse = useCallback(() => setEventState(false), [])
+  const setEventStateTrue = useCallback(() => setEventState(true), []);
+  const setEventStateFalse = useCallback(() => setEventState(false), []);
 
   useEffect(() => {
-    const el = ref.current
+    const el = ref.current;
     if (!eventState && el !== null) {
-      el.addEventListener(eventName, setEventStateTrue)
+      el.addEventListener(eventName, setEventStateTrue);
 
       return () => {
-        el.removeEventListener(eventName, setEventStateTrue)
-      }
+        el.removeEventListener(eventName, setEventStateTrue);
+      };
     }
-  }, [eventState, eventName, ref, setEventStateTrue])
+  }, [eventState, eventName, ref, setEventStateTrue]);
 
-  return [eventState, setEventStateFalse]
-}
+  return [eventState, setEventStateFalse];
+};

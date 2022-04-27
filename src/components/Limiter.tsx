@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import styled from "styled-components";
 
 /**
  * The limiter prevents the video element to use up all of the available width.
@@ -16,4 +16,4 @@ export const Limiter = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-`
+`;

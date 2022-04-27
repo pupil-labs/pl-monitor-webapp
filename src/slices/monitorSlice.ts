@@ -286,7 +286,7 @@ export const monitorSlice = createSlice({
     },
     phoneStateReceived: (
       state,
-      action: PayloadAction<PhoneStateReceivedPayload>
+      action: PayloadAction<PhoneStateReceivedPayload>,
     ) => {
       const phone = action.payload.phone;
       const isInitial = action.payload.isInitial;
@@ -313,7 +313,7 @@ export const monitorSlice = createSlice({
     },
     phoneConnectionStateChanged: (
       state,
-      action: PayloadAction<PhoneConnectionStateAction>
+      action: PayloadAction<PhoneConnectionStateAction>,
     ) => {
       const device = state.devices[action.payload.hostId];
       if (!device.is_dummy) {
@@ -323,7 +323,7 @@ export const monitorSlice = createSlice({
     },
     recordingStatusReceived: (
       state,
-      action: PayloadAction<RecordingStatusPayload>
+      action: PayloadAction<RecordingStatusPayload>,
     ) => {
       const { hostId, recording } = action.payload;
       const previousRecordingState = state.devices[hostId].current_recording;
@@ -338,7 +338,7 @@ export const monitorSlice = createSlice({
     },
     deviceDetected: (
       state,
-      action: PayloadAction<{ ip: string; port: number }>
+      action: PayloadAction<{ ip: string; port: number }>,
     ) => {
       const { ip, port } = action.payload;
       const apiUrl = `http://${ip}:${port}/api`;
@@ -375,7 +375,7 @@ export const monitorSlice = createSlice({
     },
     hardwareStatusReceived: (
       state,
-      action: PayloadAction<HardwareStatusPayload>
+      action: PayloadAction<HardwareStatusPayload>,
     ) => {
       const { hostId, hardware } = action.payload;
       state.devices[hostId].hardware = hardware;
