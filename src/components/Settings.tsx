@@ -37,7 +37,7 @@ export const Settings: React.FC<SettingsProps> = ({
     return state.monitor.presetEvents.slice(0, 7);
   });
   const eventMenu: string[] = [];
-  presetEvents.map((x) => {
+  presetEvents.forEach((x) => {
     eventMenu.push(x);
   });
   eventMenu.push("");
