@@ -495,7 +495,7 @@ export const Player = forwardRef<PlayerNativeElement, PlayerProps>(
       return () => {
         document.removeEventListener("keydown", keyDownHandler, false);
       };
-    }, [triggerEvent, eventMenu]);
+    }, [triggerEvent, eventMenu, showCustomEvent]);
 
     return (
       <PlayerArea>
