@@ -460,23 +460,34 @@ export const Player = forwardRef<PlayerNativeElement, PlayerProps>(
       };
     }, []);
 
+    // event hotkeys
     useEffect(() => {
       const keyDownHandler = (event: KeyboardEvent) => {
         switch (event.key) {
           case "1":
-            triggerEvent(eventMenu[0]);
+            if (!showCustomEvent) {
+              triggerEvent(eventMenu[0]);
+            }
             break;
           case "2":
-            triggerEvent(eventMenu[1]);
+            if (!showCustomEvent) {
+              triggerEvent(eventMenu[1]);
+            }
             break;
           case "3":
-            triggerEvent(eventMenu[2]);
+            if (!showCustomEvent) {
+              triggerEvent(eventMenu[2]);
+            }
             break;
           case "4":
-            triggerEvent(eventMenu[3]);
+            if (!showCustomEvent) {
+              triggerEvent(eventMenu[3]);
+            }
             break;
           case "5":
-            triggerEvent(eventMenu[4]);
+            if (!showCustomEvent) {
+              triggerEvent(eventMenu[4]);
+            }
             break;
         }
       };
@@ -524,7 +535,7 @@ export const Player = forwardRef<PlayerNativeElement, PlayerProps>(
             <span>connecting...</span>
           )}
         </PhoneStatus>
-        <GridContainer>
+        <GridContainer style={{ display: !showSettings ? "flex" : "none" }}>
           <MediaStreamPlayerContainer
             style={{
               background: "black",
@@ -713,6 +724,7 @@ const PlayerArea = styled.div`
   height: 100%;
   background: #10181c;
   color: white;
+  overflow: auto;
 `;
 const PhoneStatus = styled.div`
   display: grid;
