@@ -540,6 +540,7 @@ export const Player = forwardRef<PlayerNativeElement, PlayerProps>(
             style={{
               background: "black",
               margin: "0 auto",
+              minHeight: "350px",
             }}
             className={className}
           >
@@ -783,6 +784,9 @@ const GridContainer = styled.div`
   flex-direction: column;
   @media screen and (orientation: landscape) {
     flex-direction: row;
+  }
+  @media screen and (orientation: landscape) and (max-width: 600px) {
+    flex-direction: column;
   }
 `;
 
