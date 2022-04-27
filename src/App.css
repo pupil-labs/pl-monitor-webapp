@@ -23,6 +23,8 @@ html {
   /* Set the font globally */
   font-family: var(--sans-font);
   scroll-behavior: smooth;
+  background-color: #10181c;
+  overflow: hidden;
 }
 
 /* Make the body a nice central block */
@@ -174,20 +176,22 @@ abbr {
   cursor: help;
 }
 
-button:focus,
-button:enabled:hover,
 [role="button"]:focus,
 [role="button"]:not([aria-disabled="true"]):hover,
+button:active,
 input[type="submit"]:focus,
 input[type="submit"]:enabled:hover,
 input[type="reset"]:focus,
-input[type="reset"]:enabled:hover,
-input[type="button"]:focus,
-input[type="button"]:enabled:hover {
-  filter: brightness(1.4);
-  cursor: pointer;
+input[type="reset"]:enabled:hover {
+  filter: brightness(1.6);
 }
 
+@media (hover: hover) {
+  button:enabled:hover {
+    filter: brightness(1.6);
+    cursor: pointer;
+  }
+}
 /* Format navigation */
 nav {
   font-size: 1rem;
