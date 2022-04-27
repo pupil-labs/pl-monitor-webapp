@@ -84,7 +84,7 @@ interface MonitorState {
 
 // Define the initial state using that type
 const initialState: MonitorState = {
-  presetEvents: ["Event 1", "Event 2"],
+  presetEvents: ["Event 1", "Event 2", "", "", "", "", "", "", ""],
   messages: [""],
   devices: {},
   timestamp: 0,
@@ -92,7 +92,7 @@ const initialState: MonitorState = {
 
 if (process.env.NODE_ENV === "development") {
   initialState.devices["1.3.3.7"] = {
-    showPlayer: false,
+    showPlayer: true,
     is_dummy: true,
     online: true,
     state: ConnectionState.DISCONNECTED,
@@ -309,6 +309,9 @@ export const monitorSlice = createSlice({
       state.devices[phone.ip].phone = phone;
       if (isInitial) {
         state.devices[phone.ip].isServingWebapp = true;
+        for (const hostId in state.devices) {
+          state.devices[hostId].showPlayer = hostId === phone.ip;
+        }
       }
     },
     phoneConnectionStateChanged: (
@@ -380,16 +383,18 @@ export const monitorSlice = createSlice({
       const { hostId, hardware } = action.payload;
       state.devices[hostId].hardware = hardware;
     },
+    setPresetEvents: (state, action: PayloadAction<string[]>) => {
+      state.presetEvents = action.payload;
+      const maxCustomEvents = 8;
+      const fillEmpty = maxCustomEvents - state.presetEvents.length;
+      for (var i = 0; i < fillEmpty; i++) {
+        state.presetEvents.push("");
+      }
+    },
     editPresetEvent: (state, action: PayloadAction<EditEventPayload>) => {
       const event = action.payload;
       if (event.index < state.presetEvents.length) {
-        if (event.name) {
-          state.presetEvents[event.index] = event.name;
-        } else {
-          state.presetEvents[event.index] = `Event ${event.index + 1}`;
-        }
-      } else if (event.name.length) {
-        state.presetEvents.push(`${event.name}`);
+        state.presetEvents[event.index] = event.name;
       }
     },
   },

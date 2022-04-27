@@ -34,14 +34,12 @@ export const Settings: React.FC<SettingsProps> = ({
   }, [isOpen, toggleSettings]);
 
   const presetEvents = useSelector((state: RootState) => {
-    return state.monitor.presetEvents.slice(0, 7);
+    return state.monitor.presetEvents;
   });
   const eventMenu: string[] = [];
   presetEvents.forEach((x) => {
     eventMenu.push(x);
   });
-  eventMenu.push("");
-
   const onEventnameChange = useCallback(
     (e, index) => {
       const newVal = {
@@ -93,18 +91,20 @@ export const Settings: React.FC<SettingsProps> = ({
             <div>Event Hotkey Settings</div>
           </div>
           <HotkeyContainer>
-            {eventMenu.map((eventName, index) => (
-              <HotkeyRow key={index}>
-                <HotkeyIndex>{(index + 1).toString()}</HotkeyIndex>
-                <HotkeyInput
-                  type="text"
-                  name="hotkeystring"
-                  placeholder={eventName || "New Event"}
-                  defaultValue={eventName}
-                  onChange={(e) => onEventnameChange(e, index)}
-                />
-              </HotkeyRow>
-            ))}
+            {eventMenu.map((eventName, index) => {
+              return (
+                <HotkeyRow key={index}>
+                  <HotkeyIndex>{(index + 1).toString()}</HotkeyIndex>
+                  <HotkeyInput
+                    type="text"
+                    name="hotkeystring"
+                    placeholder={eventName || "Event name"}
+                    value={eventName}
+                    onChange={(e) => onEventnameChange(e, index)}
+                  />
+                </HotkeyRow>
+              );
+            })}
           </HotkeyContainer>
         </ControlsContainer>
       </SettingsContainer>

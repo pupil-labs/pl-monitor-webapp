@@ -678,14 +678,19 @@ export const Player = forwardRef<PlayerNativeElement, PlayerProps>(
             <Divider />
             <ContainerWidth>
               <EventsContainer>
-                {eventMenu.map((eventName, index) => (
-                  <EventButton
-                    name={eventName}
-                    hotkey={(index + 1).toString()}
-                    key={index}
-                    onClick={() => triggerEvent(eventName)}
-                  />
-                ))}
+                {eventMenu.map((eventName, index) => {
+                  if (!eventName.length) {
+                    return null;
+                  }
+                  return (
+                    <EventButton
+                      name={eventName}
+                      hotkey={(index + 1).toString()}
+                      key={index}
+                      onClick={() => triggerEvent(eventName)}
+                    />
+                  );
+                })}
                 <EventButton
                   name="Custom Event"
                   hotkey="+"
