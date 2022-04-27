@@ -4,15 +4,14 @@ import styled from "styled-components";
 interface EventButtonProps {
   readonly hotkey: string;
   readonly name: string;
-  readonly onClick?: () => void
+  readonly onClick?: () => void;
 }
 
 export const EventButton: React.FC<EventButtonProps> = ({
   hotkey,
   name,
-  onClick
+  onClick,
 }) => {
-
   return (
     <EventButtonContainer onClick={onClick}>
       <EventButtonHotkey>{hotkey}</EventButtonHotkey>
@@ -31,12 +30,9 @@ const EventButtonContainer = styled.button`
   align-items: center;
   gap: 8px;
   margin: 0;
+  outline: none;
   border: none;
   box-sizing: border-box;
-  :focus {
-    outline: none;
-    filter: unset;
-  }
 `;
 
 const EventButtonHotkey = styled.div`
