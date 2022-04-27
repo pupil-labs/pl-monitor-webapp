@@ -84,7 +84,7 @@ interface MonitorState {
 
 // Define the initial state using that type
 const initialState: MonitorState = {
-  presetEvents: ["Event 1", "Event 2", "", "", "", "", "", "", ""],
+  presetEvents: ["Event 1", "Event 2", "", "", "", "", "", ""],
   messages: [""],
   devices: {},
   timestamp: 0,
