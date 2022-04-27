@@ -318,7 +318,19 @@ export const Player = forwardRef<PlayerNativeElement, PlayerProps>(
 
     const triggerEvent = useCallback(
       (eventName) => {
-        if (eventName && piHost.phone) {
+        if (!eventName) {
+          displaySnackbarMessage({
+            message: "The event needs a name",
+            severity: "error",
+          });
+        } else if (
+          piHost.current_recording?.action !== piapi.Recording.action.START
+        ) {
+          displaySnackbarMessage({
+            message: "A recording must be in progress to send an event",
+            severity: "error",
+          });
+        } else {
           const saveEventPayload = {
             name: eventName,
             piHost: piHost,
