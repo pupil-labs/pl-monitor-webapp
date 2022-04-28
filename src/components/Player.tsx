@@ -486,7 +486,7 @@ export const Player = forwardRef<PlayerNativeElement, PlayerProps>(
             "Performance may be degraded in Firefox, use Google Chrome for best performance.",
           severity: "warning",
         });
-      } else if (isIOS && !isMobile) {
+      } else if (isIOS) {
         displaySnackbarMessage({
           message: "Video preview may not be available in iOS.",
           severity: "warning",
