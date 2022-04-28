@@ -45,7 +45,7 @@ import { Alert, AlertColor, Snackbar } from "@mui/material";
 import { ElapsedTimer } from "./ElapsedTimer";
 import { EyeCameraIcon } from "./Icon";
 import { WorldCameraIcon } from "./Icon";
-import { isFirefox, isIOS, isIPhone13 } from "react-device-detect";
+import { isFirefox, isIOS } from "react-device-detect";
 const DEFAULT_FORMAT = Format.RTP_H264;
 
 interface PlayerProps {
