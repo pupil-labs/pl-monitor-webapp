@@ -45,7 +45,14 @@ import { Alert, AlertColor, Snackbar } from "@mui/material";
 import { ElapsedTimer } from "./ElapsedTimer";
 import { EyeCameraIcon } from "./Icon";
 import { WorldCameraIcon } from "./Icon";
-import { isFirefox, isIOS, isIPad13, isIPhone13 } from "react-device-detect";
+import {
+  isFirefox,
+  isIOS,
+  isIPad13,
+  isIPhone13,
+  isMobile,
+  isSafari,
+} from "react-device-detect";
 const DEFAULT_FORMAT = Format.RTP_H264;
 
 interface PlayerProps {
@@ -479,10 +486,9 @@ export const Player = forwardRef<PlayerNativeElement, PlayerProps>(
             "Performance may be degraded in Firefox, use Google Chrome for best performance.",
           severity: "warning",
         });
-      } else if (isIOS) {
+      } else if (isIOS && !isMobile) {
         displaySnackbarMessage({
-          message:
-            "Video streaming may not work on iOS, use Google Chrome for best experience.",
+          message: "Video preview may not be available in iOS.",
           severity: "warning",
         });
       }
