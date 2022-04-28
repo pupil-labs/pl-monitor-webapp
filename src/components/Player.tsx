@@ -45,7 +45,7 @@ import { Alert, AlertColor, Snackbar } from "@mui/material";
 import { ElapsedTimer } from "./ElapsedTimer";
 import { EyeCameraIcon } from "./Icon";
 import { WorldCameraIcon } from "./Icon";
-import { isFirefox, isIOS } from "react-device-detect";
+import { isFirefox, isIOS, isIPhone13 } from "react-device-detect";
 const DEFAULT_FORMAT = Format.RTP_H264;
 
 interface PlayerProps {
@@ -473,7 +473,13 @@ export const Player = forwardRef<PlayerNativeElement, PlayerProps>(
           setShowStreamingDevices(false);
         }
       };
-      const isIpad = navigator.userAgent.match(/iPad/);
+      const isIpad =
+        navigator.userAgent.match(/iPad/) ||
+        (navigator.userAgent.match(/MacIntel/) &&
+          navigator.maxTouchPoints &&
+          navigator.maxTouchPoints > 2);
+
+      const isIphone = navigator.userAgent.match(/iPhone/);
 
       if (!isIpad) {
         if (isFirefox) {
@@ -482,7 +488,7 @@ export const Player = forwardRef<PlayerNativeElement, PlayerProps>(
               "Performance may be degraded in Firefox, use Google Chrome for best performance.",
             severity: "warning",
           });
-        } else if (isIOS) {
+        } else if (isIOS || isIphone) {
           displaySnackbarMessage({
             message: "Video preview may not be available in iOS.",
             severity: "warning",
