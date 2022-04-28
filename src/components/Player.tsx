@@ -473,17 +473,24 @@ export const Player = forwardRef<PlayerNativeElement, PlayerProps>(
           setShowStreamingDevices(false);
         }
       };
-      if (isFirefox) {
-        displaySnackbarMessage({
-          message:
-            "Performance may be degraded in Firefox, use Google Chrome for best performance.",
-          severity: "warning",
-        });
-      } else if (isIOS) {
-        displaySnackbarMessage({
-          message: "Video preview may not be available in iOS.",
-          severity: "warning",
-        });
+      const isIpad =
+        navigator.userAgent.match(/Mac/) &&
+        navigator.maxTouchPoints &&
+        navigator.maxTouchPoints > 2;
+
+      if (!isIpad) {
+        if (isFirefox) {
+          displaySnackbarMessage({
+            message:
+              "Performance may be degraded in Firefox, use Google Chrome for best performance.",
+            severity: "warning",
+          });
+        } else if (isIOS) {
+          displaySnackbarMessage({
+            message: "Video preview may not be available in iOS.",
+            severity: "warning",
+          });
+        }
       }
       document.addEventListener("keydown", keyDownHandler, false);
       return () => {
