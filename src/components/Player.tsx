@@ -489,6 +489,7 @@ export const Player = forwardRef<PlayerNativeElement, PlayerProps>(
       return () => {
         document.removeEventListener("keydown", keyDownHandler, false);
       };
+      // eslint-disable-next-line
     }, []);
 
     // event hotkeys
