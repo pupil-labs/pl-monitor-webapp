@@ -473,10 +473,7 @@ export const Player = forwardRef<PlayerNativeElement, PlayerProps>(
           setShowStreamingDevices(false);
         }
       };
-      const isIpad =
-        navigator.userAgent.match(/Mac/) &&
-        navigator.maxTouchPoints &&
-        navigator.maxTouchPoints > 2;
+      const isIpad = navigator.userAgent.match(/iPad/);
 
       if (!isIpad) {
         if (isFirefox) {
