@@ -7,13 +7,14 @@ interface TimerProp {
 }
 
 export const ElapsedTimer: React.FC<TimerProp> = ({ startNanoseconds = 0 }) => {
-  const start = performance.now();
   const [elapsedNanoseconds, setElapsedNanoseconds] =
     useState<number>(startNanoseconds);
 
   const screenFPS = 60;
   const updateFrequencyMilliseconds = 1000 / screenFPS;
+
   useEffect(() => {
+    const start = performance.now();
     const elapsed = () => performance.now() - start;
     let interval: NodeJS.Timeout;
     interval = setInterval(() => {
@@ -24,7 +25,7 @@ export const ElapsedTimer: React.FC<TimerProp> = ({ startNanoseconds = 0 }) => {
     return () => {
       clearInterval(interval);
     };
-  }, [startNanoseconds, updateFrequencyMilliseconds, start]);
+  }, [startNanoseconds, updateFrequencyMilliseconds]);
 
   const formatTime = (seconds: number) => {
     return Duration.fromMillis(seconds * 1e3).toFormat("h:mm:ss");
