@@ -12,10 +12,15 @@ export const ElapsedTimer: React.FC<TimerProp> = ({ startNanoseconds = 0 }) => {
 
   const screenFPS = 60;
   const updateFrequencyMilliseconds = 1000 / screenFPS;
+
   useEffect(() => {
+    const start = performance.now();
+    const elapsed = () => performance.now() - start;
     let interval: NodeJS.Timeout;
     interval = setInterval(() => {
-      setElapsedNanoseconds((time) => time + updateFrequencyMilliseconds * 1e6);
+      setElapsedNanoseconds((time) => {
+        return startNanoseconds + elapsed() * 1e6;
+      });
     }, updateFrequencyMilliseconds);
     return () => {
       clearInterval(interval);
