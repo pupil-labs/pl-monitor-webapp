@@ -81,6 +81,11 @@ interface PlayerProps {
   readonly streamingDevicesIsOpen?: boolean;
 }
 
+export type Resolution = {
+  width: number;
+  height: number;
+};
+
 export const Player = forwardRef<PlayerNativeElement, PlayerProps>(
   (
     {
@@ -387,6 +392,22 @@ export const Player = forwardRef<PlayerNativeElement, PlayerProps>(
       return width / height;
     }, [videoProperties]);
 
+    const gazeResolution = useMemo(() => {
+      if (videoProperties === undefined) {
+        return {
+          width: constants.PI_WORLD_VIDEO_WIDTH,
+          height: constants.PI_WORLD_VIDEO_HEIGHT,
+        } as Resolution;
+      }
+
+      const { width, height } = videoProperties;
+
+      return {
+        width: width,
+        height: height,
+      } as Resolution;
+    }, [videoProperties]);
+
     /**
      * Limit video size.
      *
@@ -617,7 +638,10 @@ export const Player = forwardRef<PlayerNativeElement, PlayerProps>(
                 ) : null}
                 {showGazeSensor ? (
                   <Layer style={{ pointerEvents: "none" }}>
-                    <GazeOverlay sensor={gazeSensor} />
+                    <GazeOverlay
+                      resolution={gazeResolution}
+                      sensor={gazeSensor}
+                    />
                   </Layer>
                 ) : null}
                 <Layer>

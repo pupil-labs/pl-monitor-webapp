@@ -2,7 +2,7 @@ import { utils } from "media-stream-library";
 import React, { useEffect, useState } from "react";
 import { GazeRtpPipeline } from "../media-stream-library-extensions/GazeRtpPipeline";
 import { Sensor } from "../pi-api";
-import * as constants from "./constants";
+import { Resolution } from "./Player";
 import { Protocol } from "./protocols";
 // import debug from "debug";
 // const debugLog = debug("msp:ws-rtsp-application");
@@ -45,8 +45,12 @@ const RGBToHex = (r: number, g: number, b: number) => {
 
 interface GazeOverlayProps {
   readonly sensor: Sensor;
+  readonly resolution: Resolution;
 }
-export const GazeOverlay: React.FC<GazeOverlayProps> = ({ sensor }, ref) => {
+export const GazeOverlay: React.FC<GazeOverlayProps> = (
+  { sensor, resolution },
+  ref,
+) => {
   const gazeColor = {
     r: 200,
     g: 40,
@@ -83,8 +87,8 @@ export const GazeOverlay: React.FC<GazeOverlayProps> = ({ sensor }, ref) => {
             console.log();
             if (msg.gazePoint.worn) {
               setGazePosition({
-                x_norm: msg.gazePoint.x / constants.PI_WORLD_VIDEO_WIDTH,
-                y_norm: msg.gazePoint.y / constants.PI_WORLD_VIDEO_HEIGHT,
+                x_norm: msg.gazePoint.x / resolution.width,
+                y_norm: msg.gazePoint.y / resolution.height,
               });
             } else {
               setGazePosition({ x_norm: -0.1, y_norm: -0.1 });
@@ -104,7 +108,7 @@ export const GazeOverlay: React.FC<GazeOverlayProps> = ({ sensor }, ref) => {
         setPipeline(null);
       };
     }
-  }, [sensor]);
+  }, [sensor, resolution]);
 
   useEffect(() => {
     if (pipeline) {
