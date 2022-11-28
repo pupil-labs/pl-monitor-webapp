@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
 import { utils } from "media-stream-library";
+import React, { useEffect, useState } from "react";
 import { GazeRtpPipeline } from "../media-stream-library-extensions/GazeRtpPipeline";
 import { Sensor } from "../pi-api";
 import * as constants from "./constants";

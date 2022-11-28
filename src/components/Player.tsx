@@ -1,51 +1,48 @@
-import React, {
-  useState,
-  forwardRef,
-  useEffect,
-  useCallback,
-  useMemo,
-  useLayoutEffect,
-  useRef,
-} from "react";
-import { useDispatch } from "react-redux";
+import SettingsIcon from "@mui/icons-material/Settings";
+import SwapHorizIcon from "@mui/icons-material/SwapHoriz";
+import { Alert, AlertColor, Snackbar } from "@mui/material";
 import { Sdp } from "media-stream-library";
-import { GazeOverlay } from "./GazeOverlay";
+import React, {
+  forwardRef,
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
+import { isFirefox, isIOS } from "react-device-detect";
+import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
-
+import * as piapi from "../pi-api";
+import * as monitorSlice from "../slices/monitorSlice";
+import { RootState } from "../store";
+import { BatteryIndicator } from "./Battery";
+import * as constants from "./constants";
 import { Container, Layer } from "./Container";
-import {
-  PlaybackArea,
-  PiApiParameters,
-  VideoProperties,
-  PlayerNativeElement,
-} from "./PlaybackArea";
 import { Controls } from "./Controls";
+import { CustomEvent } from "./CustomEvent";
+import { ElapsedTimer } from "./ElapsedTimer";
+import { EventButton } from "./EventButton";
 import { Feedback } from "./Feedback";
-import { Stats } from "./Stats";
+import { Format } from "./formats";
+import { GazeOverlay } from "./GazeOverlay";
 import { useSwitch } from "./hooks/useSwitch";
-import { getImageURL } from "./utils";
-import { MetadataHandler } from "./metadata";
+import { EyeCameraIcon, WorldCameraIcon } from "./Icon";
+import { RecordReady, RecordStop } from "./img";
 import { Limiter } from "./Limiter";
 import { MediaStreamPlayerContainer } from "./MediaStreamPlayerContainer";
-import { Format } from "./formats";
-import { BatteryIndicator } from "./Battery";
-import * as monitorSlice from "../slices/monitorSlice";
-import * as constants from "./constants";
-import { useSelector } from "react-redux";
-import { RootState } from "../store";
-import SwapHorizIcon from "@mui/icons-material/SwapHoriz";
-import SettingsIcon from "@mui/icons-material/Settings";
-import { RecordReady, RecordStop } from "./img";
+import { MetadataHandler } from "./metadata";
+import {
+  PiApiParameters,
+  PlaybackArea,
+  PlayerNativeElement,
+  VideoProperties,
+} from "./PlaybackArea";
 import { Settings } from "./Settings";
-import { CustomEvent } from "./CustomEvent";
-import { EventButton } from "./EventButton";
-import * as piapi from "../pi-api";
+import { Stats } from "./Stats";
 import { StreamingDevices } from "./StreamingDevices";
-import { Alert, AlertColor, Snackbar } from "@mui/material";
-import { ElapsedTimer } from "./ElapsedTimer";
-import { EyeCameraIcon } from "./Icon";
-import { WorldCameraIcon } from "./Icon";
-import { isFirefox, isIOS } from "react-device-detect";
+import { getImageURL } from "./utils";
 const DEFAULT_FORMAT = Format.RTP_H264;
 
 interface PlayerProps {
