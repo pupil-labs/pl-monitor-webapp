@@ -14,5 +14,11 @@ module.exports = function override(config, env) {
       process: "process/browser",
     }),
   );
+  config.module.rules.push({
+    test: /\.m?js/,
+    resolve: {
+      fullySpecified: false
+    }
+  })
   return config;
 };

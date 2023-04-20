@@ -14,7 +14,7 @@ export class App extends React.Component {
   render() {
     let host = window.location.host;
     if (isDevelopmentServer()) {
-      host = "pi.local:8080";
+      host = "192.168.20.162:8080";
     }
 
     const currentUrl = new URL(window.location.href);

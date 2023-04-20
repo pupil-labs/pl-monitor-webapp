@@ -5922,6 +5922,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"debug@npm:4.3.4":
+  version: 4.3.4
+  resolution: "debug@npm:4.3.4"
+  dependencies:
+    ms: 2.1.2
+  peerDependenciesMeta:
+    supports-color:
+      optional: true
+  checksum: 3dbad3f94ea64f34431a9cbf0bafb61853eda57bff2880036153438f50fb5a84f27683ba0d8e5426bf41a8c6ff03879488120cf5b3a761e77953169c0600a708
+  languageName: node
+  linkType: hard
+
 "debug@npm:^3.1.1, debug@npm:^3.2.7":
   version: 3.2.7
   resolution: "debug@npm:3.2.7"
@@ -6925,7 +6937,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"events@npm:^3.2.0":
+"events@npm:3.3.0, events@npm:^3.2.0":
   version: 3.3.0
   resolution: "events@npm:3.3.0"
   checksum: f6f487ad2198aa41d878fa31452f1a3c00958f46e9019286ff4787c84aac329332ab45c9cdc8c445928fc6d7ded294b9e005a7fce9426488518017831b272780
@@ -7637,17 +7649,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"hash-base@npm:^3.0.0":
-  version: 3.1.0
-  resolution: "hash-base@npm:3.1.0"
-  dependencies:
-    inherits: ^2.0.4
-    readable-stream: ^3.6.0
-    safe-buffer: ^5.2.0
-  checksum: 26b7e97ac3de13cb23fc3145e7e3450b0530274a9562144fc2bf5c1e2983afd0e09ed7cc3b20974ba66039fad316db463da80eb452e7373e780cbee9a0d2f2dc
-  languageName: node
-  linkType: hard
-
 "he@npm:^1.2.0":
   version: 1.2.0
   resolution: "he@npm:1.2.0"
@@ -8004,7 +8005,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"inherits@npm:2, inherits@npm:2.0.4, inherits@npm:^2.0.1, inherits@npm:^2.0.3, inherits@npm:^2.0.4, inherits@npm:~2.0.3, inherits@npm:~2.0.4":
+"inherits@npm:2, inherits@npm:2.0.4, inherits@npm:^2.0.1, inherits@npm:^2.0.3, inherits@npm:~2.0.3, inherits@npm:~2.0.4":
   version: 2.0.4
   resolution: "inherits@npm:2.0.4"
   checksum: 4a48a733847879d6cf6691860a6b1e3f0f4754176e4d71494c41f3475553768b10f84b5ce1d40fbd0e34e6bfbb864ee35858ad4dd2cf31e02fc4a154b724d7f1
@@ -9448,17 +9449,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"md5.js@npm:1.3.5":
-  version: 1.3.5
-  resolution: "md5.js@npm:1.3.5"
-  dependencies:
-    hash-base: ^3.0.0
-    inherits: ^2.0.1
-    safe-buffer: ^5.1.2
-  checksum: 098494d885684bcc4f92294b18ba61b7bd353c23147fbc4688c75b45cb8590f5a95fd4584d742415dcc52487f7a1ef6ea611cfa1543b0dc4492fe026357f3f0c
-  languageName: node
-  linkType: hard
-
 "mdn-data@npm:2.0.14":
   version: 2.0.14
   resolution: "mdn-data@npm:2.0.14"
@@ -9473,20 +9463,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"media-stream-library@npm:^10.4.0":
-  version: 10.4.0
-  resolution: "media-stream-library@npm:10.4.0"
+"media-stream-library@npm:^12.2.0":
+  version: 12.2.0
+  resolution: "media-stream-library@npm:12.2.0"
   dependencies:
     buffer: 6.0.3
-    debug: 4.3.2
-    md5.js: 1.3.5
+    debug: 4.3.4
+    events: 3.3.0
     process: 0.11.10
     stream-browserify: 3.0.0
-    ts-md5: 1.2.9
-    ws: 8.2.0
-  bin:
-    live: examples/node/player.js
-  checksum: ae16f35e93fc3148d4585c416877a73946096b1eaccab4f124188979ddc98c870e6184285d87a40c714b1e31a8d79498f54e887ebffc511adf78e85e2733e803
+    ts-md5: 1.3.1
+    ws: 8.13.0
+  checksum: 36af16cb772666401a7c513d6ac1a855ba89f5ca5d1fb141d5617b7e27ab621a9017b6ea07a773ffcaac68a5cff3308a449891aeff9f2abdeaf8de9a9f63fe35
   languageName: node
   linkType: hard
 
@@ -10389,7 +10377,7 @@ __metadata:
     d3: ^7.3.0
     debug: ^4.3.3
     luxon: ^2.3.0
-    media-stream-library: ^10.4.0
+    media-stream-library: ^12.2.0
     media-stream-player: ^7.0.0
     openapi-typescript-codegen: ^0.20.1
     react: ^17.0.2
@@ -12164,7 +12152,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"safe-buffer@npm:5.2.1, safe-buffer@npm:>=5.1.0, safe-buffer@npm:^5.0.1, safe-buffer@npm:^5.1.0, safe-buffer@npm:^5.1.2, safe-buffer@npm:^5.2.0, safe-buffer@npm:~5.2.0":
+"safe-buffer@npm:5.2.1, safe-buffer@npm:>=5.1.0, safe-buffer@npm:^5.0.1, safe-buffer@npm:^5.1.0, safe-buffer@npm:~5.2.0":
   version: 5.2.1
   resolution: "safe-buffer@npm:5.2.1"
   checksum: b99c4b41fdd67a6aaf280fcd05e9ffb0813654894223afb78a31f14a19ad220bba8aba1cb14eddce1fcfb037155fe6de4e861784eb434f7d11ed58d1e70dd491
@@ -13260,10 +13248,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ts-md5@npm:1.2.9":
-  version: 1.2.9
-  resolution: "ts-md5@npm:1.2.9"
-  checksum: e631e781a3217d37c75d623bedefe1514e0d7c08a0b13ad0fcdf310414be216006e557379702e033b108cb7b57ec2bedfb97c85d2583892f7ed27e43aae2950b
+"ts-md5@npm:1.3.1":
+  version: 1.3.1
+  resolution: "ts-md5@npm:1.3.1"
+  checksum: 88fc4df837e17949fef92a8e71a0691b20e2f8b02a002876a162a102e7c9d364f1eb00cbd217f9578fec5fa07bb66ffa14ed054cdfe164486fab2173c8e9ea23
   languageName: node
   linkType: hard
 
@@ -14198,18 +14186,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ws@npm:8.2.0":
-  version: 8.2.0
-  resolution: "ws@npm:8.2.0"
+"ws@npm:8.13.0":
+  version: 8.13.0
+  resolution: "ws@npm:8.13.0"
   peerDependencies:
     bufferutil: ^4.0.1
-    utf-8-validate: ^5.0.2
+    utf-8-validate: ">=5.0.2"
   peerDependenciesMeta:
     bufferutil:
       optional: true
     utf-8-validate:
       optional: true
-  checksum: 7cd544312a48dafcb8158c9b4e5f20986cce980d516e0ef0602665911b0e95c5e0dea2846a4bb3153a1e2c839aa3d92fb7e69dd864fe432e881eee9d4e8cf70b
+  checksum: 53e991bbf928faf5dc6efac9b8eb9ab6497c69feeb94f963d648b7a3530a720b19ec2e0ec037344257e05a4f35bd9ad04d9de6f289615ffb133282031b18c61c
   languageName: node
   linkType: hard
 
