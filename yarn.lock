@@ -10347,6 +10347,7 @@ __metadata:
     react-app-rewired: ^2.1.11
     react-device-detect: ^2.2.2
     react-dom: ^17.0.2
+    react-hooks-shareable: ^1.53.0
     react-redux: ^7.2.6
     react-scripts: 5.0.0
     react-styled-flex: ^2.2.0
@@ -11521,6 +11522,16 @@ __metadata:
   version: 6.0.10
   resolution: "react-error-overlay@npm:6.0.10"
   checksum: e7384f086a0162eecac8e081fe3c79b32f4ac8690c56bde35ab6b6380d10e6c8375bbb689a450902b6615261fcf6c95ea016fc0b200934667089ca83536bc4a7
+  languageName: node
+  linkType: hard
+
+"react-hooks-shareable@npm:^1.53.0":
+  version: 1.53.0
+  resolution: "react-hooks-shareable@npm:1.53.0"
+  peerDependencies:
+    "@juggle/resize-observer": ^3.4.0
+    react: ^17.0.2 || ^18.0.0
+  checksum: 1c088018e1f5fcf6e61e5f275bb6d244673db836f9a8ebe544797161a4ecb46778f0524e0ca3828f6e3c65b8449c60a61bb945effa03033ea4894cb61309d7e7
   languageName: node
   linkType: hard
 
