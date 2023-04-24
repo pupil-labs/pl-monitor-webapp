@@ -2030,13 +2030,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@juggle/resize-observer@npm:3.3.1":
-  version: 3.3.1
-  resolution: "@juggle/resize-observer@npm:3.3.1"
-  checksum: ddabc4044276a2cb57d469c4917206c7e39f2463aa8e3430e33e4eda554412afe29c22afa40e6708b49dad5d56768dc83acd68a704b1dcd49a0906bb96b991b2
-  languageName: node
-  linkType: hard
-
 "@mui/base@npm:5.0.0-alpha.65":
   version: 5.0.0-alpha.65
   resolution: "@mui/base@npm:5.0.0-alpha.65"
@@ -5910,18 +5903,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"debug@npm:4.3.2":
-  version: 4.3.2
-  resolution: "debug@npm:4.3.2"
-  dependencies:
-    ms: 2.1.2
-  peerDependenciesMeta:
-    supports-color:
-      optional: true
-  checksum: 820ea160e267e23c953c9ed87e7ad93494d8cda2f7349af5e7e3bb236d23707ee3022f477d5a7d2ee86ef2bf7d60aa9ab22d1f58080d7deb9dccd073585e1e43
-  languageName: node
-  linkType: hard
-
 "debug@npm:4.3.4":
   version: 4.3.4
   resolution: "debug@npm:4.3.4"
@@ -9478,23 +9459,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"media-stream-player@npm:^7.0.0":
-  version: 7.0.0
-  resolution: "media-stream-player@npm:7.0.0"
-  dependencies:
-    "@juggle/resize-observer": 3.3.1
-    debug: 4.3.2
-    react-hooks-shareable: 1.41.0
-  peerDependencies:
-    luxon: ^1.25.0
-    media-stream-library: ^10.3.0
-    react: ^17.0.1
-    react-dom: ^17.0.1
-    styled-components: ^5.2.0
-  checksum: a126b446eaed24a24aabb7ddd25706f77355ac61cd20e338fe3c9a0db7a6a84f81d61cce5223b763441484b3ab3e3c96059f9bda57d6194af9da7c4d6cab57de
-  languageName: node
-  linkType: hard
-
 "media-typer@npm:0.3.0":
   version: 0.3.0
   resolution: "media-typer@npm:0.3.0"
@@ -10378,7 +10342,6 @@ __metadata:
     debug: ^4.3.3
     luxon: ^2.3.0
     media-stream-library: ^12.2.0
-    media-stream-player: ^7.0.0
     openapi-typescript-codegen: ^0.20.1
     react: ^17.0.2
     react-app-rewired: ^2.1.11
@@ -11558,17 +11521,6 @@ __metadata:
   version: 6.0.10
   resolution: "react-error-overlay@npm:6.0.10"
   checksum: e7384f086a0162eecac8e081fe3c79b32f4ac8690c56bde35ab6b6380d10e6c8375bbb689a450902b6615261fcf6c95ea016fc0b200934667089ca83536bc4a7
-  languageName: node
-  linkType: hard
-
-"react-hooks-shareable@npm:1.41.0":
-  version: 1.41.0
-  resolution: "react-hooks-shareable@npm:1.41.0"
-  dependencies:
-    "@juggle/resize-observer": 3.3.1
-  peerDependencies:
-    react: ^17.0.2
-  checksum: 5e375bfde34176594d8999e539b96252283d5e1e53d527e56ba7e57d4b080801834d3fccf95e8342db3f550155acb10e2085e6f38b8a7c3effc8c324025db14d
   languageName: node
   linkType: hard
 

@@ -26,7 +26,6 @@
     "debug": "^4.3.3",
     "luxon": "^2.3.0",
     "media-stream-library": "^12.2.0",
-    "media-stream-player": "^7.0.0",
     "openapi-typescript-codegen": "^0.20.1",
     "react": "^17.0.2",
     "react-app-rewired": "^2.1.11",
