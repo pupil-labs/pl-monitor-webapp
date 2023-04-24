@@ -1,8 +1,8 @@
-import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
-import type { RootState } from "../store";
+import { AlertColor } from "@mui/material";
+import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import * as piapi from "../pi-api";
 import { Recording } from "../pi-api";
-import { AlertColor } from "@mui/material";
+import type { RootState } from "../store";
 
 export enum ConnectionState {
   DISCONNECTED = "disconnected",
@@ -90,7 +90,7 @@ const initialState: MonitorState = {
   timestamp: 0,
 };
 
-if (process.env.NODE_ENV === "development") {
+if (0 && process.env.NODE_ENV === "development") {
   initialState.devices["1.3.3.7"] = {
     showPlayer: true,
     is_dummy: true,
