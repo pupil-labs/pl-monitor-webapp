@@ -1,12 +1,15 @@
+import { debug } from "debug";
 import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import ReconnectingWebSocket from "reconnecting-websocket";
+import { isDevelopmentServer } from "./App";
 import { Format } from "./components/formats";
 import { Player } from "./components/Player";
-import ReconnectingWebSocket from "reconnecting-websocket";
-import { useSelector, useDispatch } from "react-redux";
-import { RootState } from "./store";
-import * as monitorSlice from "./slices/monitorSlice";
 import * as piapi from "./pi-api";
-import { isDevelopmentServer } from "./App";
+import * as monitorSlice from "./slices/monitorSlice";
+import { RootState } from "./store";
+
+const debugLog = debug("pl:monitor");
 
 const makeApiClient = (apiUrl: string) => {
   const apiClient = new piapi.PIClient({
@@ -44,7 +47,7 @@ export const NetworkDevice = (props: NetworkDeviceProps) => {
       console.error(`WebSocket Error`, client);
     };
     client.onopen = function () {
-      console.debug(`WebSocket Opened`, client);
+      debugLog(`WebSocket Opened`, client);
       dispatch(
         monitorSlice.actions.phoneConnectionStateChanged({
           hostId: device.hostId,
@@ -58,7 +61,7 @@ export const NetworkDevice = (props: NetworkDeviceProps) => {
       // heartbeat();
     };
     client.onclose = function () {
-      console.debug(`WebSocket Closed`, client);
+      debugLog(`WebSocket Closed`, client);
       if (!stopped) {
         dispatch(
           monitorSlice.actions.phoneConnectionStateChanged({
@@ -70,7 +73,7 @@ export const NetworkDevice = (props: NetworkDeviceProps) => {
     };
 
     client.onmessage = function (message) {
-      console.debug("WebSocket Message Received", device, message.data);
+      debugLog("WebSocket Message Received", device, message.data);
       if (typeof message.data === "string") {
         let messageJSON;
         try {

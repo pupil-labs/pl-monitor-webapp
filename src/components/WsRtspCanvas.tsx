@@ -1,22 +1,22 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 
 import debug from "debug";
 
 import {
-  Sdp,
+  isRtcpBye,
   pipelines,
+  Rtcp,
+  Sdp,
+  TransformationMatrix,
   utils,
   VideoMedia,
-  TransformationMatrix,
-  Rtcp,
-  isRtcpBye,
 } from "media-stream-library";
-import { VideoProperties, Range } from "./PlaybackArea";
 import { FORMAT_SUPPORTS_AUDIO } from "./constants";
 import { Format } from "./formats";
+import { Range, VideoProperties } from "./PlaybackArea";
 
-const debugLog = debug("msp:ws-rtsp-video");
+const debugLog = debug("pl:ws-rtsp-canvas");
 
 const CanvasNative = styled.canvas`
   max-height: 100%;

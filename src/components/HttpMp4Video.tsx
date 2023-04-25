@@ -1,15 +1,15 @@
-import React, { useState, useEffect, useRef } from "react";
-import styled from "styled-components";
 import debug from "debug";
 import { pipelines, TransformationMatrix } from "media-stream-library";
+import React, { useEffect, useRef, useState } from "react";
+import styled from "styled-components";
 
-import { useEventState } from "./hooks/useEventState";
-import { VideoProperties } from "./PlaybackArea";
-import { MetadataHandler } from "./metadata";
 import { FORMAT_SUPPORTS_AUDIO } from "./constants";
 import { Format } from "./formats";
+import { useEventState } from "./hooks/useEventState";
+import { MetadataHandler } from "./metadata";
+import { VideoProperties } from "./PlaybackArea";
 
-const debugLog = debug("msp:http-mp4-video");
+const debugLog = debug("pl:http-mp4-video");
 
 const VideoNative = styled.video`
   max-height: 100%;
@@ -136,7 +136,7 @@ export const HttpMp4Video: React.FC<HttpMp4VideoProps> = ({
       const endedCallback = () => {
         __onEndedRef.current?.();
       };
-      debugLog("create pipeline", src);
+      debugLog("created http mp4 pipeline", src);
       const newPipeline = new pipelines.HttpMsePipeline({
         http: { uri: src },
         mediaElement: videoEl,
@@ -146,7 +146,7 @@ export const HttpMp4Video: React.FC<HttpMp4VideoProps> = ({
       newPipeline.onServerClose = endedCallback;
 
       return () => {
-        debugLog("close pipeline and clear video");
+        debugLog("close http mp4 pipeline and clear video");
         newPipeline.close();
         videoEl.src = "";
         setPipeline(null);

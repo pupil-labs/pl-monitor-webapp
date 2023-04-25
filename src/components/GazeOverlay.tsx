@@ -1,12 +1,15 @@
+import { debug } from "debug";
 import { utils } from "media-stream-library";
 import React, { useEffect, useState } from "react";
 import { GazeRtpPipeline } from "../media-stream-library-extensions/GazeRtpPipeline";
 import { Sensor } from "../pi-api";
 import { Resolution } from "./Player";
 import { Protocol } from "./protocols";
-// import debug from "debug";
-// const debugLog = debug("msp:ws-rtsp-application");
 
+const debugLog = debug("pl:gaze-overlay");
+
+// type BaseElement = SVGCircleElement
+// type BaseProps = Omit<SVGProps<BaseElement>, 'ref'>
 export interface ScheduledMessage {
   readonly ntpTimestamp: number | undefined;
   readonly data: unknown;
@@ -101,7 +104,7 @@ export const GazeOverlay: React.FC<GazeOverlayProps> = (
       let scheduler: utils.Scheduler<ScheduledMessage> | undefined;
 
       return () => {
-        console.log("close gaze pipeline and clear video");
+        debugLog("close gaze pipeline and clear video");
         newPipeline.close();
         // metadataEl.src = ''
         scheduler?.reset();

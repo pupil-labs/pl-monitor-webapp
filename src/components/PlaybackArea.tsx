@@ -1,20 +1,20 @@
-import React, { Ref } from "react";
-import {
-  Sdp,
-  Html5VideoPipeline,
-  Html5CanvasPipeline,
-  HttpMsePipeline,
-  TransformationMatrix,
-  Rtcp,
-} from "media-stream-library";
 import debug from "debug";
+import {
+  Html5CanvasPipeline,
+  Html5VideoPipeline,
+  HttpMsePipeline,
+  Rtcp,
+  Sdp,
+  TransformationMatrix,
+} from "media-stream-library";
+import React, { Ref } from "react";
 
-import { WsRtspVideo } from "./WsRtspVideo";
-import { WsRtspCanvas } from "./WsRtspCanvas";
-import { StillImage } from "./StillImage";
-import { MetadataHandler } from "./metadata";
-import { HttpMp4Video } from "./HttpMp4Video";
 import { Format } from "./formats";
+import { HttpMp4Video } from "./HttpMp4Video";
+import { MetadataHandler } from "./metadata";
+import { StillImage } from "./StillImage";
+import { WsRtspCanvas } from "./WsRtspCanvas";
+import { WsRtspVideo } from "./WsRtspVideo";
 
 export type PlayerNativeElement =
   | HTMLVideoElement
@@ -26,7 +26,7 @@ export type PlayerPipeline =
   | Html5CanvasPipeline
   | HttpMsePipeline;
 
-const debugLog = debug("msp:api");
+const debugLog = debug("pl:playback");
 
 export enum PiApi {
   "PI_SENSOR_STREAM" = "PI_SENSOR_STREAM",
@@ -169,6 +169,7 @@ export const PlaybackArea: React.FC<PlaybackAreaProps> = ({
   autoRetry = false,
 }) => {
   const timestamp = refresh.toString();
+  debugLog("setting up playback for", host);
 
   if (host === "dummy") {
     return (

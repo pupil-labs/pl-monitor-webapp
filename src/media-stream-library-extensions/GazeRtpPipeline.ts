@@ -1,7 +1,10 @@
-import { RtspPipeline, WSSource, RtspConfig, Sink } from "media-stream-library";
+import { RtspConfig, RtspPipeline, Sink, WSSource } from "media-stream-library";
 // } from "media-stream-library/dist/esm/index.browser";
-import { GazeRtpMessage, CustomMessageType } from "./message";
+import debug from "debug";
 import { GazeDepay } from "./GazeDepay";
+import { CustomMessageType, GazeRtpMessage } from "./message";
+
+const debugLog = debug("pl:gaze-depay");
 
 // Default configuration for event stream
 const DEFAULT_RTSP_PARAMETERS = {
@@ -57,9 +60,9 @@ export class GazeRtpPipeline extends RtspPipeline {
 
     const waitForWs = WSSource.open(wsConfig);
     this.ready = waitForWs.then((wsSource) => {
-      console.log("ws ready");
+      debugLog("gaze ws ready");
       wsSource.onServerClose = () => {
-        console.log("close connection onServerClose");
+        debugLog("close connection onServerClose");
         this.onServerClose && this.onServerClose();
       };
       this.prepend(wsSource);

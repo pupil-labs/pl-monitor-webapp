@@ -1,27 +1,27 @@
-import React, { useState, useEffect, useRef } from "react";
-import styled from "styled-components";
 import debug from "debug";
 import {
-  Sdp,
+  isRtcpBye,
   pipelines,
+  Rtcp,
+  Sdp,
+  TransformationMatrix,
   utils,
   VideoMedia,
-  TransformationMatrix,
-  Rtcp,
-  isRtcpBye,
 } from "media-stream-library";
+import React, { useEffect, useRef, useState } from "react";
+import styled from "styled-components";
 
+import { FORMAT_SUPPORTS_AUDIO } from "./constants";
+import { Format } from "./formats";
 import { useEventState } from "./hooks/useEventState";
-import { VideoProperties, Range } from "./PlaybackArea";
 import {
   attachMetadataHandler,
   MetadataHandler,
   ScheduledMessage,
 } from "./metadata";
-import { FORMAT_SUPPORTS_AUDIO } from "./constants";
-import { Format } from "./formats";
+import { Range, VideoProperties } from "./PlaybackArea";
 
-const debugLog = debug("msp:ws-rtsp-video");
+const debugLog = debug("pl:ws-rtsp-video");
 
 const VideoNative = styled.video`
   max-height: 100%;
@@ -185,7 +185,7 @@ export const WsRtspVideo: React.FC<WsRtspVideoProps> = ({
       rtsp.length > 0 &&
       videoEl !== null
     ) {
-      debugLog("create pipeline", ws, rtsp);
+      debugLog("create wsrtsp video pipeline", ws, rtsp);
       const newPipeline = new pipelines.Html5VideoPipeline({
         ws: { uri: ws },
         rtsp: { uri: rtsp },
@@ -205,8 +205,7 @@ export const WsRtspVideo: React.FC<WsRtspVideoProps> = ({
       }
 
       return () => {
-        console.log("close wsrtsp pipeline and clear video");
-        // debugLog("close wsrtsp pipeline and clear video");
+        debugLog("close wsrtsp video pipeline and clear video");
         newPipeline.close();
         videoEl.src = "";
         scheduler?.reset();
@@ -262,6 +261,7 @@ export const WsRtspVideo: React.FC<WsRtspVideoProps> = ({
           pipeline.rtsp.play(__offsetRef.current);
         })
         .catch((err) => {
+          debugLog("pipeline error", err);
           console.error(err);
         });
       debugLog("initiated data fetching");

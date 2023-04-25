@@ -1,14 +1,14 @@
-import React, { useRef, useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import styled from "styled-components";
 
 import debug from "debug";
 
-import { useEventState } from "./hooks/useEventState";
-import { VideoProperties } from "./PlaybackArea";
 import { FORMAT_SUPPORTS_AUDIO } from "./constants";
 import { Format } from "./formats";
+import { useEventState } from "./hooks/useEventState";
+import { VideoProperties } from "./PlaybackArea";
 
-const debugLog = debug("msp:still-image");
+const debugLog = debug("pl:still-image");
 
 const ImageNative = styled.img`
   max-height: 100%;
