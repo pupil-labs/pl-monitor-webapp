@@ -47,11 +47,12 @@ const RGBToHex = (r: number, g: number, b: number) => {
 };
 
 interface GazeOverlayProps {
+  readonly gazeRadiusPercent: number;
   readonly sensor: Sensor;
   readonly resolution: Resolution;
 }
 export const GazeOverlay: React.FC<GazeOverlayProps> = (
-  { sensor, resolution },
+  { gazeRadiusPercent, sensor, resolution },
   ref,
 ) => {
   const gazeColor = {
@@ -59,9 +60,11 @@ export const GazeOverlay: React.FC<GazeOverlayProps> = (
     g: 40,
     b: 40,
   };
-  const gazeStrokeWidth = "2%";
+  let gazeStrokeRadiusPercent = gazeRadiusPercent / 4;
+
+  const gazeRadius = `${gazeRadiusPercent}%`;
+  const gazeStrokeWidth = `${gazeStrokeRadiusPercent}%`;
   const gazeOpacity = 0.8;
-  const gazeRadius = "8%";
 
   const [gazePosition, setGazePosition] = React.useState({
     x_norm: 0,

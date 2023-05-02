@@ -125,6 +125,13 @@ export const Player = forwardRef<PlayerNativeElement, PlayerProps>(
     const isRecording =
       piHost.current_recording?.action === piapi.Recording.action.START;
 
+    // TODO(dan): replace this when api exposes this information
+    const hardwareFamily = piHost.hardware?.glasses_serial.match(
+      /^[0-9a-z]{5}$/,
+    )
+      ? "invisible"
+      : "neon";
+
     /**
      * piApix parameters
      */
@@ -639,6 +646,7 @@ export const Player = forwardRef<PlayerNativeElement, PlayerProps>(
                 {showGazeSensor ? (
                   <Layer style={{ pointerEvents: "none" }}>
                     <GazeOverlay
+                      gazeRadiusPercent={hardwareFamily === "neon" ? 4.4 : 8}
                       resolution={gazeResolution}
                       sensor={gazeSensor}
                     />
