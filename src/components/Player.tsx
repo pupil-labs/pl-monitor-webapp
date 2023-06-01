@@ -646,7 +646,7 @@ export const Player = forwardRef<PlayerNativeElement, PlayerProps>(
                 {showGazeSensor ? (
                   <Layer style={{ pointerEvents: "none" }}>
                     <GazeOverlay
-                      gazeRadiusPercent={hardwareFamily === "neon" ? 4.4 : 8}
+                      gazeRadiusPercent={hardwareFamily === "neon" ? 3.8 : 8}
                       resolution={gazeResolution}
                       sensor={gazeSensor}
                     />
