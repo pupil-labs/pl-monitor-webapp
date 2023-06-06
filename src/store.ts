@@ -1,18 +1,15 @@
-import { configureStore, ThunkAction, Action } from "@reduxjs/toolkit";
-import counterReducer from "./features/counter/counterSlice";
-import * as monitorSlice from "./slices/monitorSlice";
-import monitorReducer from "./slices/monitorSlice";
+import { Action, configureStore, ThunkAction } from "@reduxjs/toolkit";
+import monitorReducer, * as monitorSlice from "./slices/monitorSlice";
 
 export const store = configureStore({
   reducer: {
     monitor: monitorReducer,
-    counter: counterReducer,
   },
 });
 
 store.subscribe(() => {
-  const presetEvents = store.getState().monitor.presetEvents;
-  localStorage.setItem("presetEvents", JSON.stringify(presetEvents));
+  const state = store.getState().monitor;
+  localStorage.setItem("presetEvents", JSON.stringify(state.presetEvents));
 });
 
 const loadPresetEventsFromLocalStorage = () => {

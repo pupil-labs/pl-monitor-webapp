@@ -1,6 +1,6 @@
 import SettingsIcon from "@mui/icons-material/Settings";
 import SwapHorizIcon from "@mui/icons-material/SwapHoriz";
-import { Alert, AlertColor, Snackbar } from "@mui/material";
+import { Alert, AlertColor, Slider, Snackbar, Typography } from "@mui/material";
 import { Sdp } from "media-stream-library";
 import React, {
   forwardRef,
@@ -14,6 +14,7 @@ import React, {
 import { isFirefox, isIOS } from "react-device-detect";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
+import { useLocalStorage } from "usehooks-ts";
 import * as piapi from "../pi-api";
 import * as monitorSlice from "../slices/monitorSlice";
 import { RootState } from "../store";
@@ -122,15 +123,13 @@ export const Player = forwardRef<PlayerNativeElement, PlayerProps>(
     const [worldHost, setWorldHost] = useState("");
     const [showWorldSensor, setShowWorldSensor] = useState(false);
 
+    const [gazeRadiusPercent, setGazeRadiusPercent] = useLocalStorage(
+      "gazeRadiusPercent",
+      constants.DEFAULT_GAZE_CIRCLE_PERCENT.NEON,
+    );
+
     const isRecording =
       piHost.current_recording?.action === piapi.Recording.action.START;
-
-    // TODO(dan): replace this when api exposes this information
-    const hardwareFamily = piHost.hardware?.glasses_serial.match(
-      /^[0-9a-z]{5}$/,
-    )
-      ? "invisible"
-      : "neon";
 
     /**
      * piApix parameters
@@ -564,6 +563,14 @@ export const Player = forwardRef<PlayerNativeElement, PlayerProps>(
       };
     }, [triggerEvent, eventMenu, showCustomEvent]);
 
+    // TODO(dan): replace this when api exposes this information
+    const hardwareFamily = piHost.hardware?.glasses_serial.match(
+      /^[0-9a-z]{5}$/,
+    )
+      ? "invisible"
+      : "neon";
+    const isNeon = hardwareFamily === "neon";
+
     return (
       <PlayerArea>
         <PhoneStatus>
@@ -646,7 +653,7 @@ export const Player = forwardRef<PlayerNativeElement, PlayerProps>(
                 {showGazeSensor ? (
                   <Layer style={{ pointerEvents: "none" }}>
                     <GazeOverlay
-                      gazeRadiusPercent={hardwareFamily === "neon" ? 3.8 : 8}
+                      gazeRadiusPercent={gazeRadiusPercent}
                       resolution={gazeResolution}
                       sensor={gazeSensor}
                     />
@@ -769,6 +776,32 @@ export const Player = forwardRef<PlayerNativeElement, PlayerProps>(
                 />
               </EventsContainer>
             </ContainerWidth>
+            {isNeon ? (
+              <ContainerWidth>
+                <Typography fontSize="small" align="center" gutterBottom>
+                  Gaze Circle Radius
+                </Typography>
+                <Slider
+                  sx={{ color: "#455a64", textAlign: "center" }}
+                  aria-label="Gaze Radius Circle"
+                  defaultValue={constants.DEFAULT_GAZE_CIRCLE_PERCENT.NEON}
+                  valueLabelDisplay="auto"
+                  value={
+                    isNeon
+                      ? gazeRadiusPercent
+                      : constants.DEFAULT_GAZE_CIRCLE_PERCENT.INVISIBLE
+                  }
+                  onChange={(event, value) =>
+                    setGazeRadiusPercent(value as number)
+                  }
+                  getAriaValueText={(value) => `${value}%`}
+                  step={0.5}
+                  marks
+                  min={1}
+                  max={8}
+                />
+              </ContainerWidth>
+            ) : null}
           </div>
         </GridContainer>
         {showSettings && piHost && (
