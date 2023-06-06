@@ -122,14 +122,17 @@ export const GazeOverlay: React.FC<GazeOverlayProps> = (
     }
   }, [pipeline]);
 
+  const gazePositionCx = Math.max(0, Math.min(gazePosition.x_norm, 1)) * 100;
+  const gazePositionCy = Math.max(0, Math.min(gazePosition.y_norm, 1)) * 100;
+
   return (
     <svg width="100%" height="100%">
       <circle
         r={gazeRadius}
         stroke={RGBToHex(gazeColor.r, gazeColor.g, gazeColor.b)}
         opacity={gazeOpacity}
-        cx={`${gazePosition.x_norm * 100}%`}
-        cy={`${gazePosition.y_norm * 100}%`}
+        cx={`${gazePositionCx}%`}
+        cy={`${gazePositionCy}%`}
         strokeWidth={gazeStrokeWidth}
         fill="None"
       />
