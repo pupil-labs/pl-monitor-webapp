@@ -884,7 +884,7 @@ const ControlButtons = styled.button`
 `;
 
 const ContainerWidth = styled.div`
-  width: min(45rem, 90%);
+  width: min(45rem, 85%);
   margin: 0 auto;
 `;
 
