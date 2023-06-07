@@ -60,11 +60,15 @@ export const GazeOverlay: React.FC<GazeOverlayProps> = (
     g: 40,
     b: 40,
   };
-  let gazeStrokeRadiusPercent = gazeRadiusPercent / 4;
+  let gazeStrokeRadiusPercent = Math.min(gazeRadiusPercent / 6);
 
-  const gazeRadius = `${gazeRadiusPercent}%`;
+  const gazeRadius = `${gazeRadiusPercent / 2}%`;
   const gazeStrokeWidth = `${gazeStrokeRadiusPercent}%`;
-  const gazeOpacity = 0.8;
+  let gazeOpacity = 0.8;
+  if (gazeRadiusPercent < 3) {
+    gazeOpacity = 1;
+  }
+  gazeOpacity = 1;
 
   const [gazePosition, setGazePosition] = React.useState({
     x_norm: 0,

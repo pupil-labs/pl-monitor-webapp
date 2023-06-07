@@ -1,6 +1,7 @@
+import PanoramaFishEyeIcon from "@mui/icons-material/PanoramaFishEye";
 import SettingsIcon from "@mui/icons-material/Settings";
 import SwapHorizIcon from "@mui/icons-material/SwapHoriz";
-import { Alert, AlertColor, Slider, Snackbar, Typography } from "@mui/material";
+import { Alert, AlertColor, Grid, Slider, Snackbar } from "@mui/material";
 import { Sdp } from "media-stream-library";
 import React, {
   forwardRef,
@@ -754,6 +755,48 @@ export const Player = forwardRef<PlayerNativeElement, PlayerProps>(
               </ControlsContainer>
             </ContainerWidth>
             <Divider />
+            {isNeon ? (
+              <Grid container direction="row" pt={2} alignItems="center">
+                <Grid item textAlign="right" xs={2}>
+                  <PanoramaFishEyeIcon
+                    sx={{
+                      mr: "16px",
+                      color: "#ff282899",
+                      transform: "scale(0.7)",
+                    }}
+                  />
+                </Grid>
+                <Grid item xs={8}>
+                  <Slider
+                    sx={{ color: "#455a64" }}
+                    aria-label="Gaze Radius Circle"
+                    defaultValue={constants.DEFAULT_GAZE_CIRCLE_PERCENT.NEON}
+                    valueLabelDisplay="auto"
+                    value={
+                      isNeon
+                        ? gazeRadiusPercent
+                        : constants.DEFAULT_GAZE_CIRCLE_PERCENT.INVISIBLE
+                    }
+                    onChange={(event, value) =>
+                      setGazeRadiusPercent(value as number)
+                    }
+                    getAriaValueText={(value) => `${value}%`}
+                    step={1}
+                    min={1}
+                    max={11}
+                  />
+                </Grid>
+                <Grid item textAlign="left" xs={2}>
+                  <PanoramaFishEyeIcon
+                    sx={{
+                      ml: "18px",
+                      color: "#ff282899",
+                      transform: "scale(1.4)",
+                    }}
+                  />
+                </Grid>
+              </Grid>
+            ) : null}
             <ContainerWidth>
               <EventsContainer>
                 {eventMenu.map((eventName, index) => {
@@ -776,32 +819,6 @@ export const Player = forwardRef<PlayerNativeElement, PlayerProps>(
                 />
               </EventsContainer>
             </ContainerWidth>
-            {isNeon ? (
-              <ContainerWidth>
-                <Typography fontSize="small" align="center" gutterBottom>
-                  Gaze Circle Radius
-                </Typography>
-                <Slider
-                  sx={{ color: "#455a64", textAlign: "center" }}
-                  aria-label="Gaze Radius Circle"
-                  defaultValue={constants.DEFAULT_GAZE_CIRCLE_PERCENT.NEON}
-                  valueLabelDisplay="auto"
-                  value={
-                    isNeon
-                      ? gazeRadiusPercent
-                      : constants.DEFAULT_GAZE_CIRCLE_PERCENT.INVISIBLE
-                  }
-                  onChange={(event, value) =>
-                    setGazeRadiusPercent(value as number)
-                  }
-                  getAriaValueText={(value) => `${value}%`}
-                  step={0.5}
-                  marks
-                  min={1}
-                  max={8}
-                />
-              </ContainerWidth>
-            ) : null}
           </div>
         </GridContainer>
         {showSettings && piHost && (
