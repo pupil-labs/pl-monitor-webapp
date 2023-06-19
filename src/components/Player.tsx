@@ -769,6 +769,30 @@ export const Player = forwardRef<PlayerNativeElement, PlayerProps>(
             <Divider />
             <TabsContainer
               one={
+                <ContainerWidth>
+                  <EventsContainer>
+                    {eventMenu.map((eventName, index) => {
+                      if (!eventName.length) {
+                        return null;
+                      }
+                      return (
+                        <EventButton
+                          name={eventName}
+                          hotkey={(index + 1).toString()}
+                          key={index}
+                          onClick={() => triggerEvent(eventName)}
+                        />
+                      );
+                    })}
+                    <EventButton
+                      name="Custom Event"
+                      hotkey="+"
+                      onClick={toggleShowCustomEvent}
+                    />
+                  </EventsContainer>
+                </ContainerWidth>
+              }
+              two={
                 isNeon ? (
                   <Grid
                     container
@@ -828,30 +852,6 @@ export const Player = forwardRef<PlayerNativeElement, PlayerProps>(
                     </Grid>
                   </Grid>
                 ) : null
-              }
-              two={
-                <ContainerWidth>
-                  <EventsContainer>
-                    {eventMenu.map((eventName, index) => {
-                      if (!eventName.length) {
-                        return null;
-                      }
-                      return (
-                        <EventButton
-                          name={eventName}
-                          hotkey={(index + 1).toString()}
-                          key={index}
-                          onClick={() => triggerEvent(eventName)}
-                        />
-                      );
-                    })}
-                    <EventButton
-                      name="Custom Event"
-                      hotkey="+"
-                      onClick={toggleShowCustomEvent}
-                    />
-                  </EventsContainer>
-                </ContainerWidth>
               }
             />
           </div>
