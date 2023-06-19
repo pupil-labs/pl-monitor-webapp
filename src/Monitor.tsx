@@ -159,21 +159,24 @@ export const Monitor = (props: MonitorProps) => {
 
   useEffect(() => {
     const client = makeApiClient(`http://${props.host}/api`);
-    client.status.getStatus().then((value) => {
-      value.result.forEach((status) => {
-        switch (status.model) {
-          case "Phone":
-            const phone = status.data as piapi.Phone;
-            dispatch(
-              monitorSlice.actions.phoneStateReceived({
-                phone: phone,
-                isInitial: true,
-              }),
-            );
-            break;
-        }
-      });
-    });
+    client.status
+      .getStatus()
+      .then((value) => {
+        value.result.forEach((status) => {
+          switch (status.model) {
+            case "Phone":
+              const phone = status.data as piapi.Phone;
+              dispatch(
+                monitorSlice.actions.phoneStateReceived({
+                  phone: phone,
+                  isInitial: true,
+                }),
+              );
+              break;
+          }
+        });
+      })
+      .catch((e) => console.error(e));
   }, [dispatch, props.host]);
 
   return (
