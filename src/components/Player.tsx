@@ -1,7 +1,17 @@
 import PanoramaFishEyeIcon from "@mui/icons-material/PanoramaFishEye";
 import SettingsIcon from "@mui/icons-material/Settings";
 import SwapHorizIcon from "@mui/icons-material/SwapHoriz";
-import { Alert, AlertColor, Grid, Slider, Snackbar } from "@mui/material";
+import {
+  Alert,
+  AlertColor,
+  Box,
+  Grid,
+  Slider,
+  Snackbar,
+  Tab,
+  Tabs,
+  Divider as MiuDivider,
+} from "@mui/material";
 import { Sdp } from "media-stream-library";
 import React, {
   forwardRef,
@@ -429,9 +439,11 @@ export const Player = forwardRef<PlayerNativeElement, PlayerProps>(
       }
 
       const observer = new window.ResizeObserver(([entry]) => {
-        const element = entry.target as HTMLElement;
-        const maxWidth = element.clientHeight * naturalAspectRatio;
-        element.style.maxWidth = `${maxWidth}px`;
+        window.requestAnimationFrame(() => {
+          const element = entry.target as HTMLElement;
+          const maxWidth = element.clientHeight * naturalAspectRatio;
+          element.style.maxWidth = `${maxWidth}px`;
+        });
       });
       observer.observe(limiterRef.current);
 
@@ -755,70 +767,93 @@ export const Player = forwardRef<PlayerNativeElement, PlayerProps>(
               </ControlsContainer>
             </ContainerWidth>
             <Divider />
-            {isNeon ? (
-              <Grid container direction="row" pt={2} alignItems="center">
-                <Grid item textAlign="right" xs={2}>
-                  <PanoramaFishEyeIcon
-                    sx={{
-                      mr: "16px",
-                      color: "#ff282899",
-                      transform: "scale(0.7)",
-                    }}
-                  />
-                </Grid>
-                <Grid item xs={8}>
-                  <Slider
-                    sx={{ color: "#455a64" }}
-                    aria-label="Gaze Radius Circle"
-                    defaultValue={constants.DEFAULT_GAZE_CIRCLE_PERCENT.NEON}
-                    valueLabelDisplay="auto"
-                    value={
-                      isNeon
-                        ? gazeRadiusPercent
-                        : constants.DEFAULT_GAZE_CIRCLE_PERCENT.INVISIBLE
-                    }
-                    onChange={(event, value) =>
-                      setGazeRadiusPercent(value as number)
-                    }
-                    getAriaValueText={(value) => `${value}%`}
-                    step={1}
-                    min={1}
-                    max={11}
-                  />
-                </Grid>
-                <Grid item textAlign="left" xs={2}>
-                  <PanoramaFishEyeIcon
-                    sx={{
-                      ml: "18px",
-                      color: "#ff282899",
-                      transform: "scale(1.4)",
-                    }}
-                  />
-                </Grid>
-              </Grid>
-            ) : null}
-            <ContainerWidth>
-              <EventsContainer>
-                {eventMenu.map((eventName, index) => {
-                  if (!eventName.length) {
-                    return null;
-                  }
-                  return (
+            <TabsContainer
+              one={
+                <ContainerWidth>
+                  <EventsContainer>
+                    {eventMenu.map((eventName, index) => {
+                      if (!eventName.length) {
+                        return null;
+                      }
+                      return (
+                        <EventButton
+                          name={eventName}
+                          hotkey={(index + 1).toString()}
+                          key={index}
+                          onClick={() => triggerEvent(eventName)}
+                        />
+                      );
+                    })}
                     <EventButton
-                      name={eventName}
-                      hotkey={(index + 1).toString()}
-                      key={index}
-                      onClick={() => triggerEvent(eventName)}
+                      name="Custom Event"
+                      hotkey="+"
+                      onClick={toggleShowCustomEvent}
                     />
-                  );
-                })}
-                <EventButton
-                  name="Custom Event"
-                  hotkey="+"
-                  onClick={toggleShowCustomEvent}
-                />
-              </EventsContainer>
-            </ContainerWidth>
+                  </EventsContainer>
+                </ContainerWidth>
+              }
+              two={
+                isNeon ? (
+                  <Grid
+                    container
+                    direction="row"
+                    pt={2}
+                    alignItems="center"
+                    sx={(theme) => ({
+                      height: "100%",
+
+                      [theme.breakpoints.down("md")]: {
+                        minHeight: 399,
+                      },
+                      [theme.breakpoints.down("sm")]: {
+                        minHeight: 275,
+                      },
+                    })}
+                  >
+                    <Grid item textAlign="right" xs={2}>
+                      <PanoramaFishEyeIcon
+                        sx={{
+                          mr: "16px",
+                          color: "#ff282899",
+                          transform: "scale(0.7)",
+                        }}
+                      />
+                    </Grid>
+                    <Grid item xs={8}>
+                      <Slider
+                        sx={{ color: "#455a64" }}
+                        aria-label="Gaze Radius Circle"
+                        defaultValue={
+                          constants.DEFAULT_GAZE_CIRCLE_PERCENT.NEON
+                        }
+                        valueLabelDisplay="auto"
+                        value={
+                          isNeon
+                            ? gazeRadiusPercent
+                            : constants.DEFAULT_GAZE_CIRCLE_PERCENT.INVISIBLE
+                        }
+                        onChange={(event, value) =>
+                          setGazeRadiusPercent(value as number)
+                        }
+                        getAriaValueText={(value) => `${value}%`}
+                        step={1}
+                        min={1}
+                        max={11}
+                      />
+                    </Grid>
+                    <Grid item textAlign="left" xs={2}>
+                      <PanoramaFishEyeIcon
+                        sx={{
+                          ml: "18px",
+                          color: "#ff282899",
+                          transform: "scale(1.4)",
+                        }}
+                      />
+                    </Grid>
+                  </Grid>
+                ) : null
+              }
+            />
           </div>
         </GridContainer>
         {showSettings && piHost && (
@@ -843,6 +878,80 @@ export const Player = forwardRef<PlayerNativeElement, PlayerProps>(
     );
   },
 );
+
+function a11yProps(index: number) {
+  return {
+    id: `simple-tab-${index}`,
+    "aria-controls": `simple-tabpanel-${index}`,
+    sx: { width: "49%" },
+  };
+}
+
+const TabsContainer = ({
+  one,
+  two,
+}: {
+  one: React.ReactNode | null;
+  two: React.ReactNode | null;
+}) => {
+  const [value, setValue] = React.useState(0);
+
+  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
+    setValue(newValue);
+  };
+  console.log(value);
+  return (
+    <Box sx={{ width: "100%" }} id="test213">
+      <Tabs
+        value={value}
+        onChange={handleChange}
+        aria-label="basic tabs example"
+        textColor="inherit"
+        TabIndicatorProps={{ sx: { backgroundColor: "inherit" } }}
+      >
+        <Tab label="Events" {...a11yProps(0)} />
+        <MiuDivider
+          orientation="vertical"
+          sx={{
+            height: 17,
+            backgroundColor: "#263238",
+            my: "auto",
+          }}
+        />
+        <Tab label="Gaze Settings" {...a11yProps(1)} />
+      </Tabs>
+      <Divider />
+      <TabPanel value={value} index={0}>
+        {one}
+      </TabPanel>
+      <TabPanel value={value} index={2}>
+        {two}
+      </TabPanel>
+    </Box>
+  );
+};
+
+interface TabPanelProps {
+  children?: React.ReactNode;
+  index: number;
+  value: number;
+}
+
+function TabPanel(props: TabPanelProps) {
+  const { children, value, index, ...other } = props;
+
+  return (
+    <div
+      role="tabpanel"
+      hidden={value !== index}
+      id={`simple-tabpanel-${index}`}
+      aria-labelledby={`simple-tab-${index}`}
+      {...other}
+    >
+      {value === index ? children : null}
+    </div>
+  );
+}
 
 const PlayerArea = styled.div`
   position: relative;
