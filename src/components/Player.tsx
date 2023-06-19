@@ -10,7 +10,6 @@ import {
   Snackbar,
   Tab,
   Tabs,
-  Typography,
   Divider as MiuDivider,
 } from "@mui/material";
 import { Sdp } from "media-stream-library";
